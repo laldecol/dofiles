@@ -10,15 +10,15 @@
 # Import arcpy module
 import arcpy, glob, shutil, os, logging, time
 
-def aggregate_kbyk(inputpattern, ):
+#def aggregate_kbyk(inputpattern, ):
     
     
 # Check out any necessary licenses
 arcpy.CheckOutExtension("spatial")
 
 # Local variables:
-inputpattern = "..\\..\\data\\GPW4\\source\\gpw-v4-population-count*\\*.tif"
-outputfolder = "..\\..\\data\\GPW4\\generated\\aggregated\\"
+inputpattern = "..\\..\\..\\data\\GPW4\\source\\gpw-v4-population-count*\\*.tif"
+outputfolder = "..\\..\\..\\data\\GPW4\\generated\\aggregated\\"
 
 #Set up folders:
 shutil.rmtree(outputfolder, ignore_errors=True)
