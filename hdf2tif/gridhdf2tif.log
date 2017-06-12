@@ -1,0 +1,48 @@
+2017-04-01 18:23:07,509 Starting gridhdf2tif.py.
+2017-04-01 18:23:07,510 Processing files from 2005  to 2015 .
+2017-04-01 18:23:07,510 Started processing 2005 .
+2017-04-01 23:37:01,808 The following 4 of the total 13818 hdfs ran into trouble.
+2017-04-01 23:37:01,809  ['D137_Y2005_H12_V03', 'D145_Y2005_H12_V03', 'D145_Y2005_H13_V03', 'D265_Y2005_H13_V02'] .
+2017-04-01 23:37:09,681 Done processing 2005 .
+2017-04-01 23:37:09,681 Started processing 2006 .
+2017-04-02 04:57:13,611 The following 0 of the total 13813 hdfs ran into trouble.
+2017-04-02 04:57:13,612  [] .
+2017-04-02 04:57:22,421 Done processing 2006 .
+2017-04-02 04:57:22,421 Started processing 2007 .
+2017-04-02 10:12:13,099 The following 0 of the total 13818 hdfs ran into trouble.
+2017-04-02 10:12:13,101  [] .
+2017-04-02 10:12:19,773 Done processing 2007 .
+2017-04-02 10:12:19,775 Started processing 2008 .
+2017-04-02 15:27:23,996 The following 1 of the total 13818 hdfs ran into trouble.
+2017-04-02 15:27:23,996  ['D145_Y2008_H13_V03'] .
+2017-04-02 15:27:31,009 Done processing 2008 .
+2017-04-02 15:27:31,009 Started processing 2009 .
+2017-04-02 20:45:41,552 The following 0 of the total 13818 hdfs ran into trouble.
+2017-04-02 20:45:41,552  [] .
+2017-04-02 20:45:49,723 Done processing 2009 .
+2017-04-02 20:45:49,723 Started processing 2010 .
+2017-04-03 02:09:37,134 The following 0 of the total 13818 hdfs ran into trouble.
+2017-04-03 02:09:37,134  [] .
+2017-04-03 02:09:44,717 Done processing 2010 .
+2017-04-03 02:09:44,717 Started processing 2011 .
+2017-04-03 07:30:50,483 The following 2 of the total 13818 hdfs ran into trouble.
+2017-04-03 07:30:50,483  ['D113_Y2011_H12_V03', 'D169_Y2011_H12_V03'] .
+2017-04-03 07:30:57,542 Done processing 2011 .
+2017-04-03 07:30:57,542 Started processing 2012 .
+2017-04-03 12:47:36,154 The following 2 of the total 13818 hdfs ran into trouble.
+2017-04-03 12:47:36,155  ['D097_Y2012_H12_V03', 'D281_Y2012_H14_V03'] .
+2017-04-03 12:47:46,894 Done processing 2012 .
+2017-04-03 12:47:46,894 Started processing 2013 .
+2017-04-03 18:06:21,141 The following 0 of the total 13818 hdfs ran into trouble.
+2017-04-03 18:06:21,142  [] .
+2017-04-03 18:06:28,805 Done processing 2013 .
+2017-04-03 18:06:28,805 Started processing 2014 .
+2017-04-03 23:23:46,877 The following 1 of the total 13818 hdfs ran into trouble.
+2017-04-03 23:23:46,878  ['D161_Y2014_H12_V03'] .
+2017-04-03 23:23:53,267 Done processing 2014 .
+2017-04-03 23:23:53,267 Started processing 2015 .
+2017-04-04 04:50:14,236 The following 0 of the total 13818 hdfs ran into trouble.
+2017-04-04 04:50:14,237  [] .
+2017-04-04 04:50:20,586 Done processing 2015 .
+2017-04-04 04:50:20,588  1214627 total bands processed correctly.
+2017-04-04 04:50:20,588 Processed 151993 .hdf files in 3507.11625642 minutes.

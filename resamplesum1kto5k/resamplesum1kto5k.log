@@ -1,0 +1,4 @@
+2017-04-25 15:03:25,115 Starting resamplesum1kto5k.py
+2017-04-25 15:13:12,006 Done processing files of the form ..\..\data\MODIS_FIRE\generated\yearly\1k\*.tif
+2017-04-25 15:13:12,006 Done with resamplesum1kto5k.py
+2017-04-25 15:13:12,006 Aggregated 32 rasters in 9.78125273462 minutes.

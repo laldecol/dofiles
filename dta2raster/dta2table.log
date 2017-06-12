@@ -1,0 +1,106 @@
+
+. local argnum = `2'+2;
+
+. local varlist;
+
+. forvalues i=3/`argnum'{;
+  2. local varlist `varlist' ``i'';
+  3. };
+
+. dis "`varlist'";
+ellipses
+
+. dis "`dta'";
+..\dtas\latitudecircles\latitudecircles.dta
+
+. /**********************************************************************
+>  (1) Setup directory tree for generated files, ubergrid copies, and STATA
+>          temporary files. Copy Ubergrid files, one for each variable.
+> **********************************************************************/;
+. *at this point of the program the current directory is dofiles\\dta2raster;
+. *dta local is "..\dtas\analyze_me.dta";
+. *datadir is "data\dta2raster" ;
+. cd `datadir';
+S:\particulates\data_processing\data\dta2raster
+
+. shell rmdir "temp" /q /s;
+
+. shell rmdir "maps" /q /s;
+
+. shell rmdir "workspaces" /q /s;
+
+. mkdir "temp";
+
+. mkdir "maps";
+
+. mkdir "workspaces";
+
+. foreach var of local varlist
+>         {;
+  2.         shell rmdir "workspaces/`var'" /q /s;
+  3.         mkdir "workspaces/`var'";
+  4. *       copy  "${ddir}/ubergrid/source/ubergrid2011.img"
+> *         "temp/ubergrid4`var'.img", replace;
+.         };
+
+. *get stata ubergrid data;
+. use `dta';
+
+. keep uber_code `varlist';
+
+. ds, has(type numeric);
+uber_code  ellipses
+
+. foreach var of varlist `r(varlist)' {;
+  2.   replace `var' =-9999  if `var'==.;
+  3. };
+(0 real changes made)
+(0 real changes made)
+
+. sort uber_code;
+
+. compress;
+  ellipses was float now byte
+  (90,201,600 bytes saved)
+
+. save temp,replace;
+(note: file temp.dta not found)
+file temp.dta saved
+
+. foreach var of local varlist
+>         {;
+  2.         use temp,clear;
+  3.         sort uber_code;
+  4.         keep `var';
+  5.         compress;
+  6.         save "temp/`var'.dta", replace;
+  7.         dis "temp/`var'.dta" "temp/ready2map_`var'.txt";
+  8.         pause;
+  9.         shell st "temp/`var'.dta" "temp/ready2map_`var'.txt" /y;
+ 10.         erase temp/`var'.dta;
+ 11.         };
+  (0 bytes saved)
+(note: file temp/ellipses.dta not found)
+file temp/ellipses.dta saved
+temp/ellipses.dtatemp/ready2map_ellipses.txt
+
+. erase temp.dta;
+
+. *convert STATA lists to Raster files
+> *****************************************************************/;
+. cd `dodir';
+S:\particulates\data_processing\dofiles\dta2raster
+
+. pause;
+
+. display "`python' table2raster.py `varlist'";
+C:\Python27\ArcGIS10.2\python table2raster.py ellipses
+
+. shell `python' table2raster.py `varlist';
+
+. log close;
+      name:  <unnamed>
+       log:  S:\particulates\data_processing\dofiles\dta2raster\dta2table.log
+  log type:  text
+ closed on:   6 Dec 2016, 19:24:13
+----------------------------------------------------------------------------------------------------------

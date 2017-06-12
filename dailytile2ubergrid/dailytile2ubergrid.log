@@ -1,0 +1,82 @@
+2017-04-22 23:35:49,055 Starting dailytile2ubergrid.py.
+2017-04-22 23:35:55,727 Aggregating daily tiles into yearly tiles in 2000
+2017-04-23 02:32:48,713 Done adding tiles over time.
+2017-04-23 02:32:48,713 Year 2000 took 176.87247246 minutes.
+2017-04-23 02:32:48,713 Mosaicking tiles from 2000  .
+2017-04-23 02:43:13,927 Year 2000 took 176.87247246 minutes.
+2017-04-23 02:43:26,701 Aggregating daily tiles into yearly tiles in 2001
+2017-04-23 06:50:41,394 Done adding tiles over time.
+2017-04-23 06:50:41,394 Year 2001 took 247.241667725 minutes.
+2017-04-23 06:50:41,394 Mosaicking tiles from 2001  .
+2017-04-23 07:00:32,266 Year 2001 took 247.241667725 minutes.
+2017-04-23 07:00:46,151 Aggregating daily tiles into yearly tiles in 2002
+2017-04-23 11:17:31,407 Done adding tiles over time.
+2017-04-23 11:17:31,407 Year 2002 took 256.742853436 minutes.
+2017-04-23 11:17:31,407 Mosaicking tiles from 2002  .
+2017-04-23 11:28:30,911 Year 2002 took 256.742853436 minutes.
+2017-04-23 11:28:52,858 Aggregating daily tiles into yearly tiles in 2003
+2017-04-23 15:50:30,651 Done adding tiles over time.
+2017-04-23 15:50:30,651 Year 2003 took 261.626587609 minutes.
+2017-04-23 15:50:30,651 Mosaicking tiles from 2003  .
+2017-04-23 16:02:50,108 Year 2003 took 261.626587609 minutes.
+2017-04-23 16:03:06,395 Aggregating daily tiles into yearly tiles in 2004
+2017-04-23 19:30:08,344 Done adding tiles over time.
+2017-04-23 19:30:08,344 Year 2004 took 207.021520727 minutes.
+2017-04-23 19:30:08,344 Mosaicking tiles from 2004  .
+2017-04-23 19:40:19,826 Year 2004 took 207.021520727 minutes.
+2017-04-23 19:40:34,772 Aggregating daily tiles into yearly tiles in 2005
+2017-04-23 23:03:36,344 Done adding tiles over time.
+2017-04-23 23:03:36,344 Year 2005 took 203.023561428 minutes.
+2017-04-23 23:03:36,344 Mosaicking tiles from 2005  .
+2017-04-23 23:13:30,690 Year 2005 took 203.023561428 minutes.
+2017-04-23 23:13:45,538 Aggregating daily tiles into yearly tiles in 2006
+2017-04-24 03:42:19,013 Done adding tiles over time.
+2017-04-24 03:42:19,029 Year 2006 took 268.546156635 minutes.
+2017-04-24 03:42:19,045 Mosaicking tiles from 2006  .
+2017-04-24 03:52:43,119 Year 2006 took 268.546156635 minutes.
+2017-04-24 03:52:59,058 Aggregating daily tiles into yearly tiles in 2007
+2017-04-24 07:17:35,957 Done adding tiles over time.
+2017-04-24 07:17:35,957 Year 2007 took 204.612347628 minutes.
+2017-04-24 07:17:35,957 Mosaicking tiles from 2007  .
+2017-04-24 07:29:42,029 Year 2007 took 204.612347628 minutes.
+2017-04-24 07:29:57,736 Aggregating daily tiles into yearly tiles in 2008
+2017-04-24 10:59:55,094 Done adding tiles over time.
+2017-04-24 10:59:55,094 Year 2008 took 209.952413298 minutes.
+2017-04-24 10:59:55,094 Mosaicking tiles from 2008  .
+2017-04-24 11:11:46,660 Year 2008 took 209.952413298 minutes.
+2017-04-24 11:12:09,154 Aggregating daily tiles into yearly tiles in 2009
+2017-04-24 14:45:09,253 Done adding tiles over time.
+2017-04-24 14:45:09,253 Year 2009 took 212.994678616 minutes.
+2017-04-24 14:45:09,253 Mosaicking tiles from 2009  .
+2017-04-24 14:58:48,696 Year 2009 took 212.994678616 minutes.
+2017-04-24 14:59:10,769 Aggregating daily tiles into yearly tiles in 2010
+2017-04-24 18:56:25,137 Done adding tiles over time.
+2017-04-24 18:56:25,151 Year 2010 took 237.232366209 minutes.
+2017-04-24 18:56:25,167 Mosaicking tiles from 2010  .
+2017-04-24 19:06:48,894 Year 2010 took 237.232366209 minutes.
+2017-04-24 19:07:08,497 Aggregating daily tiles into yearly tiles in 2011
+2017-04-24 22:34:02,844 Done adding tiles over time.
+2017-04-24 22:34:02,859 Year 2011 took 206.90315889 minutes.
+2017-04-24 22:34:02,875 Mosaicking tiles from 2011  .
+2017-04-24 22:44:38,374 Year 2011 took 206.90315889 minutes.
+2017-04-24 22:45:00,075 Aggregating daily tiles into yearly tiles in 2012
+2017-04-25 02:13:54,257 Done adding tiles over time.
+2017-04-25 02:13:54,289 Year 2012 took 208.892551217 minutes.
+2017-04-25 02:13:54,305 Mosaicking tiles from 2012  .
+2017-04-25 02:26:27,752 Year 2012 took 208.892551217 minutes.
+2017-04-25 02:26:54,490 Aggregating daily tiles into yearly tiles in 2013
+2017-04-25 06:52:48,209 Done adding tiles over time.
+2017-04-25 06:52:48,224 Year 2013 took 265.887815694 minutes.
+2017-04-25 06:52:48,240 Mosaicking tiles from 2013  .
+2017-04-25 07:05:01,150 Year 2013 took 265.887815694 minutes.
+2017-04-25 07:05:26,365 Aggregating daily tiles into yearly tiles in 2014
+2017-04-25 10:32:07,128 Done adding tiles over time.
+2017-04-25 10:32:07,223 Year 2014 took 206.676417789 minutes.
+2017-04-25 10:32:07,223 Mosaicking tiles from 2014  .
+2017-04-25 10:42:55,121 Year 2014 took 206.676417789 minutes.
+2017-04-25 10:43:17,838 Aggregating daily tiles into yearly tiles in 2015
+2017-04-25 14:11:41,584 Done adding tiles over time.
+2017-04-25 14:11:41,598 Year 2015 took 208.390741213 minutes.
+2017-04-25 14:11:41,615 Mosaicking tiles from 2015  .
+2017-04-25 14:24:31,974 Year 2015 took 208.390741213 minutes.
+2017-04-25 14:24:31,974 Done with dailytile2ubergrid.py
