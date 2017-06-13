@@ -3,6 +3,5 @@
 
 #We use the "from ... import" syntax to save some typing when calling the package
 
-from rasters import aggregate 
-from rasters import dummyascii
+from rasters import aggregate, dummyascii, ubergridsettings, raster2ubergrid
 from utilities import ftp2disk
