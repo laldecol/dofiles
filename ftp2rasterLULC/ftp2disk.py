@@ -109,7 +109,9 @@ if __name__=='__main__':
             arcpy.gp.Aggregate_sa(dummytif, aggtif, colfactor, "SUM", "EXPAND", "DATA")
             
             ##Convert to ubergrid
-            mylibrary.raster2ubergrid()
-        #shutil.rmtree(temp_folder, ignore_errors=True)
+            ubergridtif=os.path.dirname(output_raster)+"\\counts\\ubergrid\\"+year+"_dummy"+str(dummyval)+".tif"
+            mylibrary.raster2ubergrid(aggtif, outpath, extent, outprojection) 
+            
+        shutil.rmtree(temp_folder, ignore_errors=True)
         
-    #logging.info('Done with ftp2raster.py')
+    logging.info('Done with ftp2raster.py')
