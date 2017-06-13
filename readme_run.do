@@ -18,7 +18,7 @@ local python "C:\Python27\ArcGIS10.2\python.exe";
 **********************************************************;
 **   Step 1: Aggregate source GPW to use as ubergrid    **;
 **********************************************************;
-if 1==2{;
+if 1==1{;
 	cd aggregate_raster;
 	shell `python' aggregate_raster.py;
 	cd ..;

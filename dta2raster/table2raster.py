@@ -36,7 +36,7 @@ for vname in vnames:
 
     #Set up output raster settings as a dictionary. These come from settings.txt, written in make_xy_extent.py
     settingsdict={}
-    with open("..\\..\\data\\projections\generated\settings.txt", 'r') as settingfile:
+    with open("..\\..\\..\\data\\projections\generated\settings.txt", 'r') as settingfile:
         templines=settingfile.readlines()
         lines = [i.replace('\n','') for i in templines]
         for linecounter in range(len(lines)):        
@@ -45,14 +45,16 @@ for vname in vnames:
                 settingsdict[str(lines[linecounter])]=str(lines[linecounter+1])
     print settingsdict
     
-    os.chdir("..\\..\\data\\dta2raster")
+    os.chdir("..\\..\\..\\data\\dta2raster")
     #asc   = "maps/"+ vname + ".txt"  #Output text ASCII text file
     asc   = os.getcwd() + "\\maps\\"+ vname + ".txt"  #Output text ASCII text file
     rst   = os.getcwd() + "\\maps\\" + vname + ".tif" #Output raster file
     
     in_txt  = open("temp/ready2map_"+vname+".txt", "r")     #Input list of STATA-made ubergrid
     
-    ugrid = "..\\..\\data\\GPW4\\generated\\projected\\projected_aggregated_gpw_2010.tif"  #Copy of ubergrid
+    ugrid = "..\\..\\..\\data\\GPW4\\generated\\projected\\projected_aggregated_gpw_2010.tif"  #Copy of ubergrid
+    # Warning: why 2010?
+    
     wspace   = "workspaces\\" + vname
     
     csize   = settingsdict['CELLSIZEX']  #raster cell width in metres
@@ -98,7 +100,7 @@ for vname in vnames:
         print "Started defining projection of Raster for " + vname
         spatialref = arcpy.Describe(ugrid).spatialReference    #Get spatial reference information of ubergrid
         arcpy.DefineProjection_management(rst, spatialref)
-        print "Finished defining projecction of Raster for " + vname
+        print "Finished defining projection of Raster for " + vname
         
         #print "Started adding colour map for " + vname
         #arcpy.AddColormap_management(rst, "", clrmap)
