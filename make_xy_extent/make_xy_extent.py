@@ -12,7 +12,7 @@ from arcpy import env
 def makexyextent(inputraster,outputprojection,cellsize=""):
     
     # Local variables:
-    outputraster = "..\\..\\data\\GPW4\\generated\\projected\\projected_" + os.path.basename(os.path.splitext(inputraster)[0]) + ".tif"
+    outputraster = "..\\..\\..\\data\\GPW4\\generated\\projected\\projected_" + os.path.basename(os.path.splitext(inputraster)[0]) + ".tif"
     arcpy.env.snapRaster = outputraster
     
     if cellsize=="":
@@ -22,7 +22,7 @@ def makexyextent(inputraster,outputprojection,cellsize=""):
 
     ##Set up extent creation
     
-    extent_shp = "..\\..\\data\\GPW4\\generated\\extent\\extent.shp"
+    extent_shp = "..\\..\\..\\data\\GPW4\\generated\\extent\\extent.shp"
     
     #create Describe object with input raster characteristics
     rasterdesc=arcpy.Describe(outputraster)
@@ -40,10 +40,10 @@ def makexyextent(inputraster,outputprojection,cellsize=""):
     #List raster settings we want to save. 
     settings=["TOP", "LEFT", "RIGHT", "BOTTOM", "CELLSIZEX", "CELLSIZEY", "COLUMNCOUNT", "ROWCOUNT"]
     
-    shutil.rmtree("..\\..\\data\\projections\settings.txt", ignore_errors=True)
+    shutil.rmtree("..\\..\\..\\data\\projections\settings.txt", ignore_errors=True)
     
     #Read raster properties and print them to settings. txt
-    with open("..\\..\\data\\projections\generated\settings.txt", 'w') as fileoutput:
+    with open("..\\..\\..\\data\\projections\generated\settings.txt", 'w') as fileoutput:
         for setting in settings:
             value=arcpy.GetRasterProperties_management(outputraster, setting)
             fileoutput.write(setting + "\n")
@@ -60,15 +60,15 @@ if __name__=="__main__":
     arcpy.env.overwriteOutput = True
     
     #Set up directories
-    inputraster = "..\\..\\data\\GPW4\\generated\\aggregated"
-    outputprojection = "..\\..\\data\\projections\\WGS 1984.prj"
+    inputraster = "..\\..\\..\\data\\GPW4\\generated\\aggregated"
+    outputprojection = "..\\..\\..\\data\\projections\\WGS 1984.prj"
     cellsize=""
 
-    shutil.rmtree("..\\..\\data\\GPW4\\generated\\extent",ignore_errors=True)
-    os.mkdir("..\\..\\data\\GPW4\\generated\\extent")
+    shutil.rmtree("..\\..\\..\\data\\GPW4\\generated\\extent",ignore_errors=True)
+    os.mkdir("..\\..\\..\\data\\GPW4\\generated\\extent")
 
-    shutil.rmtree("..\\..\\data\\GPW4\\generated\\projected",ignore_errors=True)
-    os.mkdir("..\\..\\data\\GPW4\\generated\\projected")
+    shutil.rmtree("..\\..\\..\\data\\GPW4\\generated\\projected",ignore_errors=True)
+    os.mkdir("..\\..\\..\\data\\GPW4\\generated\\projected")
     
     #..\\..\\data\\GPW4\\generated\\projected
     
