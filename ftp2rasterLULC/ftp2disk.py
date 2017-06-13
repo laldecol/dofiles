@@ -81,6 +81,10 @@ if __name__=='__main__':
         
         os.mkdir(temp_folder)        
         #arcpy.gp.Reclassify_sa(output_raster, "Value", "0 0;1 6 1;7 2;8 1;8 11 2;12 4;13 5;14 4;15 6;16 3;16 255 6", reclass_tif, "DATA")
+
+        settingsdict=mylibrary.ubergridsettings()
+        ubercol=settingsdict["COLUMNCOUNT"]
+        uberrow=settingsdict["ROWCOUNT"]
         
         #Second, reclass into separate dummy rasters
         for dummyval in range(0,7):
@@ -90,23 +94,22 @@ if __name__=='__main__':
             mylibrary.dummyascii(0, 6, dummyval, valtxt)
             #arcpy.gp.ReclassByASCIIFile_sa(, valtxt, Reclass_tif1, "DATA")
             
-        ##Convert to a coarser sum raster for each class
-        settingsdict=mylibrary.ubergridsettings()
-        ubercol=settingsdict["COLUMNCOUNT"]
-        uberrow=settingsdict["ROWCOUNT"]
-        
-        desc=arcpy.Describe(dummytif)
-        inputrow=desc.height
-        inputcol=desc.width
-        
-        rowfactor=math.floor(int(inputrow)/int(uberrow))
-        colfactor=math.floor(int(inputcol)/int(ubercol))
-        
-        print str(rowfactor), str(colfactor)
-        #use aggregate_sa to get an output
-        
-        
-        ##Convert to ubergrid
+            ##Convert to a coarser sum raster for each class        
+            desc=arcpy.Describe(dummytif)
+            inputrow=desc.height
+            inputcol=desc.width
+            
+            rowfactor=math.floor(int(inputrow)/int(uberrow))
+            colfactor=math.floor(int(inputcol)/int(ubercol))
+            
+            print str(rowfactor), str(colfactor)
+            
+            #use aggregate_sa to get an output
+            aggtif=temp_folder+"\\agg"+str(dummyval)+".tif"
+            arcpy.gp.Aggregate_sa(dummytif, aggtif, colfactor, "SUM", "EXPAND", "DATA")
+            
+            ##Convert to ubergrid
+            mylibrary.raster2ubergrid()
         #shutil.rmtree(temp_folder, ignore_errors=True)
         
     #logging.info('Done with ftp2raster.py')
