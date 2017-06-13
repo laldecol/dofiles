@@ -105,6 +105,7 @@ if __name__=='__main__':
         print str(rowfactor), str(colfactor)
         #use aggregate_sa to get an output
         
+        
         ##Convert to ubergrid
         #shutil.rmtree(temp_folder, ignore_errors=True)
         
