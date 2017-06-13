@@ -24,7 +24,7 @@ def BandTIFtilename(inputfile):
     namevars= os.path.basename(inputfile)
     print str(namevars)
     year=namevars[6:10]
-    H=namevars[12:14]
+    H=namevars[12:14]       # Warning: possible non-generality
     V=namevars[16:18]
     
     return H+V
@@ -57,8 +57,8 @@ def daily2yearlytile(HV,year,inputfolder,outfolder):
         print "Processing "+ day
         outfilefire=tempfolder+"\\Fire"+os.path.basename(day)
         outfiledata=tempfolder+"\\Data"+os.path.basename(day)
-        remapfires = "S:\\particulates\\data_processing\\dofiles\\dailytile2ubergrid\\remapfiresv2"
-        remapdata = "S:\\particulates\\data_processing\\dofiles\\dailytile2ubergrid\\remapdatav2"
+        remapfires = "..\\..\\dailytile2ubergrid\\remapfiresv2"
+        remapdata = "..\\..\\dailytile2ubergrid\\remapdatav2"
 
         # Process: Reclass by Table
         arcpy.gp.ReclassByTable_sa(day, remapfires, "FROM", "TO", "OUT", outfilefire, "NODATA")
@@ -117,9 +117,9 @@ if __name__=='__main__':
     
     for year in years:
                     
-        intiles="S:\\particulates\\data_processing\\data\\MODIS_FIRE\\source\\daily\\"+year+"\\*B*.tif"
-        inputfolder="S:\\particulates\\data_processing\\data\\MODIS_FIRE\\source\\daily\\"+year
-        outfolder="S:\\particulates\\data_processing\\data\\MODIS_FIRE\\generated\\yearly\\"+year    
+        intiles="..\\..\\..\\data\\MODIS_FIRE\\source\\daily\\"+year+"\\*B*.tif"
+        inputfolder="..\\..\\..data\\MODIS_FIRE\\source\\daily\\"+year
+        outfolder="..\\..\\..data\\MODIS_FIRE\\generated\\yearly\\"+year    
         
         shutil.rmtree(outfolder, ignore_errors=True)
         os.mkdir(outfolder)
@@ -152,11 +152,11 @@ if __name__=='__main__':
         
         tempyear=outfolder+"\\temp"+year
         #gdb="alltiles"+year
-        inputsfire=glob.glob("S:\\particulates\\data_processing\\data\\MODIS_FIRE\\generated\\yearly\\"+year+"\\*Fire.tif")
-        outrasterfire="S:\\particulates\\data_processing\\data\\MODIS_FIRE\\generated\\yearly\\1k\\Fire"+year+".tif"
+        inputsfire=glob.glob("..\\..\\..\\data\\MODIS_FIRE\\generated\\yearly\\"+year+"\\*Fire.tif")
+        outrasterfire="..\\..\\..\\data\\MODIS_FIRE\\generated\\yearly\\1k\\Fire"+year+".tif"
         
-        inputsdata=glob.glob("S:\\particulates\\data_processing\\data\\MODIS_FIRE\\generated\\yearly\\"+year+"\\*Data.tif")
-        outrasterdata="S:\\particulates\\data_processing\\data\\MODIS_FIRE\\generated\\yearly\\1k\\Data"+year+".tif"
+        inputsdata=glob.glob("..\\..\\..\\data\\MODIS_FIRE\\generated\\yearly\\"+year+"\\*Data.tif")
+        outrasterdata="..\\..\\..\\data\\MODIS_FIRE\\generated\\yearly\\1k\\Data"+year+".tif"
         
         # Define spatial reference (WGS 1984)
         projection="S:\\particulates\\data_processing\\data\\projections\\WGS 1984.prj"
