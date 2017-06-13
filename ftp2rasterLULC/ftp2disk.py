@@ -79,8 +79,8 @@ if __name__=='__main__':
         temp_folder=os.path.dirname(output_raster)+"\\temp"+year
         reclass_tif=temp_folder+"\\reclassed_"+year+".tif"
         
-        os.mkdir(temp_folder)        
-        #arcpy.gp.Reclassify_sa(output_raster, "Value", "0 0;1 6 1;7 2;8 1;8 11 2;12 4;13 5;14 4;15 6;16 3;16 255 6", reclass_tif, "DATA")
+        os.mkdir(temp_folder)
+        arcpy.gp.Reclassify_sa(output_raster, "Value", "0 0;1 6 1;7 2;8 1;8 11 2;12 4;13 5;14 4;15 6;16 3;16 255 6", reclass_tif, "DATA")
 
         settingsdict=mylibrary.ubergridsettings()
         ubercol=settingsdict["COLUMNCOUNT"]
@@ -89,10 +89,10 @@ if __name__=='__main__':
         #Second, reclass into separate dummy rasters
         for dummyval in range(0,7):
             valtxt=temp_folder+"\\val"+str(dummyval)+".txt"
-            dummytif=os.path.dirname(output_raster)+"\\counts\\"+year+"_dummy"+str(dummyval)+".tif"
+            dummytif=temp_folder+"\\dummy"+str(dummyval)+".tif"
             
             mylibrary.dummyascii(0, 6, dummyval, valtxt)
-            #arcpy.gp.ReclassByASCIIFile_sa(, valtxt, Reclass_tif1, "DATA")
+            arcpy.gp.ReclassByASCIIFile_sa(reclass_tif, valtxt, dummytif, "DATA")
             
             ##Convert to a coarser sum raster for each class        
             desc=arcpy.Describe(dummytif)
@@ -109,7 +109,7 @@ if __name__=='__main__':
             arcpy.gp.Aggregate_sa(dummytif, aggtif, colfactor, "SUM", "EXPAND", "DATA")
             
             ##Convert to ubergrid
-            ubergridtif=os.path.dirname(output_raster)+"\\counts\\ubergrid\\"+year+"_dummy"+str(dummyval)+".tif"
+            ubergridtif=os.path.dirname(output_raster)+"\\ubergrid\\"+year+"_dummy"+str(dummyval)+".tif"
             mylibrary.raster2ubergrid(aggtif, outpath, extent, outprojection) 
             
         shutil.rmtree(temp_folder, ignore_errors=True)
