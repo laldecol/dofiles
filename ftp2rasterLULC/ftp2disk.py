@@ -1,11 +1,7 @@
 
-<<<<<<< HEAD
 import ftplib, gzip, glob, os, sys, shutil, logging, time, arcpy, math
-=======
-import ftplib, gzip, glob, os, sys, shutil, logging, time, arcpy
 
 # Check Spatial Analysis Tool
->>>>>>> refs/remotes/origin/master
 arcpy.CheckOutExtension("spatial")
 
 #Append dofiles\mylibrary to sys.path, to use programs defined there.
