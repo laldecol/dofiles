@@ -10,7 +10,7 @@ set more off;
 pause off;
 clear;
 
-import delimited "..\\..\\data\projections\\generated\\settings.txt", clear;
+import delimited "..\\..\\..\\data\projections\\generated\\settings.txt", clear;
 
 forvalues obs = 1(1)16{;
 
@@ -25,4 +25,4 @@ drop v1;
 drop if _n>1;
 destring, replace;
 
-save "..\\..\\data\projections\\generated\\settings.dta", replace;
+save "..\\..\\..\\data\projections\\generated\\settings.dta", replace;

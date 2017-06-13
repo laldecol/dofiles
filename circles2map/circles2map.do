@@ -7,7 +7,7 @@ set more off;
 pause off;
 clear;
 
-use "..\\..\\data\\projections\\generated\\settings.dta";
+use "..\\..\\..\\data\\projections\\generated\\settings.dta";
 
 *read settings from settings.dta, save values in locals.;
 foreach var of varlist _all{;
@@ -16,7 +16,7 @@ local `var'=`var'[1];
 };
 
 *;
-use "..\\..\\data\\dtas\\analyze_me.dta";
+use "..\\..\\..\\data\\dtas\\analyze_me.dta";
 keep uber_code;
 
 *generate row and column numbers in the plate carree representation of the grid;
@@ -43,5 +43,5 @@ replace ellipses = 1 if (lon^2)*cos(lat*c(pi)/180)^2/`lambda'^2+(lat-`latitudes'
 replace ellipses = 1 if lon==0 & lat=`latitudes'
 }; 
 
-save "..\\..\\data\\dtas\\latitudecircles\\latitudecircles.dta", replace; 
+save "..\\..\\..\\data\\dtas\\latitudecircles\\latitudecircles.dta", replace; 
 

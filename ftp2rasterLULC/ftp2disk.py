@@ -1,5 +1,11 @@
 
+<<<<<<< HEAD
 import ftplib, gzip, glob, os, sys, shutil, logging, time, arcpy, math
+=======
+import ftplib, gzip, glob, os, sys, shutil, logging, time, arcpy
+
+# Check Spatial Analysis Tool
+>>>>>>> refs/remotes/origin/master
 arcpy.CheckOutExtension("spatial")
 
 #Append dofiles\mylibrary to sys.path, to use programs defined there.
@@ -15,7 +21,7 @@ if __name__=='__main__':
     
     #Definitions:
     #Local folder to keep source tiles while they are processed
-    localfolder='S:\\particulates\\data_processing\\data\\MODIS_LULC\\source\\tiles'
+    localfolder='..\\..\\..\\data\\MODIS_LULC\\source\\tiles'
     #Server address with source tiles
     ftpaddress='ftp.glcf.umd.edu'
     
@@ -64,8 +70,8 @@ if __name__=='__main__':
         
         ###Mosaic all tiles of a given year
         ##Inputs to our aggregate function. All rasters matching the path pattern will be aggregated (mean) and saved as output_raster
-        #expath="S:\\particulates\\data_processing\\data\\MODIS_LULC\\source\\tiles\\*"+year+"*.tif"
-        output_raster="S:\\particulates\\data_processing\\data\\MODIS_LULC\\generated\\yearly\\"+year+".tif"
+        #expath="..\\..\\..\\data\\MODIS_LULC\\source\\tiles\\*"+year+"*.tif"
+        output_raster="..\\..\\..\\data\\MODIS_LULC\\generated\\yearly\\"+year+".tif"
 
         #logging.info('Aggregating tiles from %s' , str(year))
         

@@ -14,14 +14,17 @@ from arcpy.sa import *
 from functools import partial
 from multiprocessing import Pool
 
+
+
+# Check out the ArcGIS Spatial Analyst extension license and set overwrite environment:
 arcpy.CheckOutExtension("Spatial")
 arcpy.env.overwriteOutput = True
 
 #------------define aggregate-----------
 def aggregate(satyear, prod):
-    
+        
     #Local variables:
-    data_aod = "..\\..\\data\\MODIS_AOD"
+    data_aod = "..\\..\\..\\data\\MODIS_AOD"
     
     #Split satyear input into satellite name and year
     if satyear[0]=="A":
@@ -29,7 +32,7 @@ def aggregate(satyear, prod):
     elif satyear[0]=="T":
         sat="Terra"
     
-    year = satyear[1:5]
+    year = satyear[1:5]         ## !! Warning, code not general
     print "year is " + year
     print "sat is " + sat
     
@@ -43,7 +46,6 @@ def aggregate(satyear, prod):
     env.workspace = temp_year
     env.scratchWorkspace=temp_year
     
-    # Check out the ArcGIS Spatial Analyst extension license and set overwrite environment:
 
     try:
         #######################################
@@ -89,8 +91,8 @@ if __name__=='__main__':
     logging.basicConfig(format='%(asctime)s %(message)s', filename='daily2yearlyAOD.log', filemode='w', level=logging.DEBUG)
     logging.info('Starting daily2yearlyAOD.py.')
     #Set up directories for output:
-    shutil.rmtree("..\\..\\data\\MODIS_AOD\\generated\\yearly", ignore_errors=True)
-    os.mkdir("..\\..\\data\\MODIS_AOD\\generated\\yearly")
+    shutil.rmtree("..\\..\\..\\data\\MODIS_AOD\\generated\\yearly", ignore_errors=True)
+    os.mkdir("..\\..\\..\\data\\MODIS_AOD\\generated\\yearly")
     
     #Declare start and end year:
     startyear=2000
