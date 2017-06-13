@@ -85,9 +85,8 @@ def dummyascii(lowerval, higherval, onvalue, outpath):
         for i in range(len(inlist)):
             asciifile.write(str(inlist[i])+' : '+str(outlist[i])+"\n")
             
-#if __name__=='__main__':
-=======
 def raster2ubergrid(input_raster, outpath, extent, outprojection):
+    
 #Converts a raster to homogeneous ubergrid, using the input extent and projection.
 #This function expects an ubergrid setting file, written by make_xy_extent.py
     
@@ -130,6 +129,30 @@ def raster2ubergrid(input_raster, outpath, extent, outprojection):
     
     #Remove temporary files.
     shutil.rmtree(temp_dir, ignore_errors=True)
+    
+def ubergridsettings():
+#Reads ubergrid settings from "..\\..\\..\\data\\projections\generated\settings.txt" and returns them as a python directory
+#Settings can be accessed with the normal dictionary syntax, e.g. columno=settingsdict["COLUMNCOUNT"]
+    #Available settings are:
+    #TOP: Topmost raster coordinate (in ubergrid units, probably degrees)
+    #LEFT: Leftmost raster coordinate
+    #RIGHT: Rightmost raster coordinate
+    #BOTTOM: Bottom raster coordinate
+    #CELLSIZEX: Horizontal size of pixel (in ubergrid units) 
+    #CELLSIZEY: Vertical size of pixel
+    #COLUMNCOUNT: Number of raster columns
+    #ROWCOUNT: Number of raster rows
+
+    settingsdict={}
+
+    with open("..\\..\\..\\data\\projections\generated\settings.txt", 'r') as settingfile:
+        templines=settingfile.readlines()
+        lines = [i.replace('\n','') for i in templines]
+        for linecounter in range(len(lines)):        
+            if linecounter % 2 ==0:
+                print linecounter
+                settingsdict[str(lines[linecounter])]=str(lines[linecounter+1])
+    return settingsdict
     
 if __name__=='__main__':
     #This section of the code is meant to test-run functions and should generally be empty.
