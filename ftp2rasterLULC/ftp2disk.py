@@ -1,12 +1,12 @@
 
-import ftplib, gzip, glob, os, sys, shutil, logging, time, arcpy
+import ftplib, gzip, glob, os, sys, shutil, logging, time, arcpy, math
 arcpy.CheckOutExtension("spatial")
 
-#Append dofiles\functions to sys.path, to use programs defined there.
+#Append dofiles\mylibrary to sys.path, to use programs defined there.
 sys.path.append(os.path.abspath('..'))
 
-#ftp2disk, aggregate defined in functions.py
-import functions
+#ftp2disk, aggregate defined in mylibrary
+import mylibrary
 
 if __name__=='__main__':
     #Set up logging
@@ -49,7 +49,7 @@ if __name__=='__main__':
         
         ##Download compressed tiles into local folder
         #for serverpath in pathlist:
-            #functions.ftp2disk(ftpaddress, serverpath, localfolder, pattern)
+            #mylibrary.ftp2disk(ftpaddress, serverpath, localfolder, pattern)
             
         ##Extract tiles at the same location
         #for infilename in glob.glob(localfolder+"\\*.gz"):
@@ -70,7 +70,7 @@ if __name__=='__main__':
         #logging.info('Aggregating tiles from %s' , str(year))
         
         ##Aggregate rasters and clean up
-        #functions.aggregate(expath , output_raster)
+        #mylibrary.aggregate(expath , output_raster)
         #shutil.rmtree(localfolder)
 
         ##Reclass
@@ -80,19 +80,32 @@ if __name__=='__main__':
         reclass_tif=temp_folder+"\\reclassed_"+year+".tif"
         
         os.mkdir(temp_folder)        
-        arcpy.gp.Reclassify_sa(output_raster, "Value", "0 0;1 6 1;7 2;8 1;8 11 2;12 4;13 5;14 4;15 6;16 3;16 255 6", reclass_tif, "DATA")
+        #arcpy.gp.Reclassify_sa(output_raster, "Value", "0 0;1 6 1;7 2;8 1;8 11 2;12 4;13 5;14 4;15 6;16 3;16 255 6", reclass_tif, "DATA")
         
         #Second, reclass into separate dummy rasters
         for dummyval in range(0,7):
             valtxt=temp_folder+"\\val"+str(dummyval)+".txt"
             dummytif=os.path.dirname(output_raster)+"\\counts\\"+year+"_dummy"+str(dummyval)+".tif"
             
-            functions.dummyascii(0, 6, dummyval, valtxt)
+            mylibrary.dummyascii(0, 6, dummyval, valtxt)
             #arcpy.gp.ReclassByASCIIFile_sa(, valtxt, Reclass_tif1, "DATA")
             
         ##Convert to a coarser sum raster for each class
+        settingsdict=mylibrary.ubergridsettings()
+        ubercol=settingsdict["COLUMNCOUNT"]
+        uberrow=settingsdict["ROWCOUNT"]
+        
+        desc=arcpy.Describe(dummytif)
+        inputrow=desc.height
+        inputcol=desc.width
+        
+        rowfactor=math.floor(int(inputrow)/int(uberrow))
+        colfactor=math.floor(int(inputcol)/int(ubercol))
+        
+        print str(rowfactor), str(colfactor)
+        #use aggregate_sa to get an output
         
         ##Convert to ubergrid
-        shutil.rmtree(temp_folder, ignore_errors=True)
+        #shutil.rmtree(temp_folder, ignore_errors=True)
         
     #logging.info('Done with ftp2raster.py')

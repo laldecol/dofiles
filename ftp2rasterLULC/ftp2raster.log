@@ -1,14 +1,1 @@
-2017-06-11 19:30:32,101 Starting ftp2raster.py.
-2017-06-11 19:30:32,101 Aggregating tiles from 2001
-2017-06-11 19:55:19,105 Aggregating tiles from 2002
-2017-06-11 20:17:37,509 Aggregating tiles from 2003
-2017-06-11 20:39:38,117 Aggregating tiles from 2004
-2017-06-11 21:01:48,036 Aggregating tiles from 2005
-2017-06-11 21:23:36,003 Aggregating tiles from 2006
-2017-06-11 21:45:10,579 Aggregating tiles from 2007
-2017-06-11 22:06:33,326 Aggregating tiles from 2008
-2017-06-11 22:28:02,714 Aggregating tiles from 2009
-2017-06-11 22:49:34,905 Aggregating tiles from 2010
-2017-06-11 23:11:13,457 Aggregating tiles from 2011
-2017-06-11 23:34:08,519 Aggregating tiles from 2012
-2017-06-11 23:56:38,236 Done with ftp2raster.py
+2017-06-13 14:59:17,585 Starting ftp2raster.py.
