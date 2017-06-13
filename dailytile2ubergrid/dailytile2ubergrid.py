@@ -152,7 +152,7 @@ if __name__=='__main__':
         
         tempyear=outfolder+"\\temp"+year
         #gdb="alltiles"+year
-        inputsfire=glob.glob(..\\..\\..\\data\\MODIS_FIRE\\generated\\yearly\\"+year+"\\*Fire.tif")
+        inputsfire=glob.glob("..\\..\\..\\data\\MODIS_FIRE\\generated\\yearly\\"+year+"\\*Fire.tif")
         outrasterfire="..\\..\\..\\data\\MODIS_FIRE\\generated\\yearly\\1k\\Fire"+year+".tif"
         
         inputsdata=glob.glob("..\\..\\..\\data\\MODIS_FIRE\\generated\\yearly\\"+year+"\\*Data.tif")
