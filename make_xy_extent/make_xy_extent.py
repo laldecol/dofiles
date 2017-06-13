@@ -22,13 +22,13 @@ def makexyextent(inputraster,outputprojection,cellsize=""):
 
     ##Set up extent creation
     
-    extent_shp = "..\\..\\..\\data\\GPW4\\generated\\extent\\extent.shp"
+    extent_shp = "..\\..\\..\\data\\GPW4\\generated\\extent\\extent.shp" # the ""extent"" is confusing the reader, due to the command rasterdesc.extent
     
     #create Describe object with input raster characteristics
     rasterdesc=arcpy.Describe(outputraster)
     
     #extract origin and end corner coordinates to feed into fishnet
-    origin= str(rasterdesc.extent.lowerLeft)
+    origin= str(rasterdesc.extent.lowerLeft)        
     xmin = str(rasterdesc.extent.XMin)
     ymax = str(rasterdesc.extent.YMax)
     corner= str(rasterdesc.extent.upperRight)
