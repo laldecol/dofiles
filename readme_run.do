@@ -12,13 +12,13 @@ clear all;
 cls;
 set more off;
 
-cd S:\particulates\data_processing\dofiles;
+
 local python "C:\Python27\ArcGIS10.2\python.exe";
 
 **********************************************************;
 **   Step 1: Aggregate source GPW to use as ubergrid    **;
 **********************************************************;
-if 1==2{;
+if 1==1{;
 	cd aggregate_raster;
 	shell `python' aggregate_raster.py;
 	cd ..;
@@ -127,7 +127,7 @@ if 1==2{;
 *Takes directory and filename pattern pairs,  imports corresponding .txt files
 *into stata, and saves them as .dta;
 
-if 1==1{;
+if 1==2{;
 	cd table2dta;
 	/*;
 	do table2dta.do "..\..\data\MODIS_AOD\generated\yearly\ubergrid\table" "*avg.txt";
@@ -146,7 +146,7 @@ if 1==1{;
 **************************;
 *Merges all .dta files from the specified directories together and saves them.;
 
-if 1==1{;
+if 1==2{;
 	cd mergedtas;
 	do mergedtas.do 6 "MODIS_AOD\generated\yearly\ubergrid\dtas"
 	"GPW4\generated\projected\dtas"
@@ -164,7 +164,7 @@ if 1==1{;
 *Cleans and merges sources of country level data, preserving all pixels;
 *BPclean defines a EU country and must be run last;
 
-if 1==1{;
+if 1==2{;
 	cd mergecountrydata;
 	do PWTclean.do;
 	do urbanshareclean.do;

@@ -1,3 +1,6 @@
-2017-06-12 18:33:48,674 Starting aggregate_raster.py.
-2017-06-12 18:35:03,785 Aggregated 4 rasters in 75.1072605765 seconds.
-2017-06-12 18:35:03,786 Done with aggregate_raster.py
+2017-06-13 14:12:51,436 Starting aggregate_raster.py.
+2017-06-13 14:12:51,436 Rasters are going to be aggregated by a factor of 9
+2017-06-13 14:13:09,012 Aggregation for year 2000 was completed in 17.5749899781 seconds.
+2017-06-13 14:13:25,059 Aggregation for year 2005 was completed in 16.0463864371 seconds.
+2017-06-13 14:13:41,111 Aggregation for year 2010 was completed in 16.0528581165 seconds.
+2017-06-13 14:13:57,203 Aggregation for year 2015 was completed in 16.0910627943 seconds.

@@ -1,49 +1,74 @@
 # ---------------------------------------------------------------------------
 # aggregate_raster.py
-# Description: This program adds 5 x 5 blocks of cells from rasters in a folder
+# Description: This program adds n x n blocks of cells from rasters in a folder
 # and saves the resulting raster.
+# Please inform the factor of aggregation in line 23 (cellFactor)
 
 #Created Nov 3 2016, by Lorenzo
-#Last modified June 6 2017, by Lorenzo
+#Last modified June 13 2017, by Marcel
 # ---------------------------------------------------------------------------
 
-# Import arcpy module
-import arcpy, glob, shutil, os, logging, time
+import arcpy, os, glob, logging, shutil, time
 
-#def aggregate_kbyk(inputpattern, ):
-    
-    
-# Check out any necessary licenses
-arcpy.CheckOutExtension("spatial")
 
-# Local variables:
-inputpattern = "..\\..\\..\\data\\GPW4\\source\\gpw-v4-population-count*\\*.tif"
+###############################Please Imform Function Inputs#######################################
+# Define output folder
 outputfolder = "..\\..\\..\\data\\GPW4\\generated\\aggregated\\"
+# Pattern of inputs/inputs
+inputpattern = "..\\..\\..\\data\\GPW4\\source\\gpw-v4-population-count*\\*.tif"
+# Set local variables
+cellFactor = 9
+###################################################################################################
 
-#Set up folders:
-shutil.rmtree(outputfolder, ignore_errors=True)
-os.mkdir(outputfolder)
+# Check Spatial Analyst Tool 
+arcpy.CheckOutExtension ("spatial")
 
-#Set up logging
-logging.basicConfig(format='%(asctime)s %(message)s', filename='aggregate_raster.log', filemode='w', level=logging.DEBUG)
-logging.info('Starting aggregate_raster.py.')
 
-#For each file name that matches the pattern, run arcpy's Aggregate tool.
-t0=time.clock()
-for name in glob.glob(inputpattern):
-
-    print "Aggregating " + str(name)    
-    #Extract base name from input and use it to name output file. 
-    base=os.path.splitext(os.path.basename(name))[0]
-    outputfile=outputfolder+"aggregated_gpw_"+str(base)[-4:]+".tif"
+def aggregate_raster_general(inputpattern,outputfolder,cellFactor):
     
-    #Aggregate 5x5 blocks by summing their values, and ignore no data cells. 
-    arcpy.gp.Aggregate_sa(name, outputfile, "5", "SUM", "EXPAND", "DATA")
-    
-    print "Done aggregating " + str(name)
-    
-print "Done aggregating files of the form "+ str(inputpattern)
-t1=time.clock()
 
-logging.info('Aggregated %s rasters in %s seconds.',str(len(glob.glob(inputpattern))),str(t1-t0))
-logging.info('Done with aggregate_raster.py')
+    # Clean and Create Output folder (overwrite any pre-existing aggregate data)
+    shutil.rmtree(outputfolder, ignore_errors=True)
+    os.mkdir(outputfolder)
+    
+    #Set up logging
+    logging.basicConfig(format='%(asctime)s %(message)s', filename='aggregate_raster.log', filemode='w', level=logging.DEBUG)
+    logging.info('Starting aggregate_raster.py.')
+
+    #Inform cellFactor
+    logging.info('Rasters are going to be aggregated by a factor of %s',str(cellFactor))
+
+    # Start Aggregating
+    t0 = time.clock()
+    for rasters in glob.glob(inputpattern):
+    
+        print "Aggregating " + str(rasters)
+        #Collect existing name
+        new_name = os.path.splitext(os.path.basename(rasters))[0]
+    
+        # Define output name
+        outputfile = outputfolder+"aggregated_gpw_"+str(new_name)[-4:]+".tif"
+    
+        print "Aggregated file will be saved as %s.tif" % os.path.splitext(os.path.basename(outputfile))[0]
+    
+        # Aggregate
+        arcpy.gp.Aggregate_sa(rasters, outputfile, cellFactor, "SUM", "EXPAND", "DATA")
+    
+        print "Aggregation for year %s is complete." % str(new_name)[-4:]
+    
+        t1 = time.clock()
+        logging.info('Aggregation for year %s was completed in %s seconds.', str(new_name)[-4:], str(t1-t0))
+        t0 = time.clock()
+    
+    print "The program had ended. Good bye"
+
+## -------------------------END OF PROGRAM--------------------------------- ##
+    
+if __name__ == '__main__':    
+    
+    aggregate_raster_general(inputpattern, outputfolder, cellFactor)
+
+
+
+
+
