@@ -1,3 +1,15 @@
+/*****************************************************************************
+IEAclean.do
+
+This .do file imports data from BP's Statistical Review of World Energy 2016
+into stata, cleans it, and merges it into the ubergrid database.
+
+It also groups all states in the EU as a single country; for this reason this
+.do file must run after all other country-level merges.
+
+*Last modified: Jan 2 2017 la
+*****************************************************************************/
+
 * set up;
 #delimit;
 clear all;
