@@ -141,7 +141,7 @@ if __name__=='__main__':
     projection="..\\..\\..\\data\\projections\\WGS 1984.prj"
     
     #Fix years
-    startyear=2005
+    startyear=2000
     endyear=2015
     years=[ str(x) for x in range(startyear, endyear+1)]
     print years
