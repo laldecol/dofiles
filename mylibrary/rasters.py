@@ -89,6 +89,10 @@ def raster2ubergrid(input_raster, outpath, extent, outprojection):
     
 #Converts a raster to homogeneous ubergrid, using the input extent and projection.
 #This function expects an ubergrid setting file, written by make_xy_extent.py
+
+#Ubergrid extent and settings for the particulates project are found in (starting from a folder within dofiles)
+    #extent = "..\\..\\..\\data\\GPW4\\generated\\extent\\extent.shp"
+    #outprojection = "..\\..\\..\\data\\projections\\WGS 1984.prj"    
     
 #Inputs:
     #input_raster: raster to convert
@@ -110,7 +114,7 @@ def raster2ubergrid(input_raster, outpath, extent, outprojection):
     
     #Set up output raster settings as a dictionary. These come from settings.txt, written in make_xy_extent.py
     settingsdict={}
-    with open("..\\..\\data\\projections\generated\settings.txt", 'r') as settingfile:
+    with open("..\\..\\..\\data\\projections\generated\settings.txt", 'r') as settingfile:
         templines=settingfile.readlines()
         lines = [i.replace('\n','') for i in templines]
         for linecounter in range(len(lines)):        

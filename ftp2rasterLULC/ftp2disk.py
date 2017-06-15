@@ -82,6 +82,7 @@ if __name__=='__main__':
         reclass_tif=temp_folder+"\\reclassed_"+year+".tif"
         
         os.mkdir(temp_folder)
+        logging.info('Reclassifying raster into our six categories.')
         arcpy.gp.Reclassify_sa(output_raster, "Value", "0 0;1 6 1;7 2;8 1;8 11 2;12 4;13 5;14 4;15 6;16 3;16 255 6", reclass_tif, "DATA")
 
         settingsdict=mylibrary.ubergridsettings()
@@ -90,6 +91,8 @@ if __name__=='__main__':
         
         #Second, reclass into separate dummy rasters
         for dummyval in range(0,7):
+            logging.info('Creating dummy raster for value %s', str(dummyval))
+            
             valtxt=temp_folder+"\\val"+str(dummyval)+".txt"
             dummytif=temp_folder+"\\dummy"+str(dummyval)+".tif"
             
@@ -108,12 +111,18 @@ if __name__=='__main__':
             
             #use aggregate_sa to get an output
             aggtif=temp_folder+"\\agg"+str(dummyval)+".tif"
+            logging.info('Aggregating dummy raster by a factor of %s', str(colfactor))            
             arcpy.gp.Aggregate_sa(dummytif, aggtif, colfactor, "SUM", "EXPAND", "DATA")
             
-            ##Convert to ubergrid
-            ubergridtif=os.path.dirname(output_raster)+"\\ubergrid\\"+year+"_dummy"+str(dummyval)+".tif"
-            mylibrary.raster2ubergrid(aggtif, outpath, extent, outprojection) 
+            #Convert to ubergrid
+            extent = "..\\..\\..\\data\\GPW4\\generated\\extent\\extent.shp"
+            outprojection = "..\\..\\..\\data\\projections\\WGS 1984.prj"    
             
+            logging.info('Converting aggregated dummy raster to ubergrid')            
+            ubergridtif=os.path.dirname(output_raster)+"\\ubergrid\\"+year+"_dummy"+str(dummyval)+".tif"
+            mylibrary.raster2ubergrid(aggtif, ubergridtif, extent, outprojection) 
+        
+        logging.info('Cleaning up year %s', year)            
         shutil.rmtree(temp_folder, ignore_errors=True)
         
     logging.info('Done with ftp2raster.py')
