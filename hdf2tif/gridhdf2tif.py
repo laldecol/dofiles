@@ -138,7 +138,7 @@ if __name__=='__main__':
     
     #Name general inputs
     resampletool="C:\\HEGtools2\\HEG\\HEG_Win\\bin\\resample.exe -P "
-    projection="S:\\particulates\\data_processing\\data\\projections\\WGS 1984.prj"
+    projection="S..\\..\\..\\data\\projections\\WGS 1984.prj"
     
     #Fix years
     startyear=2005
@@ -164,8 +164,8 @@ if __name__=='__main__':
         logging.info('Started processing %s .' , str(year))  
                 
         #Name input and output folders
-        infolder="S:\\particulates\\data_processing\\data\\MODIS_FIRE\\source\\tiles\\" + year
-        outfolder="S:\\particulates\\data_processing\\data\\MODIS_FIRE\\generated\\daily\\" + year    
+        infolder="..\\..\\..\\data\\MODIS_FIRE\\source\\tiles\\" + year
+        outfolder="..\\..\\..\\data\\MODIS_FIRE\\generated\\daily\\" + year    
         
         #Set up output folder
         shutil.rmtree(outfolder, ignore_errors=True) 
@@ -190,7 +190,7 @@ if __name__=='__main__':
         pool.join
     
         #Gather hdfs that didn't process correctly:
-        problems=[x[-18:] for x in glob.glob("S:\\particulates\\data_processing\\data\\MODIS_FIRE\\generated\\daily\\"+str(year)+"\\temp*")]
+        problems=[x[-18:] for x in glob.glob("..\\..\\..\\data\\MODIS_FIRE\\generated\\daily\\"+str(year)+"\\temp*")]
 
         logging.info('The following %s of the total %s hdfs ran into trouble.' ,str(len(problems)), str(len(hdfs)))  
         logging.info(' %s .' ,str(problems))        
@@ -209,7 +209,7 @@ if __name__=='__main__':
                 
                 #Move problem source file and record its name
                 try:
-                    filename=glob.glob("S:\\particulates\\data_processing\\data\\MODIS_FIRE\\source\\tiles\\"+year+"\\*"+ year+day+"."+"h"+h+"v"+v+"*.hdf")[0]
+                    filename=glob.glob("..\\..\\..\\data\\MODIS_FIRE\\source\\tiles\\"+year+"\\*"+ year+day+"."+"h"+h+"v"+v+"*.hdf")[0]
                     f.write("%s\n" % filename)
                     shutil.copy(filename, unprocessed+"\\"+str(os.path.basename(filename)))
                 except:
