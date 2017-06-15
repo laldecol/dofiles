@@ -4,10 +4,7 @@ clear all;
 cls;
 set more off;
 
-cd S:\particulates\data_processing\dofiles\IEAclean;
-local python "C:\Python27\ArcGIS10.2\python.exe";
-
-import excel "S:\particulates\data_processing\data\IEA\source\IEA_HeadlineEnergyData_2016.xlsx", sheet("TimeSeries_1971-2015") cellrange(A2:BD5897) firstrow clear;
+import excel "..\\..\\..\\data\\IEA\\source\\IEA_HeadlineEnergyData_2016.xlsx", sheet("TimeSeries_1971-2015") cellrange(A2:BD5897) firstrow clear;
 
 foreach v of varlist G-AX {;
    local x : variable label `v';
@@ -32,11 +29,11 @@ local name=subinstr("`product'",",","",.);
 local name=subinstr("`name'"," ","",.);
 rename Country country;
 
-save `"..\\..\\data\\IEA\\generated/`name'.dta"', replace;
+save `"..\\..\\..\\data\\IEA\\generated/`name'.dta"', replace;
 
-use "..\\..\\data\\dtas\\analyze_me.dta", clear;
-merge m:1 country using `"..\\..\\data\\IEA\\generated/`name'.dta"';
-save "..\\..\\data\\dtas\\analyze_me.dta",replace;
+use "..\\..\\..\\data\\dtas\\analyze_me.dta", clear;
+merge m:1 country using `"..\\..\\..\\data\\IEA\\generated/`name'.dta"';
+save "..\\..\\..\\data\\dtas\\analyze_me.dta",replace;
 
 restore;
 };
