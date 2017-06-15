@@ -138,7 +138,7 @@ if __name__=='__main__':
     
     #Name general inputs
     resampletool="C:\\HEGtools2\\HEG\\HEG_Win\\bin\\resample.exe -P "
-    projection="S..\\..\\..\\data\\projections\\WGS 1984.prj"
+    projection="..\\..\\..\\data\\projections\\WGS 1984.prj"
     
     #Fix years
     startyear=2005
