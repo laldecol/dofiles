@@ -15,7 +15,7 @@ set more off;
 pause off;
 
 *Import and keep only the years and variables we work with;
-import excel "..\\..\\data\PWT\source\pwt90.xlsx",
+import excel "..\\..\\..\\data\PWT\source\pwt90.xlsx",
  sheet("Data") firstrow clear;
 keep country rgdpe rgdpo year;
 keep if year == 2000 | year == 2005 | year == 2010 | year ==2015;
@@ -36,17 +36,17 @@ replace country="United Republic of Tanzania" if country=="U.R. of Tanzania: Mai
 replace country="United Kingdom of Great Britain and Northern Ireland" if country=="United Kingdom";
 replace country="United States of America" if country=="United States";
 
-save "..\\..\\data\PWT\generated\pwt90.dta", replace;
+save "..\\..\\..\\data\PWT\generated\pwt90.dta", replace;
 
 clear;
 
-use "..\\..\\data\dtas\analyze_me.dta", clear;
+use "..\\..\\..\\data\dtas\analyze_me.dta", clear;
 
-merge m:1 country  using "..\\..\\data\PWT\generated\pwt90.dta";
+merge m:1 country  using "..\\..\\..\\data\PWT\generated\pwt90.dta";
 
 drop _merge;
 
 *New merged data replaces old data, but keeps name;
-save "..\\..\\data\dtas\analyze_me.dta", replace
+save "..\\..\\..\\data\dtas\analyze_me.dta", replace
 ;
 
