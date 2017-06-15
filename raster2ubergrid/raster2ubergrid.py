@@ -28,7 +28,7 @@ def raster2ubergrid(input_raster,extent,outprojection):
     
     #Set up output raster settings as a dictionary. These come from settings.txt, written in make_xy_extent.py
     settingsdict={}
-    with open("..\\..\\data\\projections\generated\settings.txt", 'r') as settingfile:
+    with open("..\\..\\..\\data\\projections\generated\settings.txt", 'r') as settingfile:
         templines=settingfile.readlines()
         lines = [i.replace('\n','') for i in templines]
         for linecounter in range(len(lines)):        
@@ -58,8 +58,8 @@ if __name__=='__main__':
     logging.info('Starting raster2ubergrid.py.')
     
     #Local variables:
-    extent = "..\\..\\data\\GPW4\\generated\\extent\\extent.shp"
-    outprojection = "..\\..\\data\\projections\\WGS 1984.prj"
+    extent = "..\\..\\..\\data\\GPW4\\generated\\extent\\extent.shp"
+    outprojection = "..\\..\\..\\data\\projections\\WGS 1984.prj"
     
     folders = []
     deletebin=[]    
@@ -70,7 +70,7 @@ if __name__=='__main__':
     #folders.append("..\\..\\data\\GPW4\\source\gpw-v4-data-quality-indicators-mean-administrative-unit-area")
     #folders.append("..\\..\\data\\MODIS_FIRE\\generated\\yearly")
     #folders.append("..\\..\\data\\CRU\\generated\\yearly")
-    folders.append("..\\..\\data\\MODIS_LULC\\generated\\yearly")
+    folders.append("..\\..\\..\\data\\MODIS_LULC\\generated\\yearly")
       
     #Logging info
     rastercount=0
