@@ -57,8 +57,8 @@ def daily2yearlytile(HV,year,inputfolder,outfolder):
         print "Processing "+ day
         outfilefire=tempfolder+"\\Fire"+os.path.basename(day)
         outfiledata=tempfolder+"\\Data"+os.path.basename(day)
-        remapfires = "..\\..\\dailytile2ubergrid\\remapfiresv2"
-        remapdata = "..\\..\\dailytile2ubergrid\\remapdatav2"
+        remapfires = "\\remapfiresv2"
+        remapdata = "\\remapdatav2"
 
         # Process: Reclass by Table
         arcpy.gp.ReclassByTable_sa(day, remapfires, "FROM", "TO", "OUT", outfilefire, "NODATA")
@@ -71,7 +71,7 @@ def daily2yearlytile(HV,year,inputfolder,outfolder):
     inputsdata=';'.join(outdatalist)
     
     # Define spatial reference (World Sinusoidal)
-    projection="S:\\particulates\\data_processing\\data\\projections\\WGS 1984.prj"
+    projection="..\\..\\..\\data\\projections\\WGS 1984.prj"
     sr = arcpy.SpatialReference(projection) 
     
     #Set up temporary directories
@@ -159,7 +159,7 @@ if __name__=='__main__':
         outrasterdata="..\\..\\..\\data\\MODIS_FIRE\\generated\\yearly\\1k\\Data"+year+".tif"
         
         # Define spatial reference (WGS 1984)
-        projection="S:\\particulates\\data_processing\\data\\projections\\WGS 1984.prj"
+        projection="..\\..\\..\\data\\projections\\WGS 1984.prj"
         sr = arcpy.SpatialReference(projection)
         
         firegdb="Fire"+year+"GDB"
