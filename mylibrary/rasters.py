@@ -135,7 +135,7 @@ def raster2ubergrid(input_raster, outpath, extent, outprojection):
     shutil.rmtree(temp_dir, ignore_errors=True)
     
 def ubergridsettings():
-#Reads ubergrid settings from "..\\..\\..\\data\\projections\generated\settings.txt" and returns them as a python directory
+#Reads ubergrid settings from "..\\..\\..\\data\\projections\generated\settings.txt" and returns them as a python dictionary
 #Settings can be accessed with the normal dictionary syntax, e.g. columno=settingsdict["COLUMNCOUNT"]
     #Available settings are:
     #TOP: Topmost raster coordinate (in ubergrid units, probably degrees)

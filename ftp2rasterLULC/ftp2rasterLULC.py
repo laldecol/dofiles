@@ -1,14 +1,24 @@
+# ---------------------------------------------------------------------------
+# ftp2rasterLULC.py
+# -------- #
+# Run time: ~1 hour per year
+#
+# Description: Processes land use data for the particulates project. Steps:
+# 1. Download tiles from the UMD ftp server
+# 2. Mosaic tiles into yearly 500 m rasters
+# 3. Reclassify raster values into our categories (water, trees, pasture, barren, crop, urban, other)
+# 4. Convert to dummy rasters (one for each category)
+# 5. Add up cells (k-by-k) to approximate ubergrid
 
-import ftplib, gzip, glob, os, sys, shutil, logging, time, arcpy, math
+# last modified: June 16, 2017 by Lorenzo
+# ---------------------------------------------------------------------------
+#Append dofiles\mylibrary to sys.path, to use programs defined there.
+sys.path.append(os.path.abspath('..'))
+#ftp2disk, aggregate defined in mylibrary
+import ftplib, gzip, glob, os, sys, shutil, logging, time, arcpy, math, mylibrary
 
 # Check Spatial Analysis Tool
 arcpy.CheckOutExtension("spatial")
-
-#Append dofiles\mylibrary to sys.path, to use programs defined there.
-sys.path.append(os.path.abspath('..'))
-
-#ftp2disk, aggregate defined in mylibrary
-import mylibrary
 
 if __name__=='__main__':
     #Set up logging
