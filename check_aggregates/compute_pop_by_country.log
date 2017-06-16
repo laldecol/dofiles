@@ -1,0 +1,10 @@
+2017-06-16 17:43:08,884 Starting generate_pop_by_country.py.
+2017-06-16 17:46:35,520 Computing population for raster gpw-v4-population-count_2000 was completed in 206.628978287 seconds.
+2017-06-16 17:50:02,813 Computing population for raster gpw-v4-population-count_2005 was completed in 207.28966037 seconds.
+2017-06-16 17:53:55,224 Computing population for raster gpw-v4-population-count_2010 was completed in 232.406139221 seconds.
+2017-06-16 17:57:10,500 Computing population for raster gpw-v4-population-count_2015 was completed in 195.273172075 seconds.
+2017-06-16 17:57:10,502 All source data were aggregated by country. Proceeding to aggregation for the uber rasters.
+2017-06-16 17:57:18,390 Computing population for raster aggregated_gpw_2000 was completed in 7.886345113 seconds.
+2017-06-16 17:57:25,525 Computing population for raster aggregated_gpw_2005 was completed in 7.13515092052 seconds.
+2017-06-16 17:57:32,750 Computing population for raster aggregated_gpw_2010 was completed in 7.2252393979 seconds.
+2017-06-16 17:57:39,921 Computing population for raster aggregated_gpw_2015 was completed in 7.16932028024 seconds.
