@@ -113,15 +113,15 @@ def raster2ubergrid(input_raster, outpath, extent, outprojection):
     #"..\\..\\data\\MODIS_AOD\\manual\\aqua2002avg_ProjectRaster_Cl.tif"
     
     #Set up output raster settings as a dictionary. These come from settings.txt, written in make_xy_extent.py
-    settingsdict={}
-    with open("..\\..\\..\\data\\projections\generated\settings.txt", 'r') as settingfile:
-        templines=settingfile.readlines()
-        lines = [i.replace('\n','') for i in templines]
-        for linecounter in range(len(lines)):        
-            if linecounter % 2 ==0:
-                #print linecounter
-                settingsdict[str(lines[linecounter])]=str(lines[linecounter+1])
-    print settingsdict
+    settingsdict=ubergridsettings()
+    #with open("..\\..\\..\\data\\projections\generated\settings.txt", 'r') as settingfile:
+        #templines=settingfile.readlines()
+        #lines = [i.replace('\n','') for i in templines]
+        #for linecounter in range(len(lines)):        
+            #if linecounter % 2 ==0:
+                ##print linecounter
+                #settingsdict[str(lines[linecounter])]=str(lines[linecounter+1])
+    #print settingsdict
     
     #Project raster using target projection, cell size, and reference point. 
     cell_size=settingsdict['CELLSIZEX']+" "+settingsdict['CELLSIZEY']
@@ -160,10 +160,4 @@ def ubergridsettings():
     
 if __name__=='__main__':
     #This section of the code is meant to test-run functions and should generally be empty.
-    input_raster="S:\\particulates\\data_processing\\data\\MODIS_FIRE\\generated\\yearly\\Data2000.tif"
-    outpath="S:\\particulates\\data_processing\\data\\MODIS_FIRE\\manual\\Data2000_ubertest.tif"
-    #Local variables:
-    extent = "..\\..\\data\\GPW4\\generated\\extent\\extent.shp"
-    outprojection = "..\\..\\data\\projections\\WGS 1984.prj"
-    
-    raster2ubergrid(input_raster, outpath, extent, outprojection)
+    print "Test"
