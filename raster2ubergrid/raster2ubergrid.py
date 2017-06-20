@@ -7,10 +7,11 @@
 # ---------------------------------------------------------------------------
 
 # Import modules
-import arcpy, os, shutil, glob, logging, time
+#Append dofiles\mylibrary to sys.path, to use programs defined there.
+sys.path.append(os.path.abspath('..'))
+
+import arcpy, os, shutil, glob, logging, time, mylibrary
 from arcpy import env
-
-
 
 def raster2ubergrid(input_raster,extent,outprojection):
     
@@ -58,20 +59,24 @@ if __name__=='__main__':
     logging.info('Starting raster2ubergrid.py.')
     
     #Local variables:
-    extent = "..\\..\\data\\GPW4\\generated\\extent\\extent.shp"
-    outprojection = "..\\..\\data\\projections\\WGS 1984.prj"
+    #extent = "..\\..\\data\\GPW4\\generated\\extent\\extent.shp"
+    #outprojection = "..\\..\\data\\projections\\WGS 1984.prj"    
+    
+    #Ubergrid extent and settings for the particulates project are found in (starting from a folder within dofiles)
+    extent = "..\\..\\..\\data\\GPW4\\generated\\extent\\extent.shp"
+    outprojection = "..\\..\\..\\data\\projections\\WGS 1984.prj"    
     
     folders = []
     deletebin=[]    
     
     #List of input folders
-    #folders.append("..\\..\\data\\MODIS_AOD\\generated\\yearly")
-    #folders.append("..\\..\\data\\GPW4\\source\\gpw-v4-national-identifier-grid")
-    #folders.append("..\\..\\data\\GPW4\\source\gpw-v4-data-quality-indicators-mean-administrative-unit-area")
-    #folders.append("..\\..\\data\\MODIS_FIRE\\generated\\yearly")
-    #folders.append("..\\..\\data\\CRU\\generated\\yearly")
-    folders.append("..\\..\\data\\MODIS_LULC\\generated\\yearly")
-      
+    folders.append("..\\..\\..\\data\\MODIS_AOD\\generated\\yearly")
+    folders.append("..\\..\\..\\data\\GPW4\\source\\gpw-v4-national-identifier-grid")
+    folders.append("..\\..\\..\\data\\GPW4\\source\gpw-v4-data-quality-indicators-mean-administrative-unit-area")
+    folders.append("..\\..\\..\\data\\MODIS_FIRE\\generated\\yearly")
+    folders.append("..\\..\\..\\data\\CRU\\generated\\yearly")
+    #folders.append("..\\..\\..\\data\\MODIS_LULC\\generated\\yearly")
+        
     #Logging info
     rastercount=0
     t0=time.clock()
@@ -99,11 +104,17 @@ if __name__=='__main__':
         shutil.rmtree(input_folder+"\\ubergrid", ignore_errors=True)
         os.makedirs(input_folder+"\\ubergrid")
         
+        
         #Convert rasters to ubergrid
         for raster in glob.glob(input_folder+"\\*.tif"):
+            base=os.path.basename(raster)
+            out_name=os.path.splitext(base)[0]            
+            outpath=input_folder+"\\ubergrid\\"+out_name+".tif"
+            
             print "Processing " + str(raster)
+            
             logging.info('Processing %s', str(raster))
-            raster2ubergrid(raster,extent,outprojection)
+            mylibrary.raster2ubergrid(raster, outpath, extent, outprojection)
             rastercount+=1
             
         #Cleanup

@@ -31,8 +31,8 @@ def gpwclean(pathname):
 
 if __name__=='__main__': 
     pathnames=[]
-    pathnames.append("..\\..\\data\\GPW4\\generated\\gpw-v4-national-identifier-grid\\ubergrid\\table\\*.txt")
-    pathnames.append("..\\..\\data\\GPW4\\generated\\gpw-v4-data-quality-indicators-mean-administrative-unit-area\\ubergrid\\table\\*.txt")
+    pathnames.append("..\\..\\..\\data\\GPW4\\generated\\gpw-v4-national-identifier-grid\\ubergrid\\table\\*.txt")
+    pathnames.append("..\\..\\..\\data\\GPW4\\generated\\gpw-v4-data-quality-indicators-mean-administrative-unit-area\\ubergrid\\table\\*.txt")
     
     for pathname in pathnames:
         gpwclean(pathname)
