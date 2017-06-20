@@ -19,7 +19,7 @@ local python "C:\Python27\ArcGIS10.2\python.exe";
 **********************************************************;
 **   Step 1: Aggregate source GPW to use as ubergrid    **;
 **********************************************************;
-if 1==1{;
+if 1==2{;
 	cd aggregate_raster;
 	shell `python' aggregate_raster.py;
 	cd ..;
@@ -30,7 +30,7 @@ if 1==1{;
 **********************************************************;
 *2.1 Reprojects GPWv4 rasters, extracts extent and settings (as template for ubergrid);
 
-if 1==1{;
+if 1==2{;
 	cd make_xy_extent;
 	shell `python' make_xy_extent.py;
 	cd ..;
@@ -40,7 +40,7 @@ if 1==1{;
 *2.2 Saves ubergrid settings (boundary coordinates, cell sizes, row and col numbers)
 *in a dta (data\projections\generated\settings.dta) for future reference.;
 
-if 1==1{;
+if 1==2{;
 	cd settings2dta;
 	do settings2dta.do;
 	cd ..;
@@ -81,7 +81,7 @@ if 1==2{;
 *and uses the settings from make_xy_extent.py to transform them into standard
 *ubergrids. (This program depends on the projection.);
 
-if 1==1{;
+if 1==2{;
 	cd raster2ubergrid;
 	shell `python' raster2ubergrid.py;
 	cd ..;
