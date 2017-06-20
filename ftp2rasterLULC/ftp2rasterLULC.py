@@ -120,19 +120,21 @@ if __name__=='__main__':
             print str(rowfactor), str(colfactor)
             
             #use aggregate_sa to get an output
-            aggtif=temp_folder+"\\agg"+str(dummyval)+".tif"
+            #aggtif=temp_folder+"\\agg"+str(dummyval)+".tif"
+            aggtiff=os.path.dirname(output_raster)+"\\"+year+"_dummy"+str(dummyval)+".tif"
             logging.info('Aggregating dummy raster by a factor of %s', str(colfactor))            
             arcpy.gp.Aggregate_sa(dummytif, aggtif, colfactor, "SUM", "EXPAND", "DATA")
             
-            #Convert to ubergrid
-            extent = "..\\..\\..\\data\\GPW4\\generated\\extent\\extent.shp"
-            outprojection = "..\\..\\..\\data\\projections\\WGS 1984.prj"    
             
-            logging.info('Converting aggregated dummy raster to ubergrid')            
-            ubergridtif=os.path.dirname(output_raster)+"\\ubergrid\\"+year+"_dummy"+str(dummyval)+".tif"
-            mylibrary.raster2ubergrid(aggtif, ubergridtif, extent, outprojection) 
+            #Convert to ubergrid
+            #extent = "..\\..\\..\\data\\GPW4\\generated\\extent\\extent.shp"
+            #outprojection = "..\\..\\..\\data\\projections\\WGS 1984.prj"    
+            
+            #logging.info('Converting aggregated dummy raster to ubergrid')            
+            #ubergridtif=os.path.dirname(output_raster)+"\\ubergrid\\"+year+"_dummy"+str(dummyval)+".tif"
+            #mylibrary.raster2ubergrid(aggtif, ubergridtif, extent, outprojection) 
         
         logging.info('Cleaning up year %s', year)            
         shutil.rmtree(temp_folder, ignore_errors=True)
         
-    logging.info('Done with ftp2raster.py')
+    logging.info('Done with ftp2rasterLULC.py')
