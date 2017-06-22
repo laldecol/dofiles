@@ -1,0 +1,9 @@
+2017-06-22 17:02:47,372 Starting dta2raster.py.
+2017-06-22 17:02:47,387 Converting dummy_lc_raster2000 to a .txt file.
+2017-06-22 17:02:51,759 The file dummy_lc_raster2000 was completed in 4.37156253662 seconds.
+2017-06-22 17:02:51,759 Converting dummy_lc_raster2005 to a .txt file.
+2017-06-22 17:02:56,035 The file dummy_lc_raster2005 was completed in 4.2744698999 seconds.
+2017-06-22 17:02:56,036 Converting dummy_lc_raster2010 to a .txt file.
+2017-06-22 17:03:00,668 The file dummy_lc_raster2010 was completed in 4.63291234295 seconds.
+2017-06-22 17:03:00,670 Converting dummy_lc_raster2015 to a .txt file.
+2017-06-22 17:03:06,312 The file dummy_lc_raster2015 was completed in 5.64252125464 seconds.
