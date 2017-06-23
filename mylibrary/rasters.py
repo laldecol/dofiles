@@ -153,6 +153,15 @@ def ubergridsettings():
                 print linecounter
                 settingsdict[str(lines[linecounter])]=str(lines[linecounter+1])
     return settingsdict
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
     
 if __name__=='__main__':
     #This section of the code is meant to test-run functions and should generally be empty.
