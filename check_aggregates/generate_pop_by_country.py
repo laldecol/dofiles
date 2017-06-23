@@ -19,6 +19,10 @@ logging.info('Starting generate_pop_by_country.py.')
 
 def gen_pop_country(inputpattern, inputpattern_uber, outputfolder,country_source):
 
+    # Clean and Create Output folder (overwrite any pre-existing aggregate data)
+    shutil.rmtree(outputfolder, ignore_errors=True)
+    os.mkdir(outputfolder)
+
     #Set overwrite environment
     arcpy.env.overwriteOutput = True    
 
@@ -74,7 +78,9 @@ def gen_pop_country(inputpattern, inputpattern_uber, outputfolder,country_source
         print "Computing population for year %s is complete." % str(new_name)[-4:]
         
         t1 = time.clock()
-        logging.info('Computing population for raster %s was completed in %s seconds.', str(new_name), str(t1-t0))    
+        logging.info('Computing population for raster %s was completed in %s seconds.', str(new_name), str(t1-t0))  
+        
+    logging.info('All ubergrid data were aggregated by country.')   
         
     #Delete temporary folder
     shutil.rmtree(outputfolder+"info")
