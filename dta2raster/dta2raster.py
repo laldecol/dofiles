@@ -1,10 +1,14 @@
 # ---------------------------------------------------------------------------
 # dta2raster.py 
 #
-# (1) Convert stata lists to ascii file
-# (2) Using "table2raster", converts the resulting ascii file into an ubergrid raster
+# (0) Prepare a dta file that contains a variable named either "v1" or "uber_code"
+# to be converted. All the rasters will be saved in a folder created in the path of the
+# original file with the name of ubergrid_(name of dta file).
+# (1) Convert every variable (except uber_code) in the original dta to an ascii file, saved in the
+# folder ascii
+# (2) Convert the ascii file to raster, using ubergrid settings.
 #
-# Created by Marcel in 6/21/2017
+# Created by Marcel in 6/21/2017, based on table2raster
 # Last modified by Marcel in 6/23/2017
 # ---------------------------------------------------------------------------
 
@@ -13,11 +17,11 @@
 import logging, arcpy, os, sys, shutil, glob, subprocess, time
 from arcpy import env
 
-#Set up logging
-logging.basicConfig(format='%(asctime)s %(message)s', filename='dta2raster.log', filemode='w', level=logging.DEBUG)
-logging.info('Starting dta2raster.py.')
-
 def dta2raster(inputfile,datatype):
+    
+    #Set up logging
+    logging.basicConfig(format='%(asctime)s %(message)s', filename='dta2raster.log', filemode='w', level=logging.DEBUG)
+    logging.info('Starting dta2raster.py.')    
 
     # Extract folder where inputfile is
     inputfolder = os.path.dirname(os.path.abspath(inputfile))+"\\"
