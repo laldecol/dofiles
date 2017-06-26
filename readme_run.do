@@ -115,7 +115,7 @@ if 1==1{;
 	};
 	
 *6.2 Cleans gpw .txt filenames so they can be processed by stata.;
-if 1==1{;
+if 1==2{;
 	cd gpwclean;
 	shell `python' gpwclean.py;
 	cd ..;
@@ -136,7 +136,6 @@ if 1==1{;
 	do table2dta.do "..\..\..\data\GPW4\generated\gpw-v4-national-identifier-grid\ubergrid\table" "*.txt";
 	do table2dta.do "..\..\..\data\GPW4\generated\gpw-v4-data-quality-indicators-mean-administrative-unit-area\ubergrid\table" "*.txt";
 	do table2dta.do "..\..\..\data\MODIS_FIRE\generated\yearly\ubergrid\table" "*.txt";
-	*/;
 	do table2dta.do "..\..\..\data\CRU\generated\yearly\ubergrid\table" "*.txt";
 	cd ..;
 	*Successfully ran table2dta.do;
