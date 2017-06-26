@@ -102,7 +102,10 @@ if __name__=="__main__":
     #input_folderlist.append("..\\..\\data\\MODIS_FIRE\\generated\\yearly\\ubergrid")
     #pattern_list.append("\\*.tif")    
     
-    input_folderlist.append("..\\..\\..\\data\\CRU\\generated\\yearly\\ubergrid")
+    #input_folderlist.append("..\\..\\..\\data\\CRU\\generated\\yearly\\ubergrid")
+    #pattern_list.append("\\*.tif")    
+
+    input_folderlist.append("..\\..\\..\\data\\MODIS_LULC\\generated\\yearly\\dummy\\ubergrid")
     pattern_list.append("\\*.tif")    
 
     print input_folderlist

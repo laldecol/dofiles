@@ -70,7 +70,7 @@ if __name__=='__main__':
     #folders.append("..\\..\\data\\GPW4\\source\gpw-v4-data-quality-indicators-mean-administrative-unit-area")
     #folders.append("..\\..\\data\\MODIS_FIRE\\generated\\yearly")
     #folders.append("..\\..\\data\\CRU\\generated\\yearly")
-    folders.append("..\\..\\data\\MODIS_LULC\\generated\\yearly")
+    folders.append("..\\..\\..\\data\\MODIS_LULC\\generated\\yearly\\dummy")
       
     #Logging info
     rastercount=0

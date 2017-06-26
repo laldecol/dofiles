@@ -109,10 +109,9 @@ def yearlyconverter(year):
         
         #use aggregate_sa to get an output
         #aggtif=temp_folder+"\\agg"+str(dummyval)+".tif"
-        aggtiff=os.path.dirname(output_raster)+"\\"+year+"_dummy"+str(dummyval)+".tif"
+        aggtiff=os.path.dirname(output_raster)+"\\dummy\\"+year+"_dummy"+str(dummyval)+".tif"
         logging.info('Aggregating dummy raster by a factor of %s', str(colfactor))            
         arcpy.gp.Aggregate_sa(dummytif, aggtiff, colfactor, "SUM", "EXPAND", "DATA")
-        
         
         #Convert to ubergrid
         #extent = "..\\..\\..\\data\\GPW4\\generated\\extent\\extent.shp"
