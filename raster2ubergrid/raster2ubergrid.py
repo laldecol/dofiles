@@ -8,9 +8,10 @@
 
 # Import modules
 #Append dofiles\mylibrary to sys.path, to use programs defined there.
+import sys, os
 sys.path.append(os.path.abspath('..'))
 
-import arcpy, os, shutil, glob, logging, time, mylibrary
+import arcpy, shutil, glob, logging, time, mylibrary
 from arcpy import env
 
 def raster2ubergrid(input_raster,extent,outprojection):
@@ -70,12 +71,12 @@ if __name__=='__main__':
     deletebin=[]    
     
     #List of input folders
-    folders.append("..\\..\\..\\data\\MODIS_AOD\\generated\\yearly")
-    folders.append("..\\..\\..\\data\\GPW4\\source\\gpw-v4-national-identifier-grid")
-    folders.append("..\\..\\..\\data\\GPW4\\source\gpw-v4-data-quality-indicators-mean-administrative-unit-area")
-    folders.append("..\\..\\..\\data\\MODIS_FIRE\\generated\\yearly")
-    folders.append("..\\..\\..\\data\\CRU\\generated\\yearly")
-    #folders.append("..\\..\\..\\data\\MODIS_LULC\\generated\\yearly")
+    #folders.append("..\\..\\..\\data\\MODIS_AOD\\generated\\yearly")
+    #folders.append("..\\..\\..\\data\\GPW4\\source\\gpw-v4-national-identifier-grid")
+    #folders.append("..\\..\\..\\data\\GPW4\\source\gpw-v4-data-quality-indicators-mean-administrative-unit-area")
+    #folders.append("..\\..\\..\\data\\MODIS_FIRE\\generated\\yearly")
+    #folders.append("..\\..\\..\\data\\CRU\\generated\\yearly")
+    folders.append("..\\..\\..\\data\\MODIS_LULC\\generated\\yearly\\dummy")
         
     #Logging info
     rastercount=0
