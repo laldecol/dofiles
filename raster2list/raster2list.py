@@ -71,6 +71,8 @@ def raster2list(outputraster):
     #print settingsdict
 
 if __name__=="__main__":    
+    
+    os.chdir("S:\\particulates\\data_processing\\dofiles_la\\dofiles\\raster2list")
 
     logging.basicConfig(format='%(asctime)s %(message)s', filename='raster2list.log', filemode='w', level=logging.DEBUG)
     logging.info('Starting raster2list.py.')    
@@ -100,7 +102,7 @@ if __name__=="__main__":
     #input_folderlist.append("..\\..\\data\\MODIS_FIRE\\generated\\yearly\\ubergrid")
     #pattern_list.append("\\*.tif")    
     
-    input_folderlist.append("..\\..\\data\\CRU\\generated\\yearly\\ubergrid")
+    input_folderlist.append("..\\..\\..\\data\\CRU\\generated\\yearly\\ubergrid")
     pattern_list.append("\\*.tif")    
 
     print input_folderlist

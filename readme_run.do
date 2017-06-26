@@ -1,3 +1,4 @@
+
 /**********************************************
 R E A D M E _ R U N. D O
 
@@ -18,7 +19,7 @@ local python "C:\Python27\ArcGIS10.2\python.exe";
 **********************************************************;
 **   Step 1: Aggregate source GPW to use as ubergrid    **;
 **********************************************************;
-if 1==1{;
+if 1==2{;
 	cd aggregate_raster;
 	shell `python' aggregate_raster.py;
 	cd ..;
@@ -106,7 +107,7 @@ if 1==2{;
 *6.1 Takes all ubergrid rasters specified in raster2list.py and exports their
 * data into .txt files. ;
 
-if 1==2{;
+if 1==1{;
 	cd raster2list;
 	shell `python' raster2list.py;
 	cd ..;
@@ -127,16 +128,15 @@ if 1==2{;
 *Takes directory and filename pattern pairs,  imports corresponding .txt files
 *into stata, and saves them as .dta;
 
-if 1==2{;
+if 1==1{;
 	cd table2dta;
-	/*;
-	do table2dta.do "..\..\data\MODIS_AOD\generated\yearly\ubergrid\table" "*avg.txt";
-	do table2dta.do "..\..\data\GPW4\generated\projected\table" "*.txt";
-	do table2dta.do "..\..\data\GPW4\generated\gpw-v4-national-identifier-grid\ubergrid\table" "*.txt";
-	do table2dta.do "..\..\data\GPW4\generated\gpw-v4-data-quality-indicators-mean-administrative-unit-area\ubergrid\table" "*.txt";
-	do table2dta.do "..\..\data\MODIS_FIRE\generated\yearly\ubergrid\table" "*.txt";
-	*/;
-	do table2dta.do "..\..\data\CRU\generated\yearly\ubergrid\table" "*.txt";
+	
+	do table2dta.do "..\..\..\data\MODIS_AOD\generated\yearly\ubergrid\table" "*avg.txt";
+	do table2dta.do "..\..\..\data\GPW4\generated\projected\table" "*.txt";
+	do table2dta.do "..\..\..\data\GPW4\generated\gpw-v4-national-identifier-grid\ubergrid\table" "*.txt";
+	do table2dta.do "..\..\..\data\GPW4\generated\gpw-v4-data-quality-indicators-mean-administrative-unit-area\ubergrid\table" "*.txt";
+	do table2dta.do "..\..\..\data\MODIS_FIRE\generated\yearly\ubergrid\table" "*.txt";
+	do table2dta.do "..\..\..\data\CRU\generated\yearly\ubergrid\table" "*.txt";
 	cd ..;
 	*Successfully ran table2dta.do;
 	};
