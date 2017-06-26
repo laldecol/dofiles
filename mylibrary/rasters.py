@@ -104,11 +104,11 @@ def raster2ubergrid(input_raster, outpath, extent, outprojection):
     base=os.path.basename(input_raster)
     in_name=os.path.splitext(base)[0]
     
-    temp_dir=os.path.dirname(outpath)+in_name+"_temp"
+    temp_dir=os.path.dirname(outpath)+"\\"+in_name+"_temp"
     os.mkdir(temp_dir)
     
     #Name auxiliary and output rasters
-    raster_proj = temp_dir+"\\"+ in_name + "_prj.tif"
+    raster_proj = temp_dir+"\\prj.tif"
     raster_clip = outpath
     #"..\\..\\data\\MODIS_AOD\\manual\\aqua2002avg_ProjectRaster_Cl.tif"
     
