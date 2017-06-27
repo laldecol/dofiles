@@ -32,11 +32,11 @@ local name=subinstr("`product'",",","",.);
 local name=subinstr("`name'"," ","",.);
 rename Country country;
 
-save `"..\\..\\data\\IEA\\generated/`name'.dta"', replace;
+save `"..\\..\\..\\data\\IEA\\generated/`name'.dta"', replace;
 
-use "..\\..\\data\\dtas\\analyze_me.dta", clear;
+use "..\..\\..\\data\\dtas\\analyze_me.dta", clear;
 merge m:1 country using `"..\\..\\data\\IEA\\generated/`name'.dta"';
-save "..\\..\\data\\dtas\\analyze_me.dta",replace;
+save "..\\..\\..\\data\\dtas\\analyze_me.dta",replace;
 
 restore;
 };

@@ -22,7 +22,7 @@ local products Oil Coal Gas;
 local satellites "Terra";
 local Terrayears 2000 2005 2010;
 
-use "..\\..\\data\\dtas\\analyze_me.dta", clear;
+use "..\\..\\..\\data\\dtas\\analyze_me.dta", clear;
 
 *Set the "parameters" of the import command for each product;
 foreach product of local products{;
@@ -50,7 +50,7 @@ local removerows=11;
 };
  
 *Import the sheets and ranges that correspond to the product;
-import excel "..\\..\\data\BP\source\bp-statistical-review-of-world-energy-2016-workbook.xlsx",
+import excel "..\\..\\..\\data\BP\source\bp-statistical-review-of-world-energy-2016-workbook.xlsx",
  sheet("`sheetname'") cellrange(A3:`endrange') firstrow clear;
 
 *Rename year variables to `product'`year' so stata can work with them;
@@ -94,9 +94,9 @@ replace country="Venezuela (Bolivarian Republic of)" if country=="Venezuela";
 replace country="Viet Nam" if country=="Vietnam";
 
 sort country;
-save "..\\..\\data\\BP\\generated/`product'Consumption.dta", replace;
+save "..\\..\\..\\data\\BP\\generated/`product'Consumption.dta", replace;
 
-use "..\\..\\data\\dtas\\analyze_me.dta", clear;
+use "..\\..\\..\\data\\dtas\\analyze_me.dta", clear;
 
 sort country;
 
@@ -104,7 +104,7 @@ merge m:1 country using "..\\..\\data\\BP\\generated/`product'Consumption.dta";
 rename _merge merge`product';
 
 *Saves version of dta with all country level variables and all pixels;
-save "..\\..\\data\\dtas\\analyze_me.dta",replace;
+save "..\\..\\..\\data\\dtas\\analyze_me.dta",replace;
 
 };
 /*;
@@ -149,4 +149,4 @@ country=="United Kingdom of Great Britain and Northern Ireland"
 
 format %30s country;
 
-save "..\\..\\data\\dtas\\analyze_me.dta",replace;
+save "..\\..\\..\\data\\dtas\\analyze_me.dta",replace;
