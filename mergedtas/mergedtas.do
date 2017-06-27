@@ -13,7 +13,7 @@ set more off;
 pause off;
 set type double;
 
-cd "..\..\data";
+cd "..\..\..\data";
 
 ***************;
 *Define locals*;
