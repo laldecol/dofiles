@@ -107,7 +107,7 @@ if 1==2{;
 *6.1 Takes all ubergrid rasters specified in raster2list.py and exports their
 * data into .txt files. ;
 
-if 1==1{;
+if 1==2{;
 	cd raster2list;
 	shell `python' raster2list.py;
 	cd ..;
@@ -128,7 +128,7 @@ if 1==2{;
 *Takes directory and filename pattern pairs,  imports corresponding .txt files
 *into stata, and saves them as .dta;
 
-if 1==1{;
+if 1==2{;
 	cd table2dta;
 	
 	do table2dta.do "..\..\..\data\MODIS_AOD\generated\yearly\ubergrid\table" "*avg.txt";
@@ -164,7 +164,7 @@ if 1==2{;
 *Cleans and merges sources of country level data, preserving all pixels;
 *BPclean defines a EU country and must be run last;
 
-if 1==2{;
+if 1==1{;
 	cd mergecountrydata;
 	do PWTclean.do;
 	do urbanshareclean.do;

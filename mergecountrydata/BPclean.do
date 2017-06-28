@@ -100,7 +100,7 @@ use "..\\..\\..\\data\\dtas\\analyze_me.dta", clear;
 
 sort country;
 
-merge m:1 country using "..\\..\\data\\BP\\generated/`product'Consumption.dta";
+merge m:1 country using "..\\..\\..\\data\\BP\\generated/`product'Consumption.dta";
 rename _merge merge`product';
 
 *Saves version of dta with all country level variables and all pixels;
