@@ -193,7 +193,7 @@ def dta2raster(inputfile,datatype, outputfolder):
     os.mkdir(outputfolder+"\\mapping_str_variables")
     
     #Set target dofile
-    dofile = "prepare_dta.do"
+    dofile = "..\\mylibrary\\prepare_dta.do"
     
     # Generate dta spawns:
     cmd = ["C:\Program Files (x86)\Stata13\StataMP-64", "do", dofile, outputfolder, inputfile]    
@@ -354,9 +354,11 @@ def dta2raster(inputfile,datatype, outputfolder):
     logging.info("Failed to convert %d dta files (variables) to raster" %number_fails)   
     
     ## Final cleaning
-    
-    shutil.rmtree(outputfolder+"\\temporary_dtas")
-    
+    try:
+        shutil.rmtree(outputfolder+"\\temporary_dtas")
+    except Exception:
+        logging.info("Failed to delete temporary_dta folder." %number_fails)
+        
     print("Done with dta2raster. Use your rasters wisely.")   
  
  

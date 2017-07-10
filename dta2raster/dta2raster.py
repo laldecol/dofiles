@@ -215,7 +215,7 @@ if __name__ == '__main__':
     inputfile = "S:\\particulates\\data_processing\\data\\MODIS_LULC\\generated\\Temp_aggregate_lc_check\\Analysis\\ANALYSIS_lc2000.dta"
     # Define type of data ("FLOAT" or "INTEGER")
     datatype = "FLOAT"
-    outputfolder = "S:\\particulates\\data_processing\\data\\MODIS_LULC\\generated\\Temp_aggregate_lc_check\\Analysis\\2000"
+    outputfolder = "S:\\particulates\\data_processing\\data\\MODIS_LULC\\generated\\Temp_aggregate_lc_check\\Analysis\\2015"
     ###################################################################################################    
     
     dta2raster(inputfile, datatype, outputfolder)
