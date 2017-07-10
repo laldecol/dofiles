@@ -17,7 +17,7 @@ logging.basicConfig(format='%(asctime)s %(message)s', filename='compute_pop_by_c
 logging.info('Starting generate_pop_by_country.py.')
 
 
-def gen_pop_country(inputpattern, inputpattern_uber, outputfolder,country_source):
+def gen_pop_country(inputpattern, inputpattern_uber, outputfolder,country_source, country_source_uber):
 
     # Clean and Create Output folder (overwrite any pre-existing aggregate data)
     shutil.rmtree(outputfolder, ignore_errors=True)
@@ -26,7 +26,7 @@ def gen_pop_country(inputpattern, inputpattern_uber, outputfolder,country_source
     #Set overwrite environment
     arcpy.env.overwriteOutput = True    
 
-    # Start Aggregating
+    # Start Aggregating (source)
     for rasters in glob.glob(inputpattern):
         t0 = time.clock()
     
@@ -41,12 +41,19 @@ def gen_pop_country(inputpattern, inputpattern_uber, outputfolder,country_source
     
         print "Country population table will be saved as %s" % os.path.splitext(os.path.basename(output_excel))[0]
         
+        #Convert "Value" to integer (otherwise it is double, zonal statistic does not work)        
+        arcpy.gp.Int_sa(country_source, outputfolder+"temp_integer_raster.tif")        
+        
         # Generate Table
-        arcpy.gp.ZonalStatisticsAsTable_sa(country_source, "COUNTRY", rasters, name, "DATA", "SUM")
+        arcpy.gp.ZonalStatisticsAsTable_sa(outputfolder+"temp_integer_raster.tif", "VALUE", rasters, name, "DATA", "SUM")
         
         # Convert to excel
         arcpy.TableToExcel_conversion(name, output_excel, "NAME", "CODE")
     
+        # Finally, delete temporary file
+        for temp in glob.glob(outputfolder+"temp_integer_raster*"):
+            os.remove(temp)
+        
         print "Computing population for year %s is complete." % str(new_name)[-4:]
     
         t1 = time.clock()
@@ -54,7 +61,7 @@ def gen_pop_country(inputpattern, inputpattern_uber, outputfolder,country_source
         
     logging.info('All source data were aggregated by country. Proceeding to aggregation for the uber rasters.')
         
-    # Start Aggregating
+    # Start Aggregating (ubergrid)
     for rasters in glob.glob(inputpattern_uber):
         t0 = time.clock()
         
@@ -70,7 +77,7 @@ def gen_pop_country(inputpattern, inputpattern_uber, outputfolder,country_source
         print "Country population table will be saved as %s" % os.path.splitext(os.path.basename(output_excel))[0]
             
         # Generate Table
-        arcpy.gp.ZonalStatisticsAsTable_sa(country_source, "COUNTRY", rasters, name, "DATA", "SUM")
+        arcpy.gp.ZonalStatisticsAsTable_sa(country_source_uber, "VALUE", rasters, name, "DATA", "SUM")
             
         # Convert to excel
         arcpy.TableToExcel_conversion(name, output_excel, "NAME", "CODE")
@@ -100,12 +107,16 @@ if __name__ == '__main__':
     inputpattern = "..\\..\\..\\data\\GPW4\\source\\gpw-v4-population-count*\\*.tif"
     inputpattern_uber = "..\\..\\..\\data\\GPW4\\generated\\aggregated*\\*.tif"
     
+
     # Country source
-    country_source = "..\\..\\..\\data\\boundaries\\generated\\world_countries_2011.shp"
+    country_source = "S:\\particulates\\data_processing\\data\\GPW4\\source\\gpw-v4-national-identifier-grid\\gpw-v4-national-identifier-grid.tif"
+    #country_source_uber = "S:\\particulates\\data_processing\\data\\GPW4\\generated\\gpw-v4-national-identifier-grid\\ubergrid\\gpw-v4-national-identifier-grid.tif"
+    country_source_uber = "S:\\particulates\\data_processing\\data\\GPW4\\generated\\Expanded Boundaries\\ubergrid\\expanded_countries_source.tif"
+    
     
     ###################################################################################################    
     
-    gen_pop_country(inputpattern, inputpattern_uber, outputfolder, country_source)
+    gen_pop_country(inputpattern, inputpattern_uber, outputfolder, country_source, country_source_uber)
 
 
 
