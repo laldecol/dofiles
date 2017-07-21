@@ -43,8 +43,13 @@ rename Country country;
 
 save `"..\\..\\..\\data\\IEA\\generated/`name'.dta"', replace;
 
+<<<<<<< HEAD
 use "..\\..\\..\\data\\dtas\\analyze_me.dta", clear;
 merge m:1 country using `"..\\..\\..\\data\\IEA\\generated/`name'.dta"';
+=======
+use "..\..\\..\\data\\dtas\\analyze_me.dta", clear;
+merge m:1 country using `"..\\..\\data\\IEA\\generated/`name'.dta"';
+>>>>>>> master
 save "..\\..\\..\\data\\dtas\\analyze_me.dta",replace;
 
 restore;

@@ -1,3 +1,4 @@
+
 /**********************************************
 R E A D M E _ R U N. D O
 
@@ -18,7 +19,7 @@ local python "C:\Python27\ArcGIS10.2\python.exe";
 **********************************************************;
 **   Step 1: Aggregate source GPW to use as ubergrid    **;
 **********************************************************;
-if 1==1{;
+if 1==2{;
 	cd aggregate_raster;
 	shell `python' aggregate_raster.py;
 	cd ..;
@@ -129,14 +130,13 @@ if 1==2{;
 
 if 1==2{;
 	cd table2dta;
-	/*;
-	do table2dta.do "..\..\data\MODIS_AOD\generated\yearly\ubergrid\table" "*avg.txt";
-	do table2dta.do "..\..\data\GPW4\generated\projected\table" "*.txt";
-	do table2dta.do "..\..\data\GPW4\generated\gpw-v4-national-identifier-grid\ubergrid\table" "*.txt";
-	do table2dta.do "..\..\data\GPW4\generated\gpw-v4-data-quality-indicators-mean-administrative-unit-area\ubergrid\table" "*.txt";
-	do table2dta.do "..\..\data\MODIS_FIRE\generated\yearly\ubergrid\table" "*.txt";
-	*/;
-	do table2dta.do "..\..\data\CRU\generated\yearly\ubergrid\table" "*.txt";
+	
+	do table2dta.do "..\..\..\data\MODIS_AOD\generated\yearly\ubergrid\table" "*avg.txt";
+	do table2dta.do "..\..\..\data\GPW4\generated\projected\table" "*.txt";
+	do table2dta.do "..\..\..\data\GPW4\generated\gpw-v4-national-identifier-grid\ubergrid\table" "*.txt";
+	do table2dta.do "..\..\..\data\GPW4\generated\gpw-v4-data-quality-indicators-mean-administrative-unit-area\ubergrid\table" "*.txt";
+	do table2dta.do "..\..\..\data\MODIS_FIRE\generated\yearly\ubergrid\table" "*.txt";
+	do table2dta.do "..\..\..\data\CRU\generated\yearly\ubergrid\table" "*.txt";
 	cd ..;
 	*Successfully ran table2dta.do;
 	};
@@ -164,7 +164,7 @@ if 1==2{;
 *Cleans and merges sources of country level data, preserving all pixels;
 *BPclean defines a EU country and must be run last;
 
-if 1==2{;
+if 1==1{;
 	cd mergecountrydata;
 	do PWTclean.do;
 	do urbanshareclean.do;
