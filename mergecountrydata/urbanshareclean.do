@@ -14,7 +14,7 @@ cls;
 set more off;
 pause off;
 
-import excel "..\\..\\data\World_Bank\source\urbanshare.xls",
+import excel "..\\..\\..\\data\World_Bank\source\urbanshare.xls",
 sheet("Data") cellrange(A4:BI268) firstrow;
 
 *Rename year variables as urbanshare`year' so that stata can work with them;
@@ -245,16 +245,16 @@ foreach country in
 drop if country=="`country'";
 };
 
-save "..\\..\\data\World_Bank\generated\urbanshare.dta", replace;
+save "..\\..\\..\\data\World_Bank\generated\urbanshare.dta", replace;
 
-use "..\\..\\data\dtas\analyze_me.dta", clear;
+use "..\\..\\..\\data\dtas\analyze_me.dta", clear;
 
-merge m:1 country using "..\\..\\data\World_Bank\generated\urbanshare.dta";
+merge m:1 country using "..\\..\\..\\data\World_Bank\generated\urbanshare.dta";
 
 drop if _merge==2;
 
 drop _merge;
 
 *New merged data replaces old data, but keeps name;
-save "..\\..\\data\dtas\analyze_me.dta", replace;
+save "..\\..\\..\\data\dtas\analyze_me.dta", replace;
 

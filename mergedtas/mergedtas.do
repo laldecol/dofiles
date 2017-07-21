@@ -13,7 +13,13 @@ set more off;
 pause off;
 set type double;
 
-cd "..\..\data";
+**Store Current Directory/;
+local dofiledir : pwd;
+dis "`dofiledir'";
+
+** Change Directory/;
+cd "..\\..\\..\\data";
+
 
 ***************;
 *Define locals*;
@@ -119,4 +125,5 @@ gen area=(cos(lat*c(pi)/180)+cos((lat+`CELLSIZEY')*c(pi)/180))*2*(c(pi)*`CELLSIZ
 
 save "dtas\analyze_me.dta", replace;
 
-cd "..\dofiles\mergedtas";
+** Back to original folder/;
+cd "`dofiledir'";
