@@ -1,0 +1,32 @@
+2017-06-16 17:58:24,387 Starting generate_pop_by_country.py.
+2017-06-16 17:59:13,605 Computing aod for raster Terra2000avg was completed in 49.2171365246 seconds.
+2017-06-16 18:00:00,398 Computing aod for raster Terra2001avg was completed in 46.7904179399 seconds.
+2017-06-16 18:00:53,039 Computing aod for raster Terra2002avg was completed in 52.6396908431 seconds.
+2017-06-16 18:01:43,575 Computing aod for raster Terra2003avg was completed in 50.5362084469 seconds.
+2017-06-16 18:02:35,887 Computing aod for raster Terra2004avg was completed in 52.3090920951 seconds.
+2017-06-16 18:03:32,736 Computing aod for raster Terra2005avg was completed in 56.8489994573 seconds.
+2017-06-16 18:04:31,552 Computing aod for raster Terra2006avg was completed in 58.8144569065 seconds.
+2017-06-16 18:05:19,319 Computing aod for raster Terra2007avg was completed in 47.7643825527 seconds.
+2017-06-16 18:06:08,776 Computing aod for raster Terra2008avg was completed in 49.4569739893 seconds.
+2017-06-16 18:07:00,581 Computing aod for raster Terra2009avg was completed in 51.8018010262 seconds.
+2017-06-16 18:07:43,536 Computing aod for raster Terra2010avg was completed in 42.9543724606 seconds.
+2017-06-16 18:08:28,144 Computing aod for raster Terra2011avg was completed in 44.6074928728 seconds.
+2017-06-16 18:09:18,443 Computing aod for raster Terra2012avg was completed in 50.296872363 seconds.
+2017-06-16 18:10:02,792 Computing aod for raster Terra2013avg was completed in 44.3469087908 seconds.
+2017-06-16 18:10:45,687 Computing aod for raster Terra2014avg was completed in 42.8954818469 seconds.
+2017-06-16 18:10:45,687 All source data were aggregated by country. Proceeding to aggregation for the uber rasters.
+2017-06-16 18:11:00,664 Computing aod for raster Terra2000avg was completed in 14.9742634691 seconds.
+2017-06-16 18:11:16,184 Computing aod for raster Terra2001avg was completed in 15.5185751686 seconds.
+2017-06-16 18:11:31,598 Computing aod for raster Terra2002avg was completed in 15.4117143313 seconds.
+2017-06-16 18:11:44,020 Computing aod for raster Terra2003avg was completed in 12.4201919128 seconds.
+2017-06-16 18:11:57,710 Computing aod for raster Terra2004avg was completed in 13.6874137896 seconds.
+2017-06-16 18:12:12,713 Computing aod for raster Terra2005avg was completed in 15.0023961598 seconds.
+2017-06-16 18:12:31,881 Computing aod for raster Terra2006avg was completed in 19.1649413533 seconds.
+2017-06-16 18:12:43,546 Computing aod for raster Terra2007avg was completed in 11.6626436112 seconds.
+2017-06-16 18:12:56,999 Computing aod for raster Terra2008avg was completed in 13.4516825646 seconds.
+2017-06-16 18:13:12,173 Computing aod for raster Terra2009avg was completed in 15.1729130029 seconds.
+2017-06-16 18:13:27,029 Computing aod for raster Terra2010avg was completed in 14.8547884701 seconds.
+2017-06-16 18:13:41,849 Computing aod for raster Terra2011avg was completed in 14.8182320528 seconds.
+2017-06-16 18:13:58,025 Computing aod for raster Terra2012avg was completed in 16.1745142353 seconds.
+2017-06-16 18:14:10,632 Computing aod for raster Terra2013avg was completed in 12.6049442508 seconds.
+2017-06-16 18:14:25,322 Computing aod for raster Terra2014avg was completed in 14.6887840532 seconds.
