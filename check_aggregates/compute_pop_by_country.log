@@ -1,10 +1,11 @@
-2017-06-16 17:43:08,884 Starting generate_pop_by_country.py.
-2017-06-16 17:46:35,520 Computing population for raster gpw-v4-population-count_2000 was completed in 206.628978287 seconds.
-2017-06-16 17:50:02,813 Computing population for raster gpw-v4-population-count_2005 was completed in 207.28966037 seconds.
-2017-06-16 17:53:55,224 Computing population for raster gpw-v4-population-count_2010 was completed in 232.406139221 seconds.
-2017-06-16 17:57:10,500 Computing population for raster gpw-v4-population-count_2015 was completed in 195.273172075 seconds.
-2017-06-16 17:57:10,502 All source data were aggregated by country. Proceeding to aggregation for the uber rasters.
-2017-06-16 17:57:18,390 Computing population for raster aggregated_gpw_2000 was completed in 7.886345113 seconds.
-2017-06-16 17:57:25,525 Computing population for raster aggregated_gpw_2005 was completed in 7.13515092052 seconds.
-2017-06-16 17:57:32,750 Computing population for raster aggregated_gpw_2010 was completed in 7.2252393979 seconds.
-2017-06-16 17:57:39,921 Computing population for raster aggregated_gpw_2015 was completed in 7.16932028024 seconds.
+2017-06-19 10:43:34,957 Starting generate_pop_by_country.py.
+2017-06-19 10:46:22,025 Computing population for raster gpw-v4-population-count_2000 was completed in 167.063457274 seconds.
+2017-06-19 10:49:09,740 Computing population for raster gpw-v4-population-count_2005 was completed in 167.712974724 seconds.
+2017-06-19 10:51:56,937 Computing population for raster gpw-v4-population-count_2010 was completed in 167.193583389 seconds.
+2017-06-19 10:54:49,289 Computing population for raster gpw-v4-population-count_2015 was completed in 172.349219238 seconds.
+2017-06-19 10:54:49,290 All source data were aggregated by country. Proceeding to aggregation for the uber rasters.
+2017-06-19 10:55:01,282 Computing population for raster aggregated_gpw_2000 was completed in 11.9901889432 seconds.
+2017-06-19 10:55:13,270 Computing population for raster aggregated_gpw_2005 was completed in 11.9868063301 seconds.
+2017-06-19 10:55:25,240 Computing population for raster aggregated_gpw_2010 was completed in 11.9686500533 seconds.
+2017-06-19 10:55:37,227 Computing population for raster aggregated_gpw_2015 was completed in 11.9877609256 seconds.
+2017-06-19 10:55:37,229 All ubergrid data were aggregated by country.

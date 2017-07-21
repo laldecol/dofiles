@@ -18,14 +18,19 @@ logging.info('Starting generate_pop_by_country.py.')
 
 def gen_aod_country(inputpattern,inputpattern_uber,outputfolder,country_source):
 
-    #Set overwrite environment
+    # Clean and Create Output folder (overwrite any pre-existing aggregate data)
+    shutil.rmtree(outputfolder, ignore_errors=True)
+    os.mkdir(outputfolder)
+    
+    #Set overwrite environment (non-excel tables will be overwritten)
     arcpy.env.overwriteOutput = True    
+    
 
     # Start Summing the source data
     for rasters in glob.glob(inputpattern):
         t0 = time.clock()
     
-        print "Computing the aerosol data in " + str(rasters)
+        print "Computing the AOD data by country in " + str(rasters)
         
         #Collect existing name
         new_name = os.path.splitext(os.path.basename(rasters))[0]
@@ -36,13 +41,13 @@ def gen_aod_country(inputpattern,inputpattern_uber,outputfolder,country_source):
     
         print "Country aod table will be saved as %s" % os.path.splitext(os.path.basename(output_excel))[0]
         
-        # Generate Table
+        # Generate Table (use mean, due to the way AOD data is generated)
         arcpy.gp.ZonalStatisticsAsTable_sa(country_source, "COUNTRY", rasters, name, "DATA", "MEAN")
         
         # Convert to excel
         arcpy.TableToExcel_conversion(name, output_excel, "NAME", "CODE")
     
-        print "Computing aod for year %s is complete." % str(new_name)[-4:]
+        print "Computing aod for year %s is complete." % str(new_name)[-7:-3]
     
         t1 = time.clock()
         logging.info('Computing aod for raster %s was completed in %s seconds.', str(new_name), str(t1-t0))
@@ -54,7 +59,7 @@ def gen_aod_country(inputpattern,inputpattern_uber,outputfolder,country_source):
     for rasters in glob.glob(inputpattern_uber):
         t0 = time.clock()
             
-        print "Computing the aerosol data in " + str(rasters)
+        print "Computing the AOD data by country in " + str(rasters)
                 
         #Collect existing name
         new_name = os.path.splitext(os.path.basename(rasters))[0]
@@ -71,12 +76,12 @@ def gen_aod_country(inputpattern,inputpattern_uber,outputfolder,country_source):
         # Convert to excel
         arcpy.TableToExcel_conversion(name, output_excel, "NAME", "CODE")
             
-        print "Computing population for year %s is complete." % str(new_name)
+        print "Computing population for year %s is complete." % str(new_name)[-7:-3]
             
         t1 = time.clock()
         logging.info('Computing aod for raster %s was completed in %s seconds.', str(new_name), str(t1-t0))
             
-        logging.info('All uber-raster data were aggregated by country. Proceeding to aggregation for the uber rasters.')
+    logging.info('All uber-raster data were aggregated by country.')
             
     
     #Delete temporary folder
