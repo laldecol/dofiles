@@ -43,13 +43,13 @@ def resamplesum(inputraster, outfolder):
 
 if __name__=='__main__':
     # Local variables:
-    #ubergrid_ref = "..\\..\\data\\GPW4\\generated\\projected\\projected_aggregated_gpw_2000.tif"
-    #projection = "..\\..\\data\\projections\\WGS 1984.prj"
-    outfolder="..\\..\\data\\MODIS_FIRE\\generated\\yearly"
-    #inputraster="S:\\particulates\\data_processing\\data\\MODIS_FIRE\\generated\\yearly\\1k\\Fire2000.tif"
-    #shutil.rmtree("..\\..\\data\\GPW4\\generated\\ubergrid", ignore_errors=True)
-    #os.mkdir("..\\..\\data\\GPW4\\generated\\ubergrid")
-    infolderpattern="..\\..\\data\\MODIS_FIRE\\generated\\yearly\\1k\\*.tif"
+    #ubergrid_ref = "..\\..\\..\\data\\GPW4\\generated\\projected\\projected_aggregated_gpw_2000.tif"
+    #projection = "..\\..\\..\\data\\projections\\WGS 1984.prj"
+    outfolder="..\\..\\..\\..\\data\\MODIS_FIRE\\generated\\yearly"
+    #inputraster="..\\..\\..\\data\\MODIS_FIRE\\generated\\yearly\\1k\\Fire2000.tif"
+    #shutil.rmtree("..\\..\\..\\data\\GPW4\\generated\\ubergrid", ignore_errors=True)
+    #os.mkdir("..\\..\\..\\data\\GPW4\\generated\\ubergrid")
+    infolderpattern="..\\..\\..\\data\\MODIS_FIRE\\generated\\yearly\\1k\\*.tif"
     
     #Set up logging
     logging.basicConfig(format='%(asctime)s %(message)s', filename='resamplesum1kto5k.log', filemode='w', level=logging.DEBUG)

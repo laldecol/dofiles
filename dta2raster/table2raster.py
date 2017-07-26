@@ -53,8 +53,6 @@ for vname in vnames:
     in_txt  = open("temp/ready2map_"+vname+".txt", "r")     #Input list of STATA-made ubergrid
     
     ugrid = "..\\..\\..\\data\\GPW4\\generated\\projected\\projected_aggregated_gpw_2010.tif"  #Copy of ubergrid
-    # Warning: why 2010?
-    
     wspace   = "workspaces\\" + vname
     
     csize   = settingsdict['CELLSIZEX']  #raster cell width in metres

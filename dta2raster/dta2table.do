@@ -31,10 +31,10 @@ clear;
 *location for python;
 local python "C:\Python27\ArcGIS10.2\python";
 *Location of data directory;
-local datadir "..\\..\\data\\dta2raster";
+local datadir "..\\..\\..\\data\\dta2raster";
 local dodir : pwd;
 
-*for debugging is "..\..\data\dtas\analyze_me.dta";
+*for debugging is "..\\..\..\data\dtas\analyze_me.dta";
 local dta "`1'";
 capture log close;
 quietly log using dta2table ,text replace;

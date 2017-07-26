@@ -39,7 +39,7 @@ def aggregate(expath,output_raster):
         print inputs
         
         # Define spatial reference (can become input to the function in the future)
-        sr = arcpy.SpatialReference("..\\..\\data\\projections\\WGS 1984.prj") 
+        sr = arcpy.SpatialReference("..\\..\\..\\data\\projections\\WGS 1984.prj") 
         
         #Set up temporary directories
         shutil.rmtree(temp,ignore_errors=True)
@@ -157,7 +157,23 @@ def ubergridsettings():
                 print linecounter
                 settingsdict[str(lines[linecounter])]=str(lines[linecounter+1])
     return settingsdict
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
     
 if __name__=='__main__':
     #This section of the code is meant to test-run functions and should generally be empty.
+    input_raster="..\\..\\..\\data\\MODIS_FIRE\\generated\\yearly\\Data2000.tif"
+    outpath="..\\..\\..\\data\\MODIS_FIRE\\manual\\Data2000_ubertest.tif"
+    #Local variables:
+    extent = "..\\..\\..\\data\\GPW4\\generated\\extent\\extent.shp"
+    outprojection = "..\\..\\..\\data\\projections\\WGS 1984.prj"
+    
+    raster2ubergrid(input_raster, outpath, extent, outprojection)
     print "Test"

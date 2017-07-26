@@ -60,7 +60,7 @@ foreach v of varlist B-AZ {;
    *label variable y`x' "`v'";
 };
 
-rename Milliontonnes country;
+rename Milliontonnes country; // particular to the table structure
 
 *Drop clutter variables and observations;
 drop BA-`lastvar';

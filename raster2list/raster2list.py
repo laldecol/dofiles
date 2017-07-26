@@ -81,7 +81,7 @@ if __name__=="__main__":
     rastercount=0
 
     #Test for unprojected GPW counts; remove and uncomment others for normal functioning
-    #input_folderlist.append("..\\..\\data\\GPW4\\source\\gpw-v4-population-count-2000")
+    #input_folderlist.append("..\\..\\..\\data\\GPW4\\source\\gpw-v4-population-count-2000")
     #pathnamelist.append(input_folderlist[0]+"\\*.tif")
     
     input_folderlist.append("..\\..\\..\\data\\MODIS_AOD\\generated\\yearly\\ubergrid")
@@ -100,7 +100,7 @@ if __name__=="__main__":
     input_folderlist.append("..\\..\\..\\data\\MODIS_FIRE\\generated\\yearly\\ubergrid")
     pattern_list.append("\\*.tif")    
     
-    input_folderlist.append("..\\..\\data\\CRU\\generated\\yearly\\ubergrid")
+    input_folderlist.append("..\\..\\..\\data\\CRU\\generated\\yearly\\ubergrid")
     pattern_list.append("\\*.tif")    
 
     print input_folderlist

@@ -1,0 +1,20 @@
+2017-06-23 13:25:09,713 Starting dta2raster.py.
+2017-06-23 13:25:18,417 Done creating dta spawns.
+2017-06-23 13:25:18,420 Converting dummy_urban2000_ubergrid to a .txt file.
+2017-06-23 13:25:22,792 The file dummy_urban2000_ubergrid was converted to ascii in 4.37269879726 seconds.
+2017-06-23 13:25:22,793 Converting dummy_urban2005_ubergrid to a .txt file.
+2017-06-23 13:25:27,417 The file dummy_urban2005_ubergrid was converted to ascii in 4.62276071132 seconds.
+2017-06-23 13:25:27,417 Converting dummy_urban2010_ubergrid to a .txt file.
+2017-06-23 13:25:31,992 The file dummy_urban2010_ubergrid was converted to ascii in 4.57499680474 seconds.
+2017-06-23 13:25:31,993 Converting dummy_urban2015_ubergrid to a .txt file.
+2017-06-23 13:25:36,444 The file dummy_urban2015_ubergrid was converted to ascii in 4.45045262692 seconds.
+2017-06-23 13:25:36,453 Successgully collected ubergrid settings.
+2017-06-23 13:25:36,456 Starting conversion of dummy_urban2000_ubergrid to a raster file.
+2017-06-23 13:26:12,392 The variable dummy_urban2000_ubergrid was converted into a raster file in 35.9366792593 seconds.
+2017-06-23 13:26:12,394 Starting conversion of dummy_urban2005_ubergrid to a raster file.
+2017-06-23 13:26:47,293 The variable dummy_urban2005_ubergrid was converted into a raster file in 34.8993294318 seconds.
+2017-06-23 13:26:47,293 Starting conversion of dummy_urban2010_ubergrid to a raster file.
+2017-06-23 13:27:28,049 The variable dummy_urban2010_ubergrid was converted into a raster file in 40.756366909 seconds.
+2017-06-23 13:27:28,051 Starting conversion of dummy_urban2015_ubergrid to a raster file.
+2017-06-23 13:28:01,832 The variable dummy_urban2015_ubergrid was converted into a raster file in 33.7809789363 seconds.
+2017-06-23 13:28:01,832 4 dta files (variables) were converted to raster
