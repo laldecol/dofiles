@@ -164,7 +164,7 @@ if 1==2{;
 *Cleans and merges sources of country level data, preserving all pixels;
 *BPclean defines a EU country and must be run last;
 
-if 1==1{;
+if 1==2{;
 	cd mergecountrydata;
 	do PWTclean.do;
 	do urbanshareclean.do;
