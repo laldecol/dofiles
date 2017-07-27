@@ -4,6 +4,20 @@
 # (1) Convert stata lists to ascii file
 # (2) Using "table2raster", converts the resulting ascii file into an ubergrid raster
 #
+#INPUTS:
+# # inputfile - any dta file, provided that it has its ubergrid code variable named either "v1" or "uber_code". Strings are automatically
+# categorized, and the mapping (categories <-> corresponding number) is saved in a folder named mapping_str_variables.
+# # datatype - it is the type of raster that will be created. It applies to all the variables in the dta file. If in doubt, 
+#use float. INTEGER should be used when the dta is categorized.
+#
+#
+# THIS CODE PERFORMS THE FOLLOWING PROCEDURES:
+# 1 - Breaks down the target dta file into several spawns (one for each variable, except uber_code), saves them in temporary folder.
+# This is done by the dofile prepare_dta
+# 2 - Converts the spawns, one by one, to ascii.
+# 3 - Take the ascii spawns and modify them, using ubergrid settings, so that they can be used by AsciitoRaster
+# 4 - Convert them all to rasters.
+# 5 - Rasters are same in the inputfile folder, under a newly created folder named ubergrid_inputfile.
 # Created by Marcel in 6/21/2017
 # Last modified by Marcel in 6/23/2017
 # ---------------------------------------------------------------------------
@@ -154,7 +168,7 @@ def dta2raster(inputfile,datatype):
         print("Started converting ASCII to Raster for %s"  %name)
     
         # Execute conversion
-        arcpy.ASCIIToRaster_conversion(asc, outputraster, datatype)    # you still have to change this integer
+        arcpy.ASCIIToRaster_conversion(asc, outputraster, datatype)  
     
         # Define projection
         spatialref = arcpy.Describe(ugrid).spatialReference    
@@ -182,7 +196,6 @@ if __name__ == '__main__':
     
     ###############################Please Imform Function Inputs#######################################
     # Define input folder (ouput automatically stored within it)
-    #inputfolder = "..\\..\\..\\data\\MODIS_LULC\\generated\\Temp_aggregate_lc_check\\"
     inputfile = "S:\\particulates\\data_processing\\data\\MODIS_LULC\\generated\\Temp_aggregate_lc_check\\dummy_lc_rasters.dta"
     # Define type of data ("FLOAT" or "INTEGER")
     datatype = "INTEGER"
