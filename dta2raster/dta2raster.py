@@ -1,6 +1,8 @@
 # ---------------------------------------------------------------------------
 # dta2raster.py 
-#
+# (0) Prepare a dta file that contains a variable named either "v1" or "uber_code"
+# to be converted. All the rasters will be saved in a folder created in the path of the
+# original file with the name of ubergrid_(name of dta file).
 # (1) Convert stata lists to ascii file
 # (2) Using "table2raster", converts the resulting ascii file into an ubergrid raster
 #
@@ -17,7 +19,6 @@
 # 2 - Converts the spawns, one by one, to ascii.
 # 3 - Take the ascii spawns and modify them, using ubergrid settings, so that they can be used by AsciitoRaster
 # 4 - Convert them all to rasters.
-# 5 - Rasters are same in the inputfile folder, under a newly created folder named ubergrid_inputfile.
 # Created by Marcel in 6/21/2017
 # Last modified by Marcel in 6/23/2017
 # ---------------------------------------------------------------------------
