@@ -4,7 +4,7 @@
 # Description: This file holds functions that manipulate/process rasters
 
 # created: June 2 2017 by Lorenzo
-# last modified: June 2 2017 by Lorenzo
+# last modified: July 12 2017 by Marcel
 # ---------------------------------------------------------------------------
 
 import os, glob, arcpy, shutil, sys, subprocess, time, logging
@@ -39,7 +39,7 @@ def aggregate(expath,output_raster):
         print inputs
         
         # Define spatial reference (can become input to the function in the future)
-        sr = arcpy.SpatialReference("..\\..\\data\\projections\\WGS 1984.prj") 
+        sr = arcpy.SpatialReference("..\\..\\..\\data\\projections\\WGS 1984.prj") 
         
         #Set up temporary directories
         shutil.rmtree(temp,ignore_errors=True)
@@ -52,8 +52,11 @@ def aggregate(expath,output_raster):
         arcpy.CalculateDefaultGridIndex_management(gdb+ "\\catalog")
         
         #Aggregate rasters in catalog to mean raster
-        arcpy.RasterCatalogToRasterDataset_management(gdb+"\\catalog", output_raster, "", "MEAN", "FIRST", "", "NONE", "16_BIT_SIGNED", "NONE", "NONE", "", "") 
+        #arcpy.RasterCatalogToRasterDataset_management(gdb+"\\catalog", output_raster, "", "MEAN", "FIRST", "", "NONE", "16_BIT_SIGNED", "NONE", "NONE", "", "") 
         
+        # Second option, which includes real numbers (not only integer-type output)
+        arcpy.RasterCatalogToRasterDataset_management(gdb+"\\catalog", output_raster, "", "MEAN", "FIRST", "", "NONE", "32_BIT_FLOAT", "NONE", "NONE", "", "") 
+       
         #Remove temporary directories
         shutil.rmtree(temp,ignore_errors=True)
         
