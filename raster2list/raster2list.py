@@ -84,24 +84,24 @@ if __name__=="__main__":
     #input_folderlist.append("..\\..\\..\\data\\GPW4\\source\\gpw-v4-population-count-2000")
     #pathnamelist.append(input_folderlist[0]+"\\*.tif")
     
-    #input_folderlist.append("..\\..\\..\\data\\MODIS_AOD\\generated\\yearly\\ubergrid")
-    #pattern_list.append("\\*avg.tif")
+    input_folderlist.append("..\\..\\..\\data\\MODIS_AOD\\generated\\yearly\\ubergrid")
+    pattern_list.append("\\*avg.tif")
     
-    #input_folderlist.append("..\\..\\..\\data\\GPW4\\generated\\projected")
-    #pattern_list.append("\\*20??.tif")
+    input_folderlist.append("..\\..\\..\\data\\GPW4\\generated\\projected")
+    pattern_list.append("\\*20??.tif")
     
-    ##"..\\..\\data\\GPW4\\source\\gpw-v4-national-identifier-grid"
+    #"..\\..\\data\\GPW4\\source\\gpw-v4-national-identifier-grid"
     input_folderlist.append("..\\..\\..\\data\\GPW4\\generated\\gpw-v4-national-identifier-grid\\ubergrid")
     pattern_list.append("\\*.tif")
     
-    #input_folderlist.append("..\\..\\..\\data\\GPW4\\generated\\gpw-v4-data-quality-indicators-mean-administrative-unit-area\\ubergrid")
-    #pattern_list.append("\\*.tif")    
+    input_folderlist.append("..\\..\\..\\data\\GPW4\\generated\\gpw-v4-data-quality-indicators-mean-administrative-unit-area\\ubergrid")
+    pattern_list.append("\\*.tif")    
     
-    #input_folderlist.append("..\\..\\..\\data\\MODIS_FIRE\\generated\\yearly\\ubergrid")
-    #pattern_list.append("\\*.tif")    
+    input_folderlist.append("..\\..\\..\\data\\MODIS_FIRE\\generated\\yearly\\ubergrid")
+    pattern_list.append("\\*.tif")    
     
-    #input_folderlist.append("..\\..\\..\\data\\CRU\\generated\\yearly\\ubergrid")
-    #pattern_list.append("\\*.tif")    
+    input_folderlist.append("..\\..\\..\\data\\CRU\\generated\\yearly\\ubergrid")
+    pattern_list.append("\\*.tif")    
 
     print input_folderlist
     print pattern_list

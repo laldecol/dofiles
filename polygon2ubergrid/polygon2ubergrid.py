@@ -12,7 +12,9 @@ from raster2ubergrid import raster2ubergrid
 
 def polygon2ubergrid(input_polygon,field,extent,outprojection):
     
+    # Set overwrite environment
     arcpy.env.overwriteOutput = True
+    
     #Extract input directory and basename
     out_dir=os.path.dirname(input_polygon)    
     base=os.path.basename(input_polygon)
@@ -24,7 +26,7 @@ def polygon2ubergrid(input_polygon,field,extent,outprojection):
     
     #Set up output raster settings as a dictionary. These come from settings.txt, written in make_xy_extent.py
     settingsdict={}
-    with open("..\\..\\data\\projections\generated\settings.txt", 'r') as settingfile:
+    with open("..\\..\\..\\data\\projections\generated\settings.txt", 'r') as settingfile:
         templines=settingfile.readlines()
         lines = [i.replace('\n','') for i in templines]
         for linecounter in range(len(lines)):        
@@ -58,13 +60,13 @@ if __name__==__main__:
     logging.info('Starting polygon2ubergrid.py.')
     
     # Local variables:
-    input_polygon = "S:\\particulates\\data_processing\\data\\boundaries\\generated\\world_countries_2011.shp"
-    #input_polygon_prj = "S:\\particulates\\data_processing\\data\\boundaries\\manual\\world_countries_2011prj.shp"
-    outprojection = "..\\..\\data\\projections\\Cylindrical Equal Area (world).prj"
+    input_polygon = "S:..\\..\\..\\data\\boundaries\\generated\\world_countries_2011.shp"
+    #input_polygon_prj = "..\\..\\..\\data\\boundaries\\manual\\world_countries_2011prj.shp"
+    outprojection = "..\\..\\..\\data\\projections\\Cylindrical Equal Area (world).prj"
     #inprojection="GEOGCS['GCS_WGS_1984',DATUM['D_WGS_1984',SPHEROID['WGS_1984',6378137.0,298.257223563]],PRIMEM['Greenwich',0.0],UNIT['Degree',0.0174532925199433]]"
     field="COUNTRY"
-    extent = "..\\..\\data\\MODIS_AOD\\manual\\extent.shp"
-    outprojection = "..\\..\\data\\projections\\Cylindrical Equal Area (world).prj"
+    extent = "..\\..\\..\\data\\MODIS_AOD\\manual\\extent.shp"
+    outprojection = "..\\..\\..\\data\\projections\\Cylindrical Equal Area (world).prj"
     
     #Extract input directory and basename
     out_dir=os.path.dirname(input_polygon)

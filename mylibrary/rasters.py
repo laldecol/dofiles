@@ -92,6 +92,10 @@ def raster2ubergrid(input_raster, outpath, extent, outprojection):
     
 #Converts a raster to homogeneous ubergrid, using the input extent and projection.
 #This function expects an ubergrid setting file, written by make_xy_extent.py
+
+#Ubergrid extent and settings for the particulates project are found in (starting from a folder within dofiles)
+    #extent = "..\\..\\..\\data\\GPW4\\generated\\extent\\extent.shp"
+    #outprojection = "..\\..\\..\\data\\projections\\WGS 1984.prj"    
     
 #Inputs:
     #input_raster: raster to convert
@@ -112,15 +116,15 @@ def raster2ubergrid(input_raster, outpath, extent, outprojection):
     #"..\\..\\data\\MODIS_AOD\\manual\\aqua2002avg_ProjectRaster_Cl.tif"
     
     #Set up output raster settings as a dictionary. These come from settings.txt, written in make_xy_extent.py
-    settingsdict={}
-    with open("..\\..\\data\\projections\generated\settings.txt", 'r') as settingfile:
-        templines=settingfile.readlines()
-        lines = [i.replace('\n','') for i in templines]
-        for linecounter in range(len(lines)):        
-            if linecounter % 2 ==0:
-                #print linecounter
-                settingsdict[str(lines[linecounter])]=str(lines[linecounter+1])
-    print settingsdict
+    settingsdict=ubergridsettings()
+    #with open("..\\..\\..\\data\\projections\generated\settings.txt", 'r') as settingfile:
+        #templines=settingfile.readlines()
+        #lines = [i.replace('\n','') for i in templines]
+        #for linecounter in range(len(lines)):        
+            #if linecounter % 2 ==0:
+                ##print linecounter
+                #settingsdict[str(lines[linecounter])]=str(lines[linecounter+1])
+    #print settingsdict
     
     #Project raster using target projection, cell size, and reference point. 
     cell_size=settingsdict['CELLSIZEX']+" "+settingsdict['CELLSIZEY']
@@ -134,7 +138,7 @@ def raster2ubergrid(input_raster, outpath, extent, outprojection):
     shutil.rmtree(temp_dir, ignore_errors=True)
     
 def ubergridsettings():
-#Reads ubergrid settings from "..\\..\\..\\data\\projections\generated\settings.txt" and returns them as a python directory
+#Reads ubergrid settings from "..\\..\\..\\data\\projections\generated\settings.txt" and returns them as a python dictionary
 #Settings can be accessed with the normal dictionary syntax, e.g. columno=settingsdict["COLUMNCOUNT"]
     #Available settings are:
     #TOP: Topmost raster coordinate (in ubergrid units, probably degrees)
