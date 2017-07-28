@@ -28,11 +28,11 @@
 import logging, arcpy, os, sys, shutil, glob, subprocess, time
 from arcpy import env
 
-#Set up logging
-logging.basicConfig(format='%(asctime)s %(message)s', filename='dta2raster.log', filemode='w', level=logging.DEBUG)
-logging.info('Starting dta2raster.py.')
-
 def dta2raster(inputfile,datatype):
+    
+    #Set up logging
+    logging.basicConfig(format='%(asctime)s %(message)s', filename='dta2raster.log', filemode='w', level=logging.DEBUG)
+    logging.info('Starting dta2raster.py.')    
 
     # Extract folder where inputfile is
     inputfolder = os.path.dirname(os.path.abspath(inputfile))+"\\"
@@ -203,3 +203,4 @@ if __name__ == '__main__':
     ###################################################################################################    
     
     dta2raster(inputfile, datatype)
+    
