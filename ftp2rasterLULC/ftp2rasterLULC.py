@@ -1,14 +1,24 @@
+# ---------------------------------------------------------------------------
+# ftp2rasterLULC.py
+# -------- #
+# Run time: ~1 hour per year
+#
+# Description: Processes land use data for the particulates project. Steps:
+# 1. Download tiles from the UMD ftp server
+# 2. Mosaic tiles into yearly 500 m rasters
+# 3. Reclassify raster values into our categories (water, trees, pasture, barren, crop, urban, other)
+# 4. Convert to dummy rasters (one for each category)
+# 5. Add up cells (k-by-k) to approximate ubergrid
 
-import ftplib, gzip, glob, os, sys, shutil, logging, time, arcpy
+# last modified: June 16, 2017 by Lorenzo
+# ---------------------------------------------------------------------------
+#Append dofiles\mylibrary to sys.path, to use programs defined there.
+sys.path.append(os.path.abspath('..'))
+#ftp2disk, aggregate defined in mylibrary
+import ftplib, gzip, glob, os, sys, shutil, logging, time, arcpy, math, mylibrary
 
 # Check Spatial Analysis Tool
 arcpy.CheckOutExtension("spatial")
-
-#Append dofiles\functions to sys.path, to use programs defined there.
-sys.path.append(os.path.abspath('..'))
-
-#ftp2disk, aggregate defined in functions.py
-import functions
 
 if __name__=='__main__':
     #Set up logging
@@ -51,7 +61,7 @@ if __name__=='__main__':
         
         ##Download compressed tiles into local folder
         #for serverpath in pathlist:
-            #functions.ftp2disk(ftpaddress, serverpath, localfolder, pattern)
+            #mylibrary.ftp2disk(ftpaddress, serverpath, localfolder, pattern)
             
         ##Extract tiles at the same location
         #for infilename in glob.glob(localfolder+"\\*.gz"):
@@ -72,7 +82,7 @@ if __name__=='__main__':
         #logging.info('Aggregating tiles from %s' , str(year))
         
         ##Aggregate rasters and clean up
-        #functions.aggregate(expath , output_raster)
+        #mylibrary.aggregate(expath , output_raster)
         #shutil.rmtree(localfolder)
 
         ##Reclass
@@ -81,20 +91,50 @@ if __name__=='__main__':
         temp_folder=os.path.dirname(output_raster)+"\\temp"+year
         reclass_tif=temp_folder+"\\reclassed_"+year+".tif"
         
-        os.mkdir(temp_folder)        
+        os.mkdir(temp_folder)
+        logging.info('Reclassifying raster into our six categories.')
         arcpy.gp.Reclassify_sa(output_raster, "Value", "0 0;1 6 1;7 2;8 1;8 11 2;12 4;13 5;14 4;15 6;16 3;16 255 6", reclass_tif, "DATA")
+
+        settingsdict=mylibrary.ubergridsettings()
+        ubercol=settingsdict["COLUMNCOUNT"]
+        uberrow=settingsdict["ROWCOUNT"]
         
         #Second, reclass into separate dummy rasters
         for dummyval in range(0,7):
+            logging.info('Creating dummy raster for value %s', str(dummyval))
+            
             valtxt=temp_folder+"\\val"+str(dummyval)+".txt"
-            dummytif=os.path.dirname(output_raster)+"\\counts\\"+year+"_dummy"+str(dummyval)+".tif"
+            dummytif=temp_folder+"\\dummy"+str(dummyval)+".tif"
             
-            functions.dummyascii(0, 6, dummyval, valtxt)
-            #arcpy.gp.ReclassByASCIIFile_sa(, valtxt, Reclass_tif1, "DATA")
+            mylibrary.dummyascii(0, 6, dummyval, valtxt)
+            arcpy.gp.ReclassByASCIIFile_sa(reclass_tif, valtxt, dummytif, "DATA")
             
-        ##Convert to a coarser sum raster for each class
+            ##Convert to a coarser sum raster for each class        
+            desc=arcpy.Describe(dummytif)
+            inputrow=desc.height
+            inputcol=desc.width
+            
+            rowfactor=math.floor(int(inputrow)/int(uberrow))
+            colfactor=math.floor(int(inputcol)/int(ubercol))
+            
+            print str(rowfactor), str(colfactor)
+            
+            #use aggregate_sa to get an output
+            #aggtif=temp_folder+"\\agg"+str(dummyval)+".tif"
+            aggtiff=os.path.dirname(output_raster)+"\\"+year+"_dummy"+str(dummyval)+".tif"
+            logging.info('Aggregating dummy raster by a factor of %s', str(colfactor))            
+            arcpy.gp.Aggregate_sa(dummytif, aggtif, colfactor, "SUM", "EXPAND", "DATA")
+            
+            
+            #Convert to ubergrid
+            #extent = "..\\..\\..\\data\\GPW4\\generated\\extent\\extent.shp"
+            #outprojection = "..\\..\\..\\data\\projections\\WGS 1984.prj"    
+            
+            #logging.info('Converting aggregated dummy raster to ubergrid')            
+            #ubergridtif=os.path.dirname(output_raster)+"\\ubergrid\\"+year+"_dummy"+str(dummyval)+".tif"
+            #mylibrary.raster2ubergrid(aggtif, ubergridtif, extent, outprojection) 
         
-        ##Convert to ubergrid
+        logging.info('Cleaning up year %s', year)            
         shutil.rmtree(temp_folder, ignore_errors=True)
         
-    #logging.info('Done with ftp2raster.py')
+    logging.info('Done with ftp2rasterLULC.py')

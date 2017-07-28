@@ -60,7 +60,7 @@ if __name__ == '__main__':
     # Pattern of inputs/inputs
     inputpattern = "..\\..\\..\\data\\GPW4\\source\\gpw-v4-population-count*\\*.tif"
     # Set local variables
-    cellFactor = 5
+    cellFactor = 10
     ###################################################################################################    
     
     aggregate_raster_general(inputpattern, outputfolder, cellFactor)
