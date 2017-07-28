@@ -1,3 +1,9 @@
+<<<<<<< HEAD
+2017-07-03 17:15:50,349 Starting raster2ubergrid.py.
+2017-07-03 17:15:50,351 Processing ..\..\..\data\GPW4\generated\Expanded Boundaries\expanded_nat_identifier_grid.tif
+2017-07-03 17:16:02,440 Converted 1 rasters to ubergrids in 0.201506181473 minutes
+2017-07-03 17:16:02,443 Done with raster2ubergrid.py.
+=======
 2017-06-26 18:34:49,829 Starting raster2ubergrid.py.
 2017-06-26 18:34:49,844 Processing ..\..\..\data\MODIS_LULC\generated\yearly\dummy\2001_dummy0.tif
 2017-06-26 18:35:13,233 Processing ..\..\..\data\MODIS_LULC\generated\yearly\dummy\2001_dummy1.tif
@@ -85,3 +91,4 @@
 2017-06-26 18:45:55,460 Processing ..\..\..\data\MODIS_LULC\generated\yearly\dummy\2012_dummy6.tif
 2017-06-26 18:46:00,572 Converted 84 rasters to ubergrids in 11.1789118851 minutes
 2017-06-26 18:46:00,573 Done with raster2ubergrid.py.
+>>>>>>> refs/remotes/origin/master
