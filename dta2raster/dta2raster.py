@@ -197,9 +197,9 @@ if __name__ == '__main__':
     
     ###############################Please Imform Function Inputs#######################################
     # Define input folder (ouput automatically stored within it)
-    inputfile = "S:\\particulates\\data_processing\\data\\MODIS_LULC\\generated\\Temp_aggregate_lc_check\\dummy_lc_rasters.dta"
+    inputfile = "S:\\particulates\\data_processing\\analysis\\AODvariation10k\\miss_climate\\nonmissingclimate.dta"
     # Define type of data ("FLOAT" or "INTEGER")
-    datatype = "INTEGER"
+    datatype = "FLOAT"
     ###################################################################################################    
     
     dta2raster(inputfile, datatype)
