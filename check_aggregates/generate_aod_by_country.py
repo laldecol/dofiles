@@ -3,7 +3,8 @@
 # Description: This program generates a table of aggregate country AOD data for each raster.
 # It is set to run over all the AOD source raster, and also over all the ubergrid AOD rasters.
 
-#Created Jun 6 2017, by Marcel
+# Created Jun 16 2017, by Marcel
+# Modified Jun 27 by Marcel
 # ---------------------------------------------------------------------------
 
 import arcpy, os, glob, logging, shutil, time
@@ -16,7 +17,7 @@ logging.basicConfig(format='%(asctime)s %(message)s', filename='compute_aod_by_c
 logging.info('Starting generate_pop_by_country.py.')
 
 
-def gen_aod_country(inputpattern,inputpattern_uber,outputfolder,country_source):
+def gen_aod_country(inputpattern,inputpattern_uber,outputfolder,country_source, country_source_uber):
 
     # Clean and Create Output folder (overwrite any pre-existing aggregate data)
     shutil.rmtree(outputfolder, ignore_errors=True)
@@ -42,7 +43,7 @@ def gen_aod_country(inputpattern,inputpattern_uber,outputfolder,country_source):
         print "Country aod table will be saved as %s" % os.path.splitext(os.path.basename(output_excel))[0]
         
         # Generate Table (use mean, due to the way AOD data is generated)
-        arcpy.gp.ZonalStatisticsAsTable_sa(country_source, "COUNTRY", rasters, name, "DATA", "MEAN")
+        arcpy.gp.ZonalStatisticsAsTable_sa(country_source, "UNSDCODE", rasters, name, "DATA", "MEAN")
         
         # Convert to excel
         arcpy.TableToExcel_conversion(name, output_excel, "NAME", "CODE")
@@ -71,7 +72,7 @@ def gen_aod_country(inputpattern,inputpattern_uber,outputfolder,country_source):
         print "Country aod table will be saved as %s" % os.path.splitext(os.path.basename(output_excel))[0]
                 
         # Generate Table
-        arcpy.gp.ZonalStatisticsAsTable_sa(country_source, "COUNTRY", rasters, name, "DATA", "MEAN")
+        arcpy.gp.ZonalStatisticsAsTable_sa(country_source_uber, "VALUE", rasters, name, "DATA", "MEAN")
                 
         # Convert to excel
         arcpy.TableToExcel_conversion(name, output_excel, "NAME", "CODE")
@@ -101,13 +102,13 @@ if __name__ == '__main__':
     inputpattern = "..\\..\\..\\data\\MODIS_AOD\\generated\\yearly\\*.tif"
     inputpattern_uber= "..\\..\\..\\data\\MODIS_AOD\\generated\\yearly\\ubergrid\\*.tif"
     
-    print inputpattern
     # Country source
-    country_source = "..\\..\\..\\data\\boundaries\\generated\\world_countries_2011.shp"
+    country_source = "S:\\particulates\\data_processing\\data\\GPW4\\source\\gpw-v4-national-identifier-grid\\gpw-v4-national-identifier-grid.tif"
+    country_source_uber = "S:\\particulates\\data_processing\\data\\GPW4\\generated\\gpw-v4-national-identifier-grid\\ubergrid\\gpw-v4-national-identifier-grid.tif"
     
     ###################################################################################################    
     
-    gen_aod_country(inputpattern, inputpattern_uber, outputfolder, country_source)
+    gen_aod_country(inputpattern, inputpattern_uber, outputfolder, country_source, country_source_uber)
 
 
 
