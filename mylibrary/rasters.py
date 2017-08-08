@@ -337,12 +337,6 @@ def dta2raster(inputfile,datatype):
     shutil.rmtree(inputfolder+"temporary_dtas")
     
     print("Done with dta2raster. Use your rasters wisely.")    
- 
- 
- 
- 
- 
- 
     
 if __name__=='__main__':
     #This section of the code is meant to test-run functions and should generally be empty.
