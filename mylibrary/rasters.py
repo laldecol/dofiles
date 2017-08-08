@@ -361,13 +361,13 @@ def dta2raster(inputfile,datatype, outputfolder):
     logging.info("Failed to convert %d dta files (variables) to raster" %number_fails)   
     
     ## Final cleaning
+
     try:
         shutil.rmtree(outputfolder+"\\temporary_dtas")
     except Exception:
         logging.info("Failed to delete temporary_dta folder." %number_fails)
         
     print("Done with dta2raster. Use your rasters wisely.")   
- 
  
 if __name__=='__main__':
     #This section of the code is meant to test-run functions and should generally be empty.

@@ -221,6 +221,7 @@ def dta2raster(inputfile,datatype,outputfolder):
 if __name__ == '__main__':    
     
     ###############################Please Imform Function Inputs#######################################
+
     # Define input file (ouput automatically stored within it)
     inputfile = "S:\\particulates\\data_processing\\data\\MODIS_LULC\\generated\\Temp_aggregate_lc_check\\Analysis\\ANALYSIS_lc2000.dta"
     # Define type of data ("FLOAT" or "INTEGER")
