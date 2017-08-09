@@ -84,7 +84,7 @@ rename v1 uber_code;
 *Replace mising values as .;
 foreach var of varlist gpw*{;
 dis `var';
-replace `var'=. if `var'<0;
+replace `var'=. if `var'==-9999;
 };
 
 merge m:1 gpw_v4_national_identifier_gri using "GPW4\source\gpw-v4-national-identifier-grid\idnames.dta";
