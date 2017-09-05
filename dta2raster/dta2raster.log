@@ -1,20 +1,192 @@
-2017-06-23 13:25:09,713 Starting dta2raster.py.
-2017-06-23 13:25:18,417 Done creating dta spawns.
-2017-06-23 13:25:18,420 Converting dummy_urban2000_ubergrid to a .txt file.
-2017-06-23 13:25:22,792 The file dummy_urban2000_ubergrid was converted to ascii in 4.37269879726 seconds.
-2017-06-23 13:25:22,793 Converting dummy_urban2005_ubergrid to a .txt file.
-2017-06-23 13:25:27,417 The file dummy_urban2005_ubergrid was converted to ascii in 4.62276071132 seconds.
-2017-06-23 13:25:27,417 Converting dummy_urban2010_ubergrid to a .txt file.
-2017-06-23 13:25:31,992 The file dummy_urban2010_ubergrid was converted to ascii in 4.57499680474 seconds.
-2017-06-23 13:25:31,993 Converting dummy_urban2015_ubergrid to a .txt file.
-2017-06-23 13:25:36,444 The file dummy_urban2015_ubergrid was converted to ascii in 4.45045262692 seconds.
-2017-06-23 13:25:36,453 Successgully collected ubergrid settings.
-2017-06-23 13:25:36,456 Starting conversion of dummy_urban2000_ubergrid to a raster file.
-2017-06-23 13:26:12,392 The variable dummy_urban2000_ubergrid was converted into a raster file in 35.9366792593 seconds.
-2017-06-23 13:26:12,394 Starting conversion of dummy_urban2005_ubergrid to a raster file.
-2017-06-23 13:26:47,293 The variable dummy_urban2005_ubergrid was converted into a raster file in 34.8993294318 seconds.
-2017-06-23 13:26:47,293 Starting conversion of dummy_urban2010_ubergrid to a raster file.
-2017-06-23 13:27:28,049 The variable dummy_urban2010_ubergrid was converted into a raster file in 40.756366909 seconds.
-2017-06-23 13:27:28,051 Starting conversion of dummy_urban2015_ubergrid to a raster file.
-2017-06-23 13:28:01,832 The variable dummy_urban2015_ubergrid was converted into a raster file in 33.7809789363 seconds.
-2017-06-23 13:28:01,832 4 dta files (variables) were converted to raster
+2017-08-06 22:45:43,846 Starting dta2raster.py.
+2017-08-06 22:48:25,825 Done creating dta spawns.
+2017-08-06 22:48:25,957 Converting inpixelsample_ubergrid to a .txt file.
+2017-08-06 22:48:30,223 The file inpixelsample_ubergrid was converted to ascii in 4.26637375224 seconds.
+2017-08-06 22:48:30,223 Converting pixsampleWcld2000_ubergrid to a .txt file.
+2017-08-06 22:48:34,832 The file pixsampleWcld2000_ubergrid was converted to ascii in 4.60825950423 seconds.
+2017-08-06 22:48:34,834 Converting pixsampleWcld2001_ubergrid to a .txt file.
+2017-08-06 22:48:40,026 The file pixsampleWcld2001_ubergrid was converted to ascii in 5.19315664917 seconds.
+2017-08-06 22:48:40,026 Converting pixsampleWcld2002_ubergrid to a .txt file.
+2017-08-06 22:48:44,904 The file pixsampleWcld2002_ubergrid was converted to ascii in 4.87730096484 seconds.
+2017-08-06 22:48:44,904 Converting pixsampleWcld2003_ubergrid to a .txt file.
+2017-08-06 22:48:50,102 The file pixsampleWcld2003_ubergrid was converted to ascii in 5.19731067387 seconds.
+2017-08-06 22:48:50,102 Converting pixsampleWcld2004_ubergrid to a .txt file.
+2017-08-06 22:48:54,683 The file pixsampleWcld2004_ubergrid was converted to ascii in 4.5801317546 seconds.
+2017-08-06 22:48:54,683 Converting pixsampleWcld2005_ubergrid to a .txt file.
+2017-08-06 22:49:00,144 The file pixsampleWcld2005_ubergrid was converted to ascii in 5.46185981067 seconds.
+2017-08-06 22:49:00,145 Converting pixsampleWcld2006_ubergrid to a .txt file.
+2017-08-06 22:49:05,875 The file pixsampleWcld2006_ubergrid was converted to ascii in 5.72889157741 seconds.
+2017-08-06 22:49:05,875 Converting pixsampleWcld2007_ubergrid to a .txt file.
+2017-08-06 22:49:11,703 The file pixsampleWcld2007_ubergrid was converted to ascii in 5.82689819169 seconds.
+2017-08-06 22:49:11,703 Converting pixsampleWcld2008_ubergrid to a .txt file.
+2017-08-06 22:49:16,937 The file pixsampleWcld2008_ubergrid was converted to ascii in 5.23472116872 seconds.
+2017-08-06 22:49:16,937 Converting pixsampleWcld2009_ubergrid to a .txt file.
+2017-08-06 22:49:22,140 The file pixsampleWcld2009_ubergrid was converted to ascii in 5.20123600534 seconds.
+2017-08-06 22:49:22,140 Converting pixsampleWcld2010_ubergrid to a .txt file.
+2017-08-06 22:49:27,595 The file pixsampleWcld2010_ubergrid was converted to ascii in 5.4563597955 seconds.
+2017-08-06 22:49:27,596 Converting pixsampleWcld2011_ubergrid to a .txt file.
+2017-08-06 22:49:33,075 The file pixsampleWcld2011_ubergrid was converted to ascii in 5.47837692284 seconds.
+2017-08-06 22:49:33,075 Converting pixsampleWcld2012_ubergrid to a .txt file.
+2017-08-06 22:49:39,177 The file pixsampleWcld2012_ubergrid was converted to ascii in 6.10291119269 seconds.
+2017-08-06 22:49:39,178 Converting pixsampleWcld2013_ubergrid to a .txt file.
+2017-08-06 22:49:45,196 The file pixsampleWcld2013_ubergrid was converted to ascii in 6.01670029431 seconds.
+2017-08-06 22:49:45,196 Converting pixsampleWcld2014_ubergrid to a .txt file.
+2017-08-06 22:49:50,418 The file pixsampleWcld2014_ubergrid was converted to ascii in 5.22219386207 seconds.
+2017-08-06 22:49:50,418 Converting pixsampleWtmp2000_ubergrid to a .txt file.
+2017-08-06 22:49:54,576 The file pixsampleWtmp2000_ubergrid was converted to ascii in 4.15787303923 seconds.
+2017-08-06 22:49:54,578 Converting pixsampleWtmp2001_ubergrid to a .txt file.
+2017-08-06 22:49:59,006 The file pixsampleWtmp2001_ubergrid was converted to ascii in 4.42846529021 seconds.
+2017-08-06 22:49:59,007 Converting pixsampleWtmp2002_ubergrid to a .txt file.
+2017-08-06 22:50:03,400 The file pixsampleWtmp2002_ubergrid was converted to ascii in 4.39212696077 seconds.
+2017-08-06 22:50:03,401 Converting pixsampleWtmp2003_ubergrid to a .txt file.
+2017-08-06 22:50:07,795 The file pixsampleWtmp2003_ubergrid was converted to ascii in 4.39355107861 seconds.
+2017-08-06 22:50:07,796 Converting pixsampleWtmp2004_ubergrid to a .txt file.
+2017-08-06 22:50:12,194 The file pixsampleWtmp2004_ubergrid was converted to ascii in 4.39816590309 seconds.
+2017-08-06 22:50:12,194 Converting pixsampleWtmp2005_ubergrid to a .txt file.
+2017-08-06 22:50:17,674 The file pixsampleWtmp2005_ubergrid was converted to ascii in 5.47919422616 seconds.
+2017-08-06 22:50:17,674 Converting pixsampleWtmp2006_ubergrid to a .txt file.
+2017-08-06 22:50:22,948 The file pixsampleWtmp2006_ubergrid was converted to ascii in 5.273820125 seconds.
+2017-08-06 22:50:22,950 Converting pixsampleWtmp2007_ubergrid to a .txt file.
+2017-08-06 22:50:27,779 The file pixsampleWtmp2007_ubergrid was converted to ascii in 4.83131466367 seconds.
+2017-08-06 22:50:27,780 Converting pixsampleWtmp2008_ubergrid to a .txt file.
+2017-08-06 22:50:32,170 The file pixsampleWtmp2008_ubergrid was converted to ascii in 4.38834385145 seconds.
+2017-08-06 22:50:32,171 Converting pixsampleWtmp2009_ubergrid to a .txt file.
+2017-08-06 22:50:36,253 The file pixsampleWtmp2009_ubergrid was converted to ascii in 4.08153349616 seconds.
+2017-08-06 22:50:36,253 Converting pixsampleWtmp2010_ubergrid to a .txt file.
+2017-08-06 22:50:40,631 The file pixsampleWtmp2010_ubergrid was converted to ascii in 4.37770373798 seconds.
+2017-08-06 22:50:40,631 Converting pixsampleWtmp2011_ubergrid to a .txt file.
+2017-08-06 22:50:44,706 The file pixsampleWtmp2011_ubergrid was converted to ascii in 4.07391911162 seconds.
+2017-08-06 22:50:44,707 Converting pixsampleWtmp2012_ubergrid to a .txt file.
+2017-08-06 22:50:48,815 The file pixsampleWtmp2012_ubergrid was converted to ascii in 4.10866986256 seconds.
+2017-08-06 22:50:48,815 Converting pixsampleWtmp2013_ubergrid to a .txt file.
+2017-08-06 22:50:53,196 The file pixsampleWtmp2013_ubergrid was converted to ascii in 4.37979648958 seconds.
+2017-08-06 22:50:53,197 Converting pixsampleWtmp2014_ubergrid to a .txt file.
+2017-08-06 22:50:57,295 The file pixsampleWtmp2014_ubergrid was converted to ascii in 4.09847348221 seconds.
+2017-08-06 22:50:57,296 Converting popnonmiss_ubergrid to a .txt file.
+2017-08-06 22:51:01,973 The file popnonmiss_ubergrid was converted to ascii in 4.6775311751 seconds.
+2017-08-06 22:51:01,976 Converting tempnonmiss2000_ubergrid to a .txt file.
+2017-08-06 22:51:06,509 The file tempnonmiss2000_ubergrid was converted to ascii in 4.53446061774 seconds.
+2017-08-06 22:51:06,510 Converting tempnonmiss2001_ubergrid to a .txt file.
+2017-08-06 22:51:11,822 The file tempnonmiss2001_ubergrid was converted to ascii in 5.31232402379 seconds.
+2017-08-06 22:51:11,823 Converting tempnonmiss2002_ubergrid to a .txt file.
+2017-08-06 22:51:17,451 The file tempnonmiss2002_ubergrid was converted to ascii in 5.62725621226 seconds.
+2017-08-06 22:51:17,451 Converting tempnonmiss2003_ubergrid to a .txt file.
+2017-08-06 22:51:22,808 The file tempnonmiss2003_ubergrid was converted to ascii in 5.35622667557 seconds.
+2017-08-06 22:51:22,809 Converting tempnonmiss2004_ubergrid to a .txt file.
+2017-08-06 22:51:28,726 The file tempnonmiss2004_ubergrid was converted to ascii in 5.91714099336 seconds.
+2017-08-06 22:51:28,726 Converting tempnonmiss2005_ubergrid to a .txt file.
+2017-08-06 22:51:33,526 The file tempnonmiss2005_ubergrid was converted to ascii in 4.80098303953 seconds.
+2017-08-06 22:51:33,528 Converting tempnonmiss2006_ubergrid to a .txt file.
+2017-08-06 22:51:38,068 The file tempnonmiss2006_ubergrid was converted to ascii in 4.5389681119 seconds.
+2017-08-06 22:51:38,069 Converting tempnonmiss2007_ubergrid to a .txt file.
+2017-08-06 22:51:42,332 The file tempnonmiss2007_ubergrid was converted to ascii in 4.26336698626 seconds.
+2017-08-06 22:51:42,332 Converting tempnonmiss2008_ubergrid to a .txt file.
+2017-08-06 22:51:46,868 The file tempnonmiss2008_ubergrid was converted to ascii in 4.53700241209 seconds.
+2017-08-06 22:51:46,869 Converting tempnonmiss2009_ubergrid to a .txt file.
+2017-08-06 22:51:51,391 The file tempnonmiss2009_ubergrid was converted to ascii in 4.52104167299 seconds.
+2017-08-06 22:51:51,392 Converting tempnonmiss2010_ubergrid to a .txt file.
+2017-08-06 22:51:55,940 The file tempnonmiss2010_ubergrid was converted to ascii in 4.54820913863 seconds.
+2017-08-06 22:51:55,940 Converting tempnonmiss2011_ubergrid to a .txt file.
+2017-08-06 22:52:00,483 The file tempnonmiss2011_ubergrid was converted to ascii in 4.54198625565 seconds.
+2017-08-06 22:52:00,486 Converting tempnonmiss2012_ubergrid to a .txt file.
+2017-08-06 22:52:05,986 The file tempnonmiss2012_ubergrid was converted to ascii in 5.50200779757 seconds.
+2017-08-06 22:52:05,987 Converting tempnonmiss2013_ubergrid to a .txt file.
+2017-08-06 22:52:11,263 The file tempnonmiss2013_ubergrid was converted to ascii in 5.27465184017 seconds.
+2017-08-06 22:52:11,263 Converting tempnonmiss2014_ubergrid to a .txt file.
+2017-08-06 22:52:15,898 The file tempnonmiss2014_ubergrid was converted to ascii in 4.63623896356 seconds.
+2017-08-06 22:52:15,926 Successgully collected ubergrid settings.
+2017-08-06 22:52:15,931 Starting conversion of inpixelsample_ubergrid to a raster file.
+2017-08-06 22:53:00,427 The variable inpixelsample_ubergrid was converted into a raster file in 44.4955789769 seconds.
+2017-08-06 22:53:00,428 Starting conversion of pixsampleWcld2000_ubergrid to a raster file.
+2017-08-06 22:53:53,283 The variable pixsampleWcld2000_ubergrid was converted into a raster file in 52.854542386 seconds.
+2017-08-06 22:53:53,283 Starting conversion of pixsampleWcld2001_ubergrid to a raster file.
+2017-08-06 22:54:44,176 The variable pixsampleWcld2001_ubergrid was converted into a raster file in 50.8906607452 seconds.
+2017-08-06 22:54:44,177 Starting conversion of pixsampleWcld2002_ubergrid to a raster file.
+2017-08-06 22:55:36,217 The variable pixsampleWcld2002_ubergrid was converted into a raster file in 52.0407566977 seconds.
+2017-08-06 22:55:36,220 Starting conversion of pixsampleWcld2003_ubergrid to a raster file.
+2017-08-06 22:56:23,532 The variable pixsampleWcld2003_ubergrid was converted into a raster file in 47.3118594314 seconds.
+2017-08-06 22:56:23,533 Starting conversion of pixsampleWcld2004_ubergrid to a raster file.
+2017-08-06 22:57:21,186 The variable pixsampleWcld2004_ubergrid was converted into a raster file in 57.6515432052 seconds.
+2017-08-06 22:57:21,187 Starting conversion of pixsampleWcld2005_ubergrid to a raster file.
+2017-08-06 22:58:07,617 The variable pixsampleWcld2005_ubergrid was converted into a raster file in 46.4297115355 seconds.
+2017-08-06 22:58:07,617 Starting conversion of pixsampleWcld2006_ubergrid to a raster file.
+2017-08-06 22:58:43,546 The variable pixsampleWcld2006_ubergrid was converted into a raster file in 35.9291813314 seconds.
+2017-08-06 22:58:43,548 Starting conversion of pixsampleWcld2007_ubergrid to a raster file.
+2017-08-06 22:59:30,743 The variable pixsampleWcld2007_ubergrid was converted into a raster file in 47.1944044115 seconds.
+2017-08-06 22:59:30,744 Starting conversion of pixsampleWcld2008_ubergrid to a raster file.
+2017-08-06 23:00:08,032 The variable pixsampleWcld2008_ubergrid was converted into a raster file in 37.2888012379 seconds.
+2017-08-06 23:00:08,035 Starting conversion of pixsampleWcld2009_ubergrid to a raster file.
+2017-08-06 23:00:52,006 The variable pixsampleWcld2009_ubergrid was converted into a raster file in 43.9714452046 seconds.
+2017-08-06 23:00:52,007 Starting conversion of pixsampleWcld2010_ubergrid to a raster file.
+2017-08-06 23:01:37,973 The variable pixsampleWcld2010_ubergrid was converted into a raster file in 45.9668254498 seconds.
+2017-08-06 23:01:37,974 Starting conversion of pixsampleWcld2011_ubergrid to a raster file.
+2017-08-06 23:02:14,009 The variable pixsampleWcld2011_ubergrid was converted into a raster file in 36.0333099457 seconds.
+2017-08-06 23:02:14,010 Starting conversion of pixsampleWcld2012_ubergrid to a raster file.
+2017-08-06 23:02:55,230 The variable pixsampleWcld2012_ubergrid was converted into a raster file in 41.218640963 seconds.
+2017-08-06 23:02:55,230 Starting conversion of pixsampleWcld2013_ubergrid to a raster file.
+2017-08-06 23:03:38,448 The variable pixsampleWcld2013_ubergrid was converted into a raster file in 43.2175130465 seconds.
+2017-08-06 23:03:38,448 Starting conversion of pixsampleWcld2014_ubergrid to a raster file.
+2017-08-06 23:04:18,987 The variable pixsampleWcld2014_ubergrid was converted into a raster file in 40.5385782336 seconds.
+2017-08-06 23:04:18,990 Starting conversion of pixsampleWtmp2000_ubergrid to a raster file.
+2017-08-06 23:04:59,428 The variable pixsampleWtmp2000_ubergrid was converted into a raster file in 40.4384003611 seconds.
+2017-08-06 23:04:59,428 Starting conversion of pixsampleWtmp2001_ubergrid to a raster file.
+2017-08-06 23:05:53,898 The variable pixsampleWtmp2001_ubergrid was converted into a raster file in 54.4684304742 seconds.
+2017-08-06 23:05:53,900 Starting conversion of pixsampleWtmp2002_ubergrid to a raster file.
+2017-08-06 23:06:37,832 The variable pixsampleWtmp2002_ubergrid was converted into a raster file in 43.9319442337 seconds.
+2017-08-06 23:06:37,832 Starting conversion of pixsampleWtmp2003_ubergrid to a raster file.
+2017-08-06 23:07:33,413 The variable pixsampleWtmp2003_ubergrid was converted into a raster file in 55.5788911982 seconds.
+2017-08-06 23:07:33,414 Starting conversion of pixsampleWtmp2004_ubergrid to a raster file.
+2017-08-06 23:08:27,565 The variable pixsampleWtmp2004_ubergrid was converted into a raster file in 54.1499613156 seconds.
+2017-08-06 23:08:27,566 Starting conversion of pixsampleWtmp2005_ubergrid to a raster file.
+2017-08-06 23:09:07,888 The variable pixsampleWtmp2005_ubergrid was converted into a raster file in 40.3225325404 seconds.
+2017-08-06 23:09:07,891 Starting conversion of pixsampleWtmp2006_ubergrid to a raster file.
+2017-08-06 23:09:49,690 The variable pixsampleWtmp2006_ubergrid was converted into a raster file in 41.7986873843 seconds.
+2017-08-06 23:09:49,690 Starting conversion of pixsampleWtmp2007_ubergrid to a raster file.
+2017-08-06 23:10:23,694 The variable pixsampleWtmp2007_ubergrid was converted into a raster file in 34.0047009163 seconds.
+2017-08-06 23:10:23,696 Starting conversion of pixsampleWtmp2008_ubergrid to a raster file.
+2017-08-06 23:10:58,115 The variable pixsampleWtmp2008_ubergrid was converted into a raster file in 34.4183337632 seconds.
+2017-08-06 23:10:58,115 Starting conversion of pixsampleWtmp2009_ubergrid to a raster file.
+2017-08-06 23:11:31,974 The variable pixsampleWtmp2009_ubergrid was converted into a raster file in 33.8592869171 seconds.
+2017-08-06 23:11:31,976 Starting conversion of pixsampleWtmp2010_ubergrid to a raster file.
+2017-08-06 23:12:05,990 The variable pixsampleWtmp2010_ubergrid was converted into a raster file in 34.0146321945 seconds.
+2017-08-06 23:12:05,990 Starting conversion of pixsampleWtmp2011_ubergrid to a raster file.
+2017-08-06 23:12:40,025 The variable pixsampleWtmp2011_ubergrid was converted into a raster file in 34.0333638005 seconds.
+2017-08-06 23:12:40,025 Starting conversion of pixsampleWtmp2012_ubergrid to a raster file.
+2017-08-06 23:13:13,963 The variable pixsampleWtmp2012_ubergrid was converted into a raster file in 33.9382444856 seconds.
+2017-08-06 23:13:13,963 Starting conversion of pixsampleWtmp2013_ubergrid to a raster file.
+2017-08-06 23:13:48,174 The variable pixsampleWtmp2013_ubergrid was converted into a raster file in 34.2094075215 seconds.
+2017-08-06 23:13:48,174 Starting conversion of pixsampleWtmp2014_ubergrid to a raster file.
+2017-08-06 23:14:22,775 The variable pixsampleWtmp2014_ubergrid was converted into a raster file in 34.5996692861 seconds.
+2017-08-06 23:14:22,776 Starting conversion of popnonmiss_ubergrid to a raster file.
+2017-08-06 23:14:57,158 The variable popnonmiss_ubergrid was converted into a raster file in 34.3836520374 seconds.
+2017-08-06 23:14:57,160 Starting conversion of tempnonmiss2000_ubergrid to a raster file.
+2017-08-06 23:15:31,502 The variable tempnonmiss2000_ubergrid was converted into a raster file in 34.3415319033 seconds.
+2017-08-06 23:15:31,503 Starting conversion of tempnonmiss2001_ubergrid to a raster file.
+2017-08-06 23:16:06,530 The variable tempnonmiss2001_ubergrid was converted into a raster file in 35.0273009648 seconds.
+2017-08-06 23:16:06,532 Starting conversion of tempnonmiss2002_ubergrid to a raster file.
+2017-08-06 23:16:40,569 The variable tempnonmiss2002_ubergrid was converted into a raster file in 34.0370517158 seconds.
+2017-08-06 23:16:40,569 Starting conversion of tempnonmiss2003_ubergrid to a raster file.
+2017-08-06 23:17:14,743 The variable tempnonmiss2003_ubergrid was converted into a raster file in 34.1745149276 seconds.
+2017-08-06 23:17:14,744 Starting conversion of tempnonmiss2004_ubergrid to a raster file.
+2017-08-06 23:17:49,072 The variable tempnonmiss2004_ubergrid was converted into a raster file in 34.3279498771 seconds.
+2017-08-06 23:17:49,072 Starting conversion of tempnonmiss2005_ubergrid to a raster file.
+2017-08-06 23:18:24,187 The variable tempnonmiss2005_ubergrid was converted into a raster file in 35.1122022816 seconds.
+2017-08-06 23:18:24,187 Starting conversion of tempnonmiss2006_ubergrid to a raster file.
+2017-08-06 23:18:59,025 The variable tempnonmiss2006_ubergrid was converted into a raster file in 34.838031342 seconds.
+2017-08-06 23:18:59,025 Starting conversion of tempnonmiss2007_ubergrid to a raster file.
+2017-08-06 23:19:33,796 The variable tempnonmiss2007_ubergrid was converted into a raster file in 34.7702224734 seconds.
+2017-08-06 23:19:33,798 Starting conversion of tempnonmiss2008_ubergrid to a raster file.
+2017-08-06 23:20:08,203 The variable tempnonmiss2008_ubergrid was converted into a raster file in 34.404373995 seconds.
+2017-08-06 23:20:08,203 Starting conversion of tempnonmiss2009_ubergrid to a raster file.
+2017-08-06 23:20:42,576 The variable tempnonmiss2009_ubergrid was converted into a raster file in 34.3731640068 seconds.
+2017-08-06 23:20:42,576 Starting conversion of tempnonmiss2010_ubergrid to a raster file.
+2017-08-06 23:21:16,680 The variable tempnonmiss2010_ubergrid was converted into a raster file in 34.1037630086 seconds.
+2017-08-06 23:21:16,683 Starting conversion of tempnonmiss2011_ubergrid to a raster file.
+2017-08-06 23:21:52,516 The variable tempnonmiss2011_ubergrid was converted into a raster file in 35.8336349707 seconds.
+2017-08-06 23:21:52,517 Starting conversion of tempnonmiss2012_ubergrid to a raster file.
+2017-08-06 23:22:26,881 The variable tempnonmiss2012_ubergrid was converted into a raster file in 34.3637269031 seconds.
+2017-08-06 23:22:26,881 Starting conversion of tempnonmiss2013_ubergrid to a raster file.
+2017-08-06 23:23:01,680 The variable tempnonmiss2013_ubergrid was converted into a raster file in 34.798559574 seconds.
+2017-08-06 23:23:01,683 Starting conversion of tempnonmiss2014_ubergrid to a raster file.
+2017-08-06 23:23:36,213 The variable tempnonmiss2014_ubergrid was converted into a raster file in 34.5304844655 seconds.
+2017-08-06 23:23:36,213 47 dta files (variables) were converted to raster
