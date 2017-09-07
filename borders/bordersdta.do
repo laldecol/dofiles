@@ -30,6 +30,11 @@ gen `ubercodename'=.;
 replace `ubercodename'=(`row'-1)*`C'+`col' if `row'!=. & `col'!=.;
 end;
 
+program define north;
+args ubercode C;
+return north=cond(`ubercode'>`C', `ubercode'-C , . );
+end; 
+
 *For each uber_code, generate four variables: uber_code of northern, southern, western, and eastern neighbor.;
 *Calculations:;
 use "..\\..\\..\\data\projections\generated\settings.dta", clear;
@@ -44,6 +49,13 @@ use "..\\..\\..\\data\GPW4\generated\gpw-v4-national-identifier-grid\ubergrid\dt
 *Check we're using correct ubergrid settings;
 assert _N==`R'*`C';
 
+local ubercodetest=v1[_N];
+north `ubercodetest' `C';
+local Ntest=r(north);
+
+dis `Ntest';
+
+pause;
 
 *Eastern and western neighbor are easy for uber_code MOD C !=;
 ubercode2rc v1 `C' test;
