@@ -3,6 +3,9 @@
 *Output rasters are dummy rasters for: international border NSEW & land-ocean borders,
 #delimit;
 program drop _all;
+pause on;
+set more off;
+set trace on;
 
 *ubercode2rc generates variables with row and column coordinates for all cells in
 *an ubergrid.
@@ -30,10 +33,40 @@ gen `ubercodename'=.;
 replace `ubercodename'=(`row'-1)*`C'+`col' if `row'!=. & `col'!=.;
 end;
 
-program define north;
-args ubercode C;
-return north=cond(`ubercode'>`C', `ubercode'-C , . );
+program define neighborsca, rclass;
+args ubercode C R;
+return scalar north=cond(`ubercode'>`C', `ubercode'-`C' , . );
+return scalar south=cond(`ubercode'<`C'*`R'-`C', `ubercode'+`C' , . );
+return scalar east=cond(mod(`ubercode',`C')==0, `ubercode'-`C'+1 , `ubercode'+ 1 );
+return scalar west=cond(mod(`ubercode',`C')==1, `ubercode'+`C'-1 , `ubercode'- 1 );
 end; 
+
+program define neighborvar;
+args ubercodevar C R;
+gen `ubercodevar'_north=cond(`ubercodevar'>`C', `ubercodevar'-`C' , . );
+gen `ubercodevar'_south=cond(`ubercodevar'<`C'*`R'-`C', `ubercodevar'+`C' , . );
+gen `ubercodevar'_east=cond(mod(`ubercodevar',`C')==0, `ubercodevar'-`C'+1 , `ubercodevar'+ 1 );
+gen `ubercodevar'_west=cond(mod(`ubercodevar',`C')==1, `ubercodevar'+`C'-1 , `ubercodevar'- 1 );
+end; 
+
+program define isborder;
+args bordervar ubercodevar C R ignorevals;
+neighborvar `ubercodevar' `C' `R';
+
+gen isborder_N=(`bordervar'!=`bordervar'[`ubercodevar'_north] & `bordervar'!=. & `bordervar'!=`ignorevals' & 
+`bordervar'[`ubercodevar'_north]!=`ignorevals' & `bordervar'[`ubercodevar'_north]!=. );
+
+gen isborder_S=(`bordervar'!=`bordervar'[`ubercodevar'_south]  & `bordervar'!=. & `bordervar'!=`ignorevals' &
+ `bordervar'[`ubercodevar'_south]!=`ignorevals' & `bordervar'[`ubercodevar'_south]!=.);
+ 
+gen isborder_E=(`bordervar'!=`bordervar'[`ubercodevar'_east]  & `bordervar'!=. & `bordervar'!=`ignorevals' &
+ `bordervar'[`ubercodevar'_east]!=`ignorevals' & `bordervar'[`ubercodevar'_east]!=.);
+ 
+gen isborder_W=(`bordervar'!=`bordervar'[`ubercodevar'_west]  & `bordervar'!=. & `bordervar'!=`ignorevals' &
+ `bordervar'[`ubercodevar'_west]!=`ignorevals' & `bordervar'[`ubercodevar'_west]!=.);
+ 
+drop `ubercodevar'_*;
+end;
 
 *For each uber_code, generate four variables: uber_code of northern, southern, western, and eastern neighbor.;
 *Calculations:;
@@ -43,6 +76,8 @@ use "..\\..\\..\\data\projections\generated\settings.dta", clear;
 
 local C=COLUMNCOUNT[1];
 local R=ROWCOUNT[1];
+dis "Number of Columns: " `C';
+dis "Number of Rows: " `R';
 
 use "..\\..\\..\\data\GPW4\generated\gpw-v4-national-identifier-grid\ubergrid\dtas\gpw_v4_national_identifier_gri.dta", clear;
 
@@ -50,22 +85,17 @@ use "..\\..\\..\\data\GPW4\generated\gpw-v4-national-identifier-grid\ubergrid\dt
 assert _N==`R'*`C';
 
 local ubercodetest=v1[_N];
-north `ubercodetest' `C';
+neighborsca `ubercodetest' `C' `R';
 local Ntest=r(north);
+local Stest=r(south);
+local Etest=r(east);
+local Wtest=r(west);
 
-dis `Ntest';
+dis "North Neighbor " `Ntest';
+dis "South Neighbor " `Stest';
+dis "East Neighbor " `Etest';
+dis "West Neighbor " `Wtest';
 
-pause;
+isborder gpw_v4_national_identifier_gri v1 `C' `R' -9999;
 
-*Eastern and western neighbor are easy for uber_code MOD C !=;
-ubercode2rc v1 `C' test;
-gen Nx=col;
-gen Ny=.;
-replace Ny=row-1 if row>1;
-
-*Test whether rc2ubergrid and ubergrid2rc are inverses
-
-rc2ubercode rowtest coltest `C' ubercode_test;
-
-rc2ubercode Nx Ny `C' index;
-*write a program that returns the ubercode given row and col, and vice versa;
+save "S:\\particulates\\data_processing\\data\\boundaries\\manual\\borders.dta", replace;
