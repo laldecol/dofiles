@@ -530,3 +530,35 @@
 =======
 201705241828   0    13     0laldecol S:\particulates\data_processing\data\CRU\generated\yearly\ubergrid\ascii\wet2014.txt = GRIDASCII ( S:\particulates\data_processi201707261838   0     2     0laldecol S:\particulates\data_processing\data\GPW4\generated\gpw-v4-national-identifier-grid\ubergrid\ascii\gpw-v4-national-identifier-gr
 >>>>>>> refs/remotes/origin/master
+201709081648   0     5     0laldecol S:\particulates\data_processing\data\CCMP\generated\yearly\ubergrid\ascii\uwnd_2000.txt = GRIDASCII ( S:\particulates\data_proce
+201709081648   0     5     0laldecol S:\particulates\data_processing\data\CCMP\generated\yearly\ubergrid\ascii\uwnd_2001.txt = GRIDASCII ( S:\particulates\data_proce
+201709081649   0     6     0laldecol S:\particulates\data_processing\data\CCMP\generated\yearly\ubergrid\ascii\uwnd_2002.txt = GRIDASCII ( S:\particulates\data_proce
+201709081649   0     6     0laldecol S:\particulates\data_processing\data\CCMP\generated\yearly\ubergrid\ascii\uwnd_2003.txt = GRIDASCII ( S:\particulates\data_proce
+201709081650   0     5     0laldecol S:\particulates\data_processing\data\CCMP\generated\yearly\ubergrid\ascii\uwnd_2004.txt = GRIDASCII ( S:\particulates\data_proce
+201709081650   0     5     0laldecol S:\particulates\data_processing\data\CCMP\generated\yearly\ubergrid\ascii\uwnd_2005.txt = GRIDASCII ( S:\particulates\data_proce
+201709081651   1     6     0laldecol S:\particulates\data_processing\data\CCMP\generated\yearly\ubergrid\ascii\uwnd_2006.txt = GRIDASCII ( S:\particulates\data_proce
+201709081651   0     5     0laldecol S:\particulates\data_processing\data\CCMP\generated\yearly\ubergrid\ascii\uwnd_2007.txt = GRIDASCII ( S:\particulates\data_proce
+201709081652   1     5     0laldecol S:\particulates\data_processing\data\CCMP\generated\yearly\ubergrid\ascii\uwnd_2008.txt = GRIDASCII ( S:\particulates\data_proce
+201709081652   0     5     0laldecol S:\particulates\data_processing\data\CCMP\generated\yearly\ubergrid\ascii\uwnd_2009.txt = GRIDASCII ( S:\particulates\data_proce
+201709081652   0     5     0laldecol S:\particulates\data_processing\data\CCMP\generated\yearly\ubergrid\ascii\uwnd_2010.txt = GRIDASCII ( S:\particulates\data_proce
+201709081653   0     5     0laldecol S:\particulates\data_processing\data\CCMP\generated\yearly\ubergrid\ascii\uwnd_2011.txt = GRIDASCII ( S:\particulates\data_proce
+201709081653   0     5     0laldecol S:\particulates\data_processing\data\CCMP\generated\yearly\ubergrid\ascii\uwnd_2012.txt = GRIDASCII ( S:\particulates\data_proce
+201709081654   0     5     0laldecol S:\particulates\data_processing\data\CCMP\generated\yearly\ubergrid\ascii\uwnd_2013.txt = GRIDASCII ( S:\particulates\data_proce
+201709081654   0     5     0laldecol S:\particulates\data_processing\data\CCMP\generated\yearly\ubergrid\ascii\uwnd_2014.txt = GRIDASCII ( S:\particulates\data_proce
+201709081655   0     5     0laldecol S:\particulates\data_processing\data\CCMP\generated\yearly\ubergrid\ascii\uwnd_2015.txt = GRIDASCII ( S:\particulates\data_proce
+201709081655   0     5     0laldecol S:\particulates\data_processing\data\CCMP\generated\yearly\ubergrid\ascii\vwnd_2000.txt = GRIDASCII ( S:\particulates\data_proce
+201709081656   0     5     0laldecol S:\particulates\data_processing\data\CCMP\generated\yearly\ubergrid\ascii\vwnd_2001.txt = GRIDASCII ( S:\particulates\data_proce
+201709081656   0     6     0laldecol S:\particulates\data_processing\data\CCMP\generated\yearly\ubergrid\ascii\vwnd_2002.txt = GRIDASCII ( S:\particulates\data_proce
+201709081657   0     5     0laldecol S:\particulates\data_processing\data\CCMP\generated\yearly\ubergrid\ascii\vwnd_2003.txt = GRIDASCII ( S:\particulates\data_proce
+201709081657   0     5     0laldecol S:\particulates\data_processing\data\CCMP\generated\yearly\ubergrid\ascii\vwnd_2004.txt = GRIDASCII ( S:\particulates\data_proce
+201709081658   0     5     0laldecol S:\particulates\data_processing\data\CCMP\generated\yearly\ubergrid\ascii\vwnd_2005.txt = GRIDASCII ( S:\particulates\data_proce
+201709081658   0     5     0laldecol S:\particulates\data_processing\data\CCMP\generated\yearly\ubergrid\ascii\vwnd_2006.txt = GRIDASCII ( S:\particulates\data_proce
+201709081659   0     5     0laldecol S:\particulates\data_processing\data\CCMP\generated\yearly\ubergrid\ascii\vwnd_2007.txt = GRIDASCII ( S:\particulates\data_proce
+201709081659   0     5     0laldecol S:\particulates\data_processing\data\CCMP\generated\yearly\ubergrid\ascii\vwnd_2008.txt = GRIDASCII ( S:\particulates\data_proce
+201709081700   1     5     0laldecol S:\particulates\data_processing\data\CCMP\generated\yearly\ubergrid\ascii\vwnd_2009.txt = GRIDASCII ( S:\particulates\data_proce
+201709081700   0     5     0laldecol S:\particulates\data_processing\data\CCMP\generated\yearly\ubergrid\ascii\vwnd_2010.txt = GRIDASCII ( S:\particulates\data_proce
+201709081701   1     6     0laldecol S:\particulates\data_processing\data\CCMP\generated\yearly\ubergrid\ascii\vwnd_2011.txt = GRIDASCII ( S:\particulates\data_proce
+201709081701   0     5     0laldecol S:\particulates\data_processing\data\CCMP\generated\yearly\ubergrid\ascii\vwnd_2012.txt = GRIDASCII ( S:\particulates\data_proce
+201709081701   0     6     0laldecol S:\particulates\data_processing\data\CCMP\generated\yearly\ubergrid\ascii\vwnd_2013.txt = GRIDASCII ( S:\particulates\data_proce
+201709081702   0     5     0laldecol S:\particulates\data_processing\data\CCMP\generated\yearly\ubergrid\ascii\vwnd_2014.txt = GRIDASCII ( S:\particulates\data_proce
+201709081702   0     5     0laldecol S:\particulates\data_processing\data\CCMP\generated\yearly\ubergrid\ascii\vwnd_2015.txt = GRIDASCII ( S:\particulates\data_proce
