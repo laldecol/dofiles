@@ -130,13 +130,15 @@ if 1==2{;
 
 if 1==2{;
 	cd table2dta;
-	
+	/*;
 	do table2dta.do "..\..\..\data\MODIS_AOD\generated\yearly\ubergrid\table" "*avg.txt";
 	do table2dta.do "..\..\..\data\GPW4\generated\projected\table" "*.txt";
 	do table2dta.do "..\..\..\data\GPW4\generated\gpw-v4-national-identifier-grid\ubergrid\table" "*.txt";
 	do table2dta.do "..\..\..\data\GPW4\generated\gpw-v4-data-quality-indicators-mean-administrative-unit-area\ubergrid\table" "*.txt";
 	do table2dta.do "..\..\..\data\MODIS_FIRE\generated\yearly\ubergrid\table" "*.txt";
 	do table2dta.do "..\..\..\data\CRU\generated\yearly\ubergrid\table" "*.txt";
+	*/;
+	do table2dta.do "..\..\..\data\CCMP\generated\yearly\ubergrid\table" "*.txt";
 	cd ..;
 	*Successfully ran table2dta.do;
 	};
@@ -146,14 +148,15 @@ if 1==2{;
 **************************;
 *Merges all .dta files from the specified directories together and saves them.;
 
-if 1==2{;
+if 1==1{;
 	cd mergedtas;
-	do mergedtas.do 6 "MODIS_AOD\generated\yearly\ubergrid\dtas"
+	do mergedtas.do 7 "MODIS_AOD\generated\yearly\ubergrid\dtas"
 	"GPW4\generated\projected\dtas"
 	"GPW4\generated\gpw-v4-national-identifier-grid\ubergrid\dtas"
 	"GPW4\generated\gpw-v4-data-quality-indicators-mean-administrative-unit-area\ubergrid\dtas"
 	"MODIS_FIRE\generated\yearly\ubergrid\dtas"
-	"CRU\generated\yearly\ubergrid\dtas";
+	"CRU\generated\yearly\ubergrid\dtas"
+	"CCMP\generated\yearly\ubergrid\dtas";
 	cd ..;
 	*Successfully ran mergedtas.do;
 	};

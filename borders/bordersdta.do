@@ -1,6 +1,5 @@
 ***This .do file computes 
 *Output dtas can be converted to ubergrid rasters using raster2dta
-*Output rasters are dummy rasters for: international border NSEW & land-ocean borders,
 #delimit;
 program drop _all;
 pause on;
@@ -51,6 +50,9 @@ end;
 
 program define isborder;
 args bordervar ubercodevar C R ignorevals;
+
+sort `ubercodevar';
+
 neighborvar `ubercodevar' `C' `R';
 
 gen isborder_N=(`bordervar'!=`bordervar'[`ubercodevar'_north] & `bordervar'!=. & `bordervar'!=`ignorevals' & 
@@ -64,8 +66,16 @@ gen isborder_E=(`bordervar'!=`bordervar'[`ubercodevar'_east]  & `bordervar'!=. &
  
 gen isborder_W=(`bordervar'!=`bordervar'[`ubercodevar'_west]  & `bordervar'!=. & `bordervar'!=`ignorevals' &
  `bordervar'[`ubercodevar'_west]!=`ignorevals' & `bordervar'[`ubercodevar'_west]!=.);
- 
-drop `ubercodevar'_*;
+
+gen neighbor_N=`bordervar'[`ubercodevar'_north] if `bordervar'[`ubercodevar'_north]!=`ignorevals' & isborder_N==1;
+
+gen neighbor_S=`bordervar'[`ubercodevar'_south] if `bordervar'[`ubercodevar'_south]!=`ignorevals' & isborder_S==1;
+
+gen neighbor_E=`bordervar'[`ubercodevar'_east] if `bordervar'[`ubercodevar'_east]!=`ignorevals' & isborder_E==1;
+
+gen neighbor_W=`bordervar'[`ubercodevar'_west] if `bordervar'[`ubercodevar'_west]!=`ignorevals' & isborder_W==1;
+
+*drop `ubercodevar'_*;
 end;
 
 *For each uber_code, generate four variables: uber_code of northern, southern, western, and eastern neighbor.;
@@ -79,23 +89,17 @@ local R=ROWCOUNT[1];
 dis "Number of Columns: " `C';
 dis "Number of Rows: " `R';
 
-use "..\\..\\..\\data\GPW4\generated\gpw-v4-national-identifier-grid\ubergrid\dtas\gpw_v4_national_identifier_gri.dta", clear;
+use "..\\..\\..\\data\\dtas\\analyze_me.dta", clear;
 
 *Check we're using correct ubergrid settings;
 assert _N==`R'*`C';
 
-local ubercodetest=v1[_N];
+local ubercodetest=uber_code[_N];
 neighborsca `ubercodetest' `C' `R';
-local Ntest=r(north);
-local Stest=r(south);
-local Etest=r(east);
-local Wtest=r(west);
+return list;
 
-dis "North Neighbor " `Ntest';
-dis "South Neighbor " `Stest';
-dis "East Neighbor " `Etest';
-dis "West Neighbor " `Wtest';
+isborder gpw_v4_national_identifier_gri uber_code `C' `R' -9999;
 
-isborder gpw_v4_national_identifier_gri v1 `C' `R' -9999;
+*keep uber_code* gpw_v4_national_identifier_gri isborder_* neighbor_*;
 
 save "S:\\particulates\\data_processing\\data\\boundaries\\manual\\borders.dta", replace;
