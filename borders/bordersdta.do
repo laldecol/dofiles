@@ -4,7 +4,7 @@
 program drop _all;
 pause on;
 set more off;
-set trace on;
+set trace off;
 
 *ubercode2rc generates variables with row and column coordinates for all cells in
 *an ubergrid.
@@ -35,7 +35,7 @@ end;
 program define neighborsca, rclass;
 args ubercode C R;
 return scalar north=cond(`ubercode'>`C', `ubercode'-`C' , . );
-return scalar south=cond(`ubercode'<`C'*`R'-`C', `ubercode'+`C' , . );
+return scalar south=cond(`ubercode'<=`C'*`R'-`C', `ubercode'+`C' , . );
 return scalar east=cond(mod(`ubercode',`C')==0, `ubercode'-`C'+1 , `ubercode'+ 1 );
 return scalar west=cond(mod(`ubercode',`C')==1, `ubercode'+`C'-1 , `ubercode'- 1 );
 end; 
@@ -43,7 +43,7 @@ end;
 program define neighborvar;
 args ubercodevar C R;
 gen `ubercodevar'_north=cond(`ubercodevar'>`C', `ubercodevar'-`C' , . );
-gen `ubercodevar'_south=cond(`ubercodevar'<`C'*`R'-`C', `ubercodevar'+`C' , . );
+gen `ubercodevar'_south=cond(`ubercodevar'<=`C'*`R'-`C', `ubercodevar'+`C' , . );
 gen `ubercodevar'_east=cond(mod(`ubercodevar',`C')==0, `ubercodevar'-`C'+1 , `ubercodevar'+ 1 );
 gen `ubercodevar'_west=cond(mod(`ubercodevar',`C')==1, `ubercodevar'+`C'-1 , `ubercodevar'- 1 );
 end; 
@@ -67,13 +67,13 @@ gen isborder_E=(`bordervar'!=`bordervar'[`ubercodevar'_east]  & `bordervar'!=. &
 gen isborder_W=(`bordervar'!=`bordervar'[`ubercodevar'_west]  & `bordervar'!=. & `bordervar'!=`ignorevals' &
  `bordervar'[`ubercodevar'_west]!=`ignorevals' & `bordervar'[`ubercodevar'_west]!=.);
 
-gen neighbor_N=`bordervar'[`ubercodevar'_north] if `bordervar'[`ubercodevar'_north]!=`ignorevals' & isborder_N==1;
+gen neighbor_N=`bordervar'[`ubercodevar'_north];
 
-gen neighbor_S=`bordervar'[`ubercodevar'_south] if `bordervar'[`ubercodevar'_south]!=`ignorevals' & isborder_S==1;
+gen neighbor_S=`bordervar'[`ubercodevar'_south];
 
-gen neighbor_E=`bordervar'[`ubercodevar'_east] if `bordervar'[`ubercodevar'_east]!=`ignorevals' & isborder_E==1;
+gen neighbor_E=`bordervar'[`ubercodevar'_east];
 
-gen neighbor_W=`bordervar'[`ubercodevar'_west] if `bordervar'[`ubercodevar'_west]!=`ignorevals' & isborder_W==1;
+gen neighbor_W=`bordervar'[`ubercodevar'_west];
 
 *drop `ubercodevar'_*;
 end;
@@ -94,12 +94,50 @@ use "..\\..\\..\\data\\dtas\\analyze_me.dta", clear;
 *Check we're using correct ubergrid settings;
 assert _N==`R'*`C';
 
+sort uber_code;
+
 local ubercodetest=uber_code[_N];
 neighborsca `ubercodetest' `C' `R';
 return list;
 
 isborder gpw_v4_national_identifier_gri uber_code `C' `R' -9999;
 
-*keep uber_code* gpw_v4_national_identifier_gri isborder_* neighbor_*;
+*Preserve, then generate macros with neighbor codes for each region;
+preserve;
+
+keep uber_code* gpw_v4_national_identifier_gri isborder_* neighbor_*;
+
+reshape long isborder_ neighbor_, i(uber_code) j(cardir) string;
+
+collapse (count) uber_code, by ( gpw_v4_national_identifier_gri neighbor_);
+#delimit;
+levelsof gpw_v4_national_identifier_gri, local(countrycodes);
+
+foreach countrycode of local countrycodes{;
+
+levelsof neighbor_ if gpw_v4_national_identifier_gri==`countrycode', local(neighbors`countrycode');
+*Next two lines remove own country code from list. Can be generalized to remove
+*other codes too (e.g. international borders if looking at urban to rural);
+local own `countrycode';
+local neighbors`countrycode': list neighbors`countrycode' - own;
+foreach neighbor of local neighbors`countrycode'{;
+dis `neighbor';
+
+};
+};
+
+*Restore analyze_me.dta with neighbor macros in place;
+*N's neighbors are stored in macro neighborsN;
+#delimit;
+forvalues year=2000/2015{;
+
+gen Nt`year'=max(vwnd_`year',0)*Terra`year'avg;
+gen St`year'=max(-vwnd_`year',0)*Terra`year'avg;
+gen Et`year'=max(uwnd_`year',0)*Terra`year'avg;
+gen Wt`year'=max(-uwnd_`year',0)*Terra`year'avg;
+
+};
+
+restore;
 
 save "S:\\particulates\\data_processing\\data\\boundaries\\manual\\borders.dta", replace;

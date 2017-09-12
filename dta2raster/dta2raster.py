@@ -226,7 +226,7 @@ if __name__ == '__main__':
     inputfile = "S:\\particulates\\data_processing\\data\\boundaries\\manual\\borders.dta"
     # Define type of data ("FLOAT" or "INTEGER")
     datatype = "FLOAT"
-    outputfolder = "S:\\particulates\\data_processing\\data\\boundaries\\manual\\ubergrid_borders.dta"
+    outputfolder = "S:\\particulates\\data_processing\\data\\boundaries\\manual\\ubergrid_borders"
     ###################################################################################################    
     
     dta2raster(inputfile, datatype, outputfolder)
