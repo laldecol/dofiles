@@ -1,11 +1,4 @@
-<<<<<<< HEAD
-2017-06-28 16:31:40,216 Starting raster2list.py.
-2017-06-28 16:31:40,216 Starting process...
-2017-06-28 16:32:15,907 Processed 1 rasters in 0.594854463698 minutes
-2017-06-28 16:32:15,907 Done with raster2list.py.
-=======
-2017-07-26 18:38:50,375 Starting raster2list.py.
-2017-07-26 18:38:50,388 Starting process...
-2017-07-26 18:39:14,325 Processed 1 rasters in 0.398918150424 minutes
-2017-07-26 18:39:14,326 Done with raster2list.py.
->>>>>>> refs/remotes/origin/master
+2017-09-08 16:48:02,703 Starting raster2list.py.
+2017-09-08 16:48:02,703 Starting process...
+2017-09-08 17:03:19,503 Processed 32 rasters in 15.2796986168 minutes
+2017-09-08 17:03:19,503 Done with raster2list.py.
