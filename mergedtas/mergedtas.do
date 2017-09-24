@@ -93,7 +93,7 @@ drop _merge;
 
 ds, has(type numeric);
 foreach var of varlist `r(varlist)' {;
-  replace `var' = .  if `var' <0;
+  replace `var' = .  if `var'==-9999;
 };
 
 ****************************;

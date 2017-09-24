@@ -128,8 +128,10 @@ dis `neighbor';
 
 *Restore analyze_me.dta with neighbor macros in place;
 *N's neighbors are stored in macro neighborsN;
-#delimit;
-forvalues year=2000/2015{;
+
+restore;
+
+forvalues year=2000/2014{;
 
 gen Nt`year'=max(vwnd_`year',0)*Terra`year'avg;
 gen St`year'=max(-vwnd_`year',0)*Terra`year'avg;
@@ -138,6 +140,18 @@ gen Wt`year'=max(-uwnd_`year',0)*Terra`year'avg;
 
 };
 
-restore;
+keep uber_code isborder_* country gpw_v4_national_identifier_gri neighbor_* Nt* St* Et* Wt*;
+
+keep if isborder_N | isborder_S | isborder_E | isborder_W;
+
+reshape long Nt St Et Wt, i(uber_code) j(year);
+
+rename (Nt St Et Wt) (transfer_N transfer_S transfer_E transfer_W);
+
+reshape long isborder_ neighbor_ transfer_, i(uber_code year) j(dir) string;
+
+collapse (sum) transfer_ if isborder_, by( country gpw_v4_national_identifier_gri neighbor_ year);
+
+merge 1:m country using "S:\particulates\data_processing\data\dtas\country_codes_names.dta";
 
 save "S:\\particulates\\data_processing\\data\\boundaries\\manual\\borders.dta", replace;

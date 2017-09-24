@@ -13,7 +13,6 @@ clear all;
 cls;
 set more off;
 
-
 local python "C:\Python27\ArcGIS10.2\python.exe";
 
 **********************************************************;
