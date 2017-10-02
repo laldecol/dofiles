@@ -47,3 +47,5 @@ Temporary Items
 .apdisk
 testfolder/fauxcode.txt
 *.log
+*.log
+*.pyc

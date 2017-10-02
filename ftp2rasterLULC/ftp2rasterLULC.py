@@ -32,7 +32,7 @@ if __name__=='__main__':
     ftpaddress='ftp.glcf.umd.edu'
     
     #Set of years we want to process
-    years=[str(year) for year in range(2012,2013)]
+    years=[str(year) for year in range(2000,2013)]
     
     
     for year in years:
