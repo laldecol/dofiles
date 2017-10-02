@@ -19,10 +19,10 @@ arcpy.CheckOutExtension("Spatial")
 arcpy.env.overwriteOutput = True
 
 #Append dofiles\functions to sys.path, to use programs defined there.
-sys.path.append(os.path.abspath('..\functions'))
+sys.path.append(os.path.abspath('..\mylibrary'))
 
-#aggregate defined in functions.py
-import functions
+#aggregate defined in rasters.py
+import rasters
 
 if __name__=='__main__':
     
@@ -53,7 +53,7 @@ if __name__=='__main__':
     t0=time.clock()    
     
     for index in range(len(expaths_cru)):
-        functions.aggregate(expaths_cru[index][0], expaths_cru[index][1])
+        rasters.aggregate(expaths_cru[index][0], expaths_cru[index][1])
     t1=time.clock()    
 
     ##Set number of workers:
