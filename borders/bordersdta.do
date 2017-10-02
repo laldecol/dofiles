@@ -91,6 +91,24 @@ dis "Number of Rows: " `R';
 
 use "..\\..\\..\\data\\dtas\\analyze_me.dta", clear;
 
+replace gpw_v4_national_identifier_gri=-9999 if gpw_v4_national_identifier_gri==.;
+replace country="Sea, Inland Water, other Uninhabitable" if gpw_v4_national_identifier_gri==-9999;
+
+preserve;
+
+collapse (count) uber_code, by(country gpw_v4_national_identifier_gri);
+
+rename gpw_v4_national_identifier_gri neighbor_;
+rename country neighbor_name;
+
+save "S:\particulates\data_processing\data\dtas\country_codes_names.dta", replace;
+
+restore;
+
+*Should generate sea/water "country";
+*Two ways to do it: use missing values in gpw_national_identifier_grid or in borders;
+*Difference is that one counts interior lakes as water and other doesnt.;
+
 *Check we're using correct ubergrid settings;
 assert _N==`R'*`C';
 
@@ -100,9 +118,10 @@ local ubercodetest=uber_code[_N];
 neighborsca `ubercodetest' `C' `R';
 return list;
 
-isborder gpw_v4_national_identifier_gri uber_code `C' `R' -9999;
+isborder gpw_v4_national_identifier_gri uber_code `C' `R' .;
 
 *Preserve, then generate macros with neighbor codes for each region;
+/*;
 preserve;
 
 keep uber_code* gpw_v4_national_identifier_gri isborder_* neighbor_*;
@@ -130,7 +149,7 @@ dis `neighbor';
 *N's neighbors are stored in macro neighborsN;
 
 restore;
-
+*/;
 forvalues year=2000/2014{;
 
 gen Nt`year'=max(vwnd_`year',0)*Terra`year'avg;
@@ -150,8 +169,10 @@ rename (Nt St Et Wt) (transfer_N transfer_S transfer_E transfer_W);
 
 reshape long isborder_ neighbor_ transfer_, i(uber_code year) j(dir) string;
 
+pause;
+
 collapse (sum) transfer_ if isborder_, by( country gpw_v4_national_identifier_gri neighbor_ year);
 
-merge 1:m country using "S:\particulates\data_processing\data\dtas\country_codes_names.dta";
+merge m:1 neighbor_ using "S:\particulates\data_processing\data\dtas\country_codes_names.dta";
 
 save "S:\\particulates\\data_processing\\data\\boundaries\\manual\\borders.dta", replace;
