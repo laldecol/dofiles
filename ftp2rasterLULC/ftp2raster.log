@@ -1,25 +1,2 @@
-2017-06-14 13:56:47,145 Starting ftp2raster.py.
-2017-06-14 13:56:47,145 Reclassifying raster into our six categories.
-2017-06-14 13:58:16,032 Creating dummy raster for value 0
-2017-06-14 14:02:27,605 Aggregating dummy raster by a factor of 10.0
-2017-06-14 14:03:31,701 Converting aggregated dummy raster to ubergrid
-2017-06-14 14:03:44,289 Creating dummy raster for value 1
-2017-06-14 14:07:43,183 Aggregating dummy raster by a factor of 10.0
-2017-06-14 14:08:43,040 Converting aggregated dummy raster to ubergrid
-2017-06-14 14:08:53,773 Creating dummy raster for value 2
-2017-06-14 14:12:59,815 Aggregating dummy raster by a factor of 10.0
-2017-06-14 14:13:58,457 Converting aggregated dummy raster to ubergrid
-2017-06-14 14:14:09,372 Creating dummy raster for value 3
-2017-06-14 14:18:13,233 Aggregating dummy raster by a factor of 10.0
-2017-06-14 14:19:11,477 Converting aggregated dummy raster to ubergrid
-2017-06-14 14:19:20,743 Creating dummy raster for value 4
-2017-06-14 14:23:33,259 Aggregating dummy raster by a factor of 10.0
-2017-06-14 14:24:30,838 Converting aggregated dummy raster to ubergrid
-2017-06-14 14:24:40,986 Creating dummy raster for value 5
-2017-06-14 14:28:57,101 Aggregating dummy raster by a factor of 10.0
-2017-06-14 14:29:53,605 Converting aggregated dummy raster to ubergrid
-2017-06-14 14:30:02,499 Creating dummy raster for value 6
-2017-06-14 14:34:09,743 Aggregating dummy raster by a factor of 10.0
-2017-06-14 14:35:06,690 Converting aggregated dummy raster to ubergrid
-2017-06-14 14:35:15,618 Cleaning up year 2012
-2017-06-14 14:35:15,678 Done with ftp2raster.py
+2017-06-26 16:40:01,237 Starting ftp2raster.py.
+2017-06-26 17:05:08,063 Done with ftp2rasterLULC.py

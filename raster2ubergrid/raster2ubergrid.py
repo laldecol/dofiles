@@ -71,14 +71,15 @@ if __name__=='__main__':
     deletebin=[]    
     
     #List of input folders
-      
+
     #folders.append("..\\..\\..\\data\\MODIS_AOD\\generated\\yearly")
     #folders.append("..\\..\\..\\data\\GPW4\\source\\gpw-v4-national-identifier-grid")
     #folders.append("..\\..\\..\\data\\GPW4\\source\gpw-v4-data-quality-indicators-mean-administrative-unit-area")
     #folders.append("..\\..\\..\\data\\MODIS_FIRE\\generated\\yearly")
     #folders.append("..\\..\\..\\data\\CRU\\generated\\yearly")
-    folders.append("..\\..\\..\\data\\MODIS_LULC\\generated\\yearly\\dummy")
-        
+    #folders.append("..\\..\\..\\data\\MODIS_LULC\\generated\\yearly\\dummy")
+    folders.append("..\\..\\..\\data\CCMP\\generated\\yearly")
+    
     #Logging info
     rastercount=0
     t0=time.clock()
@@ -110,7 +111,8 @@ if __name__=='__main__':
         #Convert rasters to ubergrid
         for raster in glob.glob(input_folder+"\\*.tif"):
             base=os.path.basename(raster)
-            out_name=os.path.splitext(base)[0]            
+            out_name=os.path.splitext(base)[0]
+            
             outpath=input_folder+"\\ubergrid\\"+out_name+".tif"
             
             print "Processing " + str(raster)

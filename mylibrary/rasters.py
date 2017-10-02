@@ -107,11 +107,11 @@ def raster2ubergrid(input_raster, outpath, extent, outprojection):
     base=os.path.basename(input_raster)
     in_name=os.path.splitext(base)[0]
     
-    temp_dir=os.path.dirname(outpath)+in_name+"_temp"
+    temp_dir=os.path.dirname(outpath)+"\\"+in_name+"_temp"
     os.mkdir(temp_dir)
     
     #Name auxiliary and output rasters
-    raster_proj = temp_dir+"\\"+ in_name + "_prj.tif"
+    raster_proj = temp_dir+"\\prj.tif"
     raster_clip = outpath
     #"..\\..\\data\\MODIS_AOD\\manual\\aqua2002avg_ProjectRaster_Cl.tif"
     
@@ -371,15 +371,15 @@ def dta2raster(inputfile,datatype, outputfolder):
  
 if __name__=='__main__':
     #This section of the code is meant to test-run functions and should generally be empty.
-    #input_raster="S:\\particulates\\data_processing\\data\\MODIS_FIRE\\generated\\yearly\\Data2000.tif"
-    #outpath="S:\\particulates\\data_processing\\data\\MODIS_FIRE\\manual\\Data2000_ubertest.tif"
+    input_raster="S:\\particulates\\data_processing\\data\\MODIS_FIRE\\generated\\yearly\\Data2000.tif"
+    outpath="S:\\particulates\\data_processing\\data\\MODIS_FIRE\\manual\\Data2000_ubertest.tif"
     #Local variables:
-    #extent = "..\\..\\data\\GPW4\\generated\\extent\\extent.shp"
-    #outprojection = "..\\..\\data\\projections\\WGS 1984.prj"
+    extent = "..\\..\\data\\GPW4\\generated\\extent\\extent.shp"
+    outprojection = "..\\..\\data\\projections\\WGS 1984.prj"
     
-    #raster2ubergrid(input_raster, outpath, extent, outprojection)
+    raster2ubergrid(input_raster, outpath, extent, outprojection)
     
-    inputfile = "S:\\particulates\\data_processing\\data\\MODIS_LULC\\generated\\Temp_aggregate_lc_check\\dummy_lc_rasters.dta"
-    datatype = "FLOAT" 
-    outputfolder = "S:\\particulates\\data_processing\\data\\MODIS_LULC\\generated\\Temp_aggregate_lc_check\\2000"
-    dta2raster(inputfile, datatype,outputfolder)
+    #inputfile = "S:\\particulates\\data_processing\\data\\MODIS_LULC\\generated\\Temp_aggregate_lc_check\\dummy_lc_rasters.dta"
+    #datatype = "FLOAT" 
+    #outputfolder = "S:\\particulates\\data_processing\\data\\MODIS_LULC\\generated\\Temp_aggregate_lc_check\\2000"
+    #dta2raster(inputfile, datatype,outputfolder)

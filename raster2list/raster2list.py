@@ -71,6 +71,8 @@ def raster2list(outputraster):
     #print settingsdict
 
 if __name__=="__main__":    
+    
+    os.chdir("S:\\particulates\\data_processing\\dofiles_la\\dofiles\\raster2list")
 
     logging.basicConfig(format='%(asctime)s %(message)s', filename='raster2list.log', filemode='w', level=logging.DEBUG)
     logging.info('Starting raster2list.py.')    
@@ -84,23 +86,26 @@ if __name__=="__main__":
     #input_folderlist.append("..\\..\\..\\data\\GPW4\\source\\gpw-v4-population-count-2000")
     #pathnamelist.append(input_folderlist[0]+"\\*.tif")
     
-    input_folderlist.append("..\\..\\..\\data\\MODIS_AOD\\generated\\yearly\\ubergrid")
-    pattern_list.append("\\*avg.tif")
+    #input_folderlist.append("..\\..\\..\\data\\MODIS_AOD\\generated\\yearly\\ubergrid")
+    #pattern_list.append("\\*avg.tif")
     
-    input_folderlist.append("..\\..\\..\\data\\GPW4\\generated\\projected")
-    pattern_list.append("\\*20??.tif")
+    #input_folderlist.append("..\\..\\..\\data\\GPW4\\generated\\projected")
+    #pattern_list.append("\\*20??.tif")
     
-    #"..\\..\\data\\GPW4\\source\\gpw-v4-national-identifier-grid"
-    input_folderlist.append("..\\..\\..\\data\\GPW4\\generated\\gpw-v4-national-identifier-grid\\ubergrid")
-    pattern_list.append("\\*.tif")
+    ##"..\\..\\data\\GPW4\\source\\gpw-v4-national-identifier-grid"
+    #input_folderlist.append("..\\..\\..\\data\\GPW4\\generated\\gpw-v4-national-identifier-grid\\ubergrid")
+    #pattern_list.append("\\*.tif")
     
-    input_folderlist.append("..\\..\\..\\data\\GPW4\\generated\\gpw-v4-data-quality-indicators-mean-administrative-unit-area\\ubergrid")
-    pattern_list.append("\\*.tif")    
+    #input_folderlist.append("..\\..\\..\\data\\GPW4\\generated\\gpw-v4-data-quality-indicators-mean-administrative-unit-area\\ubergrid")
+    #pattern_list.append("\\*.tif")    
     
-    input_folderlist.append("..\\..\\..\\data\\MODIS_FIRE\\generated\\yearly\\ubergrid")
-    pattern_list.append("\\*.tif")    
+    #input_folderlist.append("..\\..\\..\\data\\MODIS_FIRE\\generated\\yearly\\ubergrid")
+    #pattern_list.append("\\*.tif")    
     
-    input_folderlist.append("..\\..\\..\\data\\CRU\\generated\\yearly\\ubergrid")
+    #input_folderlist.append("..\\..\\..\\data\\CRU\\generated\\yearly\\ubergrid")
+    #pattern_list.append("\\*.tif")    
+
+    input_folderlist.append("S:\\particulates\\data_processing\\data\\CCMP\\generated\\yearly\\ubergrid")
     pattern_list.append("\\*.tif")    
 
     print input_folderlist
