@@ -20,7 +20,6 @@ dis "`dofiledir'";
 ** Change Directory/;
 cd "..\\..\\..\\data";
 
-
 ***************;
 *Define locals*;
 ***************;

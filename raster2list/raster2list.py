@@ -71,6 +71,8 @@ def raster2list(outputraster):
     #print settingsdict
 
 if __name__=="__main__":    
+    
+    os.chdir("S:\\particulates\\data_processing\\dofiles_la\\dofiles\\raster2list")
 
     logging.basicConfig(format='%(asctime)s %(message)s', filename='raster2list.log', filemode='w', level=logging.DEBUG)
     logging.info('Starting raster2list.py.')    
