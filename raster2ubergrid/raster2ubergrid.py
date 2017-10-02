@@ -8,11 +8,10 @@
 
 # Import modules
 #Append dofiles\mylibrary to sys.path, to use programs defined there.
-
 import sys, os
 sys.path.append(os.path.abspath('..'))
 
-import arcpy, os, shutil, glob, logging, time, mylibrary
+import arcpy, shutil, glob, logging, time, mylibrary
 from arcpy import env
 
 def raster2ubergrid(input_raster,extent,outprojection):
@@ -31,7 +30,7 @@ def raster2ubergrid(input_raster,extent,outprojection):
     
     #Set up output raster settings as a dictionary. These come from settings.txt, written in make_xy_extent.py
     settingsdict={}
-    with open("..\\..\\data\\projections\generated\settings.txt", 'r') as settingfile:
+    with open("..\\..\\..\\data\\projections\generated\settings.txt", 'r') as settingfile:
         templines=settingfile.readlines()
         lines = [i.replace('\n','') for i in templines]
         for linecounter in range(len(lines)):        
@@ -72,14 +71,15 @@ if __name__=='__main__':
     deletebin=[]    
     
     #List of input folders
+
     #folders.append("..\\..\\..\\data\\MODIS_AOD\\generated\\yearly")
     #folders.append("..\\..\\..\\data\\GPW4\\source\\gpw-v4-national-identifier-grid")
-    ##mean admin unit area is giving trouble. unsure if it's name length, special characters, or something else.
-    folders.append("..\\..\\..\\data\\GPW4\\source\\gpw-v4-data-quality-indicators-mean-administrative-unit-area")
-    folders.append("..\\..\\..\\data\\MODIS_FIRE\\generated\\yearly")
-    folders.append("..\\..\\..\\data\\CRU\\generated\\yearly")
-    #folders.append("..\\..\\..\\data\\MODIS_LULC\\generated\\yearly")
-        
+    #folders.append("..\\..\\..\\data\\GPW4\\source\gpw-v4-data-quality-indicators-mean-administrative-unit-area")
+    #folders.append("..\\..\\..\\data\\MODIS_FIRE\\generated\\yearly")
+    #folders.append("..\\..\\..\\data\\CRU\\generated\\yearly")
+    #folders.append("..\\..\\..\\data\\MODIS_LULC\\generated\\yearly\\dummy")
+    folders.append("..\\..\\..\\data\CCMP\\generated\\yearly")
+    
     #Logging info
     rastercount=0
     t0=time.clock()

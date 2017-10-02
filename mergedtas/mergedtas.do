@@ -13,7 +13,13 @@ set more off;
 pause off;
 set type double;
 
-cd "..\..\data";
+**Store Current Directory/;
+local dofiledir : pwd;
+dis "`dofiledir'";
+
+** Change Directory/;
+cd "..\\..\\..\\data";
+
 
 ***************;
 *Define locals*;
@@ -78,7 +84,7 @@ rename v1 uber_code;
 *Replace mising values as .;
 foreach var of varlist gpw*{;
 dis `var';
-replace `var'=. if `var'<0;
+replace `var'=. if `var'==-9999;
 };
 
 merge m:1 gpw_v4_national_identifier_gri using "GPW4\source\gpw-v4-national-identifier-grid\idnames.dta";
@@ -87,7 +93,7 @@ drop _merge;
 
 ds, has(type numeric);
 foreach var of varlist `r(varlist)' {;
-  replace `var' = .  if `var' <0;
+  replace `var' = .  if `var'==-9999;
 };
 
 ****************************;
@@ -119,4 +125,5 @@ gen area=(cos(lat*c(pi)/180)+cos((lat+`CELLSIZEY')*c(pi)/180))*2*(c(pi)*`CELLSIZ
 
 save "dtas\analyze_me.dta", replace;
 
-cd "..\dofiles\mergedtas";
+** Back to original folder/;
+cd "`dofiledir'";

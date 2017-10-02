@@ -1,13 +1,22 @@
+/*****************************************************************************
+IEAclean.do
+
+This .do file imports data from BP's Statistical Review of World Energy 2016
+into stata, cleans it, and merges it into the ubergrid database.
+
+It also groups all states in the EU as a single country; for this reason this
+.do file must run after all other country-level merges.
+
+*Last modified: Jan 2 2017 la
+*****************************************************************************/
+
 * set up;
 #delimit;
 clear all;
 cls;
 set more off;
 
-cd S:\particulates\data_processing\dofiles\IEAclean;
-local python "C:\Python27\ArcGIS10.2\python.exe";
-
-import excel "S:\particulates\data_processing\data\IEA\source\IEA_HeadlineEnergyData_2016.xlsx", sheet("TimeSeries_1971-2015") cellrange(A2:BD5897) firstrow clear;
+import excel "..\\..\\..\\data\\IEA\\source\\IEA_HeadlineEnergyData_2016.xlsx", sheet("TimeSeries_1971-2015") cellrange(A2:BD5897) firstrow clear;
 
 foreach v of varlist G-AX {;
    local x : variable label `v';
@@ -32,11 +41,16 @@ local name=subinstr("`product'",",","",.);
 local name=subinstr("`name'"," ","",.);
 rename Country country;
 
-save `"..\\..\\data\\IEA\\generated/`name'.dta"', replace;
+save `"..\\..\\..\\data\\IEA\\generated/`name'.dta"', replace;
 
-use "..\\..\\data\\dtas\\analyze_me.dta", clear;
+<<<<<<< HEAD
+use "..\\..\\..\\data\\dtas\\analyze_me.dta", clear;
+merge m:1 country using `"..\\..\\..\\data\\IEA\\generated/`name'.dta"';
+=======
+use "..\..\\..\\data\\dtas\\analyze_me.dta", clear;
 merge m:1 country using `"..\\..\\data\\IEA\\generated/`name'.dta"';
-save "..\\..\\data\\dtas\\analyze_me.dta",replace;
+>>>>>>> master
+save "..\\..\\..\\data\\dtas\\analyze_me.dta",replace;
 
 restore;
 };

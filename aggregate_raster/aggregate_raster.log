@@ -1,3 +1,9 @@
+2017-06-19 09:25:26,342 Starting aggregate_raster.py.
+2017-06-19 09:25:26,388 Rasters are going to be aggregated by a factor of 5
+2017-06-19 09:25:47,446 Aggregation for year 2000 was completed in 21.0502996337 seconds.
+2017-06-19 09:26:04,109 Aggregation for year 2005 was completed in 16.6633289327 seconds.
+2017-06-19 09:26:20,766 Aggregation for year 2010 was completed in 16.655406966 seconds.
+2017-06-19 09:26:37,457 Aggregation for year 2015 was completed in 16.6913008174 seconds.
 2017-06-19 18:53:56,477 Starting aggregate_raster.py.
 2017-06-19 18:53:56,540 Rasters are going to be aggregated by a factor of 10
 2017-06-19 18:54:15,243 Aggregation for year 2000 was completed in 18.7016618001 seconds.
