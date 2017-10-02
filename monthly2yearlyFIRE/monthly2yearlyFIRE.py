@@ -15,6 +15,7 @@ from arcpy.sa import *
 from functools import partial
 from multiprocessing import Pool
 
+# Check out the ArcGIS Spatial Analyst extension license and set overwrite environment:
 arcpy.CheckOutExtension("Spatial")
 arcpy.env.overwriteOutput = True
 
@@ -25,8 +26,6 @@ def timeaggregate(expath,output_raster):
     gdb=temp+"\\geodatabase.gdb"
     env.workspace = temp
     env.scratchWorkspace=temp
-    
-    # Check out the ArcGIS Spatial Analyst extension license and set overwrite environment:
 
     try:
         #######################################
@@ -44,7 +43,7 @@ def timeaggregate(expath,output_raster):
         print inputs
         
         # Define spatial reference (World Sinusoidal)
-        sr = arcpy.SpatialReference("..\\..\\data\\projections\\WGS 1984.prj") 
+        sr = arcpy.SpatialReference("..\\..\\..\\data\\projections\\WGS 1984.prj") 
         
         #Set up temporary directories
         shutil.rmtree(temp,ignore_errors=True)
@@ -87,8 +86,8 @@ if __name__=='__main__':
     #sats=["A", "T"]
     sats=["T"]
     
-    out_folder_cru="..\\..\\data\\CRU\\generated\\yearly"
-    in_folder_cru="..\\..\\data\\CRU\\generated\\monthlies"
+    out_folder_cru="..\\..\\..\\data\\CRU\\generated\\yearly"
+    in_folder_cru="..\\..\\..\\data\\CRU\\generated\\monthlies"
     
     dtypes=["cld", "dtr","frs","pet","tmn","tmp", "tmx", "vap", "wet"]
     

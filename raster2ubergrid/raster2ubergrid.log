@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 2017-06-26 18:34:49,829 Starting raster2ubergrid.py.
 2017-06-26 18:34:49,844 Processing ..\..\..\data\MODIS_LULC\generated\yearly\dummy\2001_dummy0.tif
 2017-06-26 18:35:13,233 Processing ..\..\..\data\MODIS_LULC\generated\yearly\dummy\2001_dummy1.tif
@@ -85,3 +86,45 @@
 2017-06-26 18:45:55,460 Processing ..\..\..\data\MODIS_LULC\generated\yearly\dummy\2012_dummy6.tif
 2017-06-26 18:46:00,572 Converted 84 rasters to ubergrids in 11.1789118851 minutes
 2017-06-26 18:46:00,573 Done with raster2ubergrid.py.
+=======
+<<<<<<< HEAD
+2017-06-26 18:30:41,023 Starting raster2ubergrid.py.
+2017-06-26 18:30:41,036 Processing ..\..\..\data\MODIS_LULC\generated\yearly\dummy\2001_dummy0.tif
+=======
+2017-09-08 16:00:53,513 Starting raster2ubergrid.py.
+2017-09-08 16:00:53,516 Processing ..\..\..\data\CCMP\generated\yearly\uwnd_2000.tif
+2017-09-08 16:01:06,683 Processing ..\..\..\data\CCMP\generated\yearly\uwnd_2001.tif
+2017-09-08 16:01:15,299 Processing ..\..\..\data\CCMP\generated\yearly\uwnd_2002.tif
+2017-09-08 16:01:24,605 Processing ..\..\..\data\CCMP\generated\yearly\uwnd_2003.tif
+2017-09-08 16:01:33,746 Processing ..\..\..\data\CCMP\generated\yearly\uwnd_2004.tif
+2017-09-08 16:01:40,749 Processing ..\..\..\data\CCMP\generated\yearly\uwnd_2005.tif
+2017-09-08 16:01:49,302 Processing ..\..\..\data\CCMP\generated\yearly\uwnd_2006.tif
+2017-09-08 16:01:57,884 Processing ..\..\..\data\CCMP\generated\yearly\uwnd_2007.tif
+2017-09-08 16:02:05,812 Processing ..\..\..\data\CCMP\generated\yearly\uwnd_2008.tif
+2017-09-08 16:02:13,184 Processing ..\..\..\data\CCMP\generated\yearly\uwnd_2009.tif
+2017-09-08 16:02:20,969 Processing ..\..\..\data\CCMP\generated\yearly\uwnd_2010.tif
+2017-09-08 16:02:27,713 Processing ..\..\..\data\CCMP\generated\yearly\uwnd_2011.tif
+2017-09-08 16:02:36,773 Processing ..\..\..\data\CCMP\generated\yearly\uwnd_2012.tif
+2017-09-08 16:02:45,184 Processing ..\..\..\data\CCMP\generated\yearly\uwnd_2013.tif
+2017-09-08 16:02:53,348 Processing ..\..\..\data\CCMP\generated\yearly\uwnd_2014.tif
+2017-09-08 16:03:02,243 Processing ..\..\..\data\CCMP\generated\yearly\uwnd_2015.tif
+2017-09-08 16:03:11,112 Processing ..\..\..\data\CCMP\generated\yearly\vwnd_2000.tif
+2017-09-08 16:03:18,655 Processing ..\..\..\data\CCMP\generated\yearly\vwnd_2001.tif
+2017-09-08 16:03:27,265 Processing ..\..\..\data\CCMP\generated\yearly\vwnd_2002.tif
+2017-09-08 16:03:34,180 Processing ..\..\..\data\CCMP\generated\yearly\vwnd_2003.tif
+2017-09-08 16:03:45,292 Processing ..\..\..\data\CCMP\generated\yearly\vwnd_2004.tif
+2017-09-08 16:03:52,591 Processing ..\..\..\data\CCMP\generated\yearly\vwnd_2005.tif
+2017-09-08 16:03:59,657 Processing ..\..\..\data\CCMP\generated\yearly\vwnd_2006.tif
+2017-09-08 16:04:09,493 Processing ..\..\..\data\CCMP\generated\yearly\vwnd_2007.tif
+2017-09-08 16:04:18,019 Processing ..\..\..\data\CCMP\generated\yearly\vwnd_2008.tif
+2017-09-08 16:04:26,723 Processing ..\..\..\data\CCMP\generated\yearly\vwnd_2009.tif
+2017-09-08 16:04:35,104 Processing ..\..\..\data\CCMP\generated\yearly\vwnd_2010.tif
+2017-09-08 16:04:45,391 Processing ..\..\..\data\CCMP\generated\yearly\vwnd_2011.tif
+2017-09-08 16:04:55,220 Processing ..\..\..\data\CCMP\generated\yearly\vwnd_2012.tif
+2017-09-08 16:05:04,230 Processing ..\..\..\data\CCMP\generated\yearly\vwnd_2013.tif
+2017-09-08 16:05:15,105 Processing ..\..\..\data\CCMP\generated\yearly\vwnd_2014.tif
+2017-09-08 16:05:25,786 Processing ..\..\..\data\CCMP\generated\yearly\vwnd_2015.tif
+2017-09-08 16:05:32,278 Converted 32 rasters to ubergrids in 4.6459821814 minutes
+2017-09-08 16:05:32,279 Done with raster2ubergrid.py.
+>>>>>>> master
+>>>>>>> master

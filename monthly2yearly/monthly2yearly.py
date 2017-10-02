@@ -40,8 +40,8 @@ if __name__=='__main__':
     #sats=["A", "T"]
     sats=["T"]
     
-    out_folder_cru="..\\..\\data\\CRU\\generated\\yearly"
-    in_folder_cru="..\\..\\data\\CRU\\generated\\monthlies"
+    out_folder_cru="..\\..\\..\\data\\CRU\\generated\\yearly"
+    in_folder_cru="..\\..\\..\\data\\CRU\\generated\\monthlies"
     
     dtypes=["cld", "dtr","frs","pet","tmn","tmp", "tmx", "vap", "wet"]
     
