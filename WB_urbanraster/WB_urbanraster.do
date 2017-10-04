@@ -28,4 +28,3 @@ by country: gen runsum`year'=sum(projected_aggregated_gpw_`year');
 gen urban_wb`year'=(runsum`year'*100/totalpop`year'>urbanshare`year');
 
 };
-
