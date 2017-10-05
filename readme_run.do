@@ -150,7 +150,7 @@ if 1==2{;
 **************************;
 *Merges all .dta files from the specified directories together and saves them.;
 
-if 1==2{;
+if 1==1{;
 	cd mergedtas;
 	do mergedtas.do 7 "MODIS_AOD\generated\yearly\ubergrid\dtas"
 	"GPW4\generated\projected\dtas"
