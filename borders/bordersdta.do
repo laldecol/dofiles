@@ -114,9 +114,11 @@ assert _N==`R'*`C';
 
 sort uber_code;
 
+/*;
 local ubercodetest=uber_code[_N];
 neighborsca `ubercodetest' `C' `R';
 return list;
+*/;
 
 isborder gpw_v4_national_identifier_gri uber_code `C' `R' .;
 
