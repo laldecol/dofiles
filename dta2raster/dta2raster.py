@@ -223,7 +223,7 @@ if __name__ == '__main__':
     ###############################Please Imform Function Inputs#######################################
 
     # Define input file (ouput automatically stored within it)
-    inputfile = "S:\\particulates\\data_processing\\data\\dta2raster\\dtas\\zeropoppixels.dta"
+    inputfile = "S:\\particulates\\data_processing\\data\\dta2raster\\dtas\\urbandummy2.dta"
     # Define type of data ("FLOAT" or "INTEGER")
     datatype = "FLOAT"
     outputfolder = "S:\\particulates\\data_processing\\data\\dta2raster\\maps"
