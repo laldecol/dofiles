@@ -89,7 +89,6 @@ local R=ROWCOUNT[1];
 dis "Number of Columns: " `C';
 dis "Number of Rows: " `R';
 
-
 *Use urbanization dummies to generate a region variable for each year;
 foreach year in 2000 2005 2010 2015{;
 use "..\\..\\..\\data\\dtas\\analyze_me_land.dta", clear;
@@ -104,7 +103,32 @@ replace country="Sea, Inland Water, other Uninhabitable" if gpw_v4_national_iden
 egen countryXregion`year'=group(country urban_wb`year'), label;
 preserve;
 
-collapse (count) uber_code (firstnm) country gpw_v4_national_identifier_gri urban_wb`year', by(countryXregion`year');
+collapse (count) uber_code (firstnm) gpw_v4_national_identifier_gri 
+(mean) Terra`year' (sum) area, by(countryXregion`year' country urban_wb`year');
+
+preserve;
+drop countryXregion`year';
+drop uber_code;
+reshape wide Terra`year' area, i(country) j(urban_wb`year');
+
+
+save "S:\\particulates\\data_processing\\data\\dtas\\country_regions\\country_lvl.dta", replace;
+restore;
+
+};
+pause;
+
+foreach year in 2000 2005 2010 2015{;
+
+*Repeated code;
+use "..\\..\\..\\data\\dtas\\analyze_me_land.dta", clear;
+
+*Check we're using correct ubergrid settings;
+assert _N==`R'*`C';
+
+*Create country label for nonland;
+replace gpw_v4_national_identifier_gri=-9999 if gpw_v4_national_identifier_gri==.;
+replace country="Sea, Inland Water, other Uninhabitable" if gpw_v4_national_identifier_gri==-9999;
 
 *Generate copy of id variable, for future merge;
 gen neighbor_=countryXregion`year';
@@ -187,28 +211,34 @@ gen length=sqrt(area);
 *merge m:1 neighbor_ using "S:\particulates\data_processing\data\dtas\country_codes_names`year'.dta";
 *gen interior_border=(country==neighbor_country_name);
 
-*Here, after reshaped but before collapse, I merge in the country and region variables to neighbor_;
-*Then use those to define the receiving countryxregion as world or interior, i.e. interior=(emitting country == receiving country)
-*This way I can collapse by country x region of origin and the world/interior variables, to get fluxes over the right regions.;
-
 collapse (count) isborder_ (sum) length transfer_ if isborder_, by( countryXregion`year' neighbor_);
 
 label variable isborder_ "Number of border pixels used in computations";
 label variable length "Approximate length of border (km)";
 label variable transfer_ "Flux from countryXregion to interior or world (depends on interior_border)";
 
-merge m:1 countryXregion`year' using "S:\particulates\data_processing\data\dtas\country_codes_names`year'.dta";
+merge m:1 countryXregion`year' using "S:\particulates\data_processing\data\dtas\country_codes_names`year'.dta", nogen;
 rename neighbor_country_name_ sender_country_name;
 rename neighbor_ctry_ sender_country;
 rename neighbor_rgn_ sender_region;
+rename countryXregion`year' sending_countryXregion`year';
+
+merge m:1 neighbor_ using "S:\particulates\data_processing\data\dtas\country_codes_names`year'.dta", nogen;
+drop countryXregion`year';
+
+*Now have all pairs of sender and receiver regions, with their countries and ruban status ;
+*Have to generate an interior dummy and then collapse on sums to get non-repeated pairs;
+*so must collapse twice, to get total flows in and total flows out, over world/interior;
+*collapse over sender gives flows out, over receiver out;
+*Receiver groups are interior/world?
 
 pause;
 
-label variable countryXregion`year' "Sender Region";
+label variable sending_countryXregion`year' "Sender Region";
 label variable neighbor_ "Receiver Region";
 
 *Now must define sending & receiving, netting both interior transfers;
 
-save "S:\\particulates\\data_processing\\data\\boundaries\\manual\\flux`year'.dta", replace;
-pause;
+save "S:\\particulates\\data_processing\\data\\boundaries\\generated\\flux\\flux`year'.dta", replace;
+*pause;
 };
