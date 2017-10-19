@@ -152,7 +152,7 @@ if 1==2{;
 
 if 1==1{;
 	cd mergedtas;
-	do mergedtas.do 7 "MODIS_AOD\generated\yearly\ubergrid\dtas"
+	do mergedtas.do 8 "MODIS_AOD\generated\yearly\ubergrid\dtas"
 	"GPW4\generated\projected\dtas"
 	"GPW4\generated\gpw-v4-national-identifier-grid\ubergrid\dtas"
 	"GPW4\generated\gpw-v4-data-quality-indicators-mean-administrative-unit-area\ubergrid\dtas"
