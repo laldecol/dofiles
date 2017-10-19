@@ -89,8 +89,9 @@ local R=ROWCOUNT[1];
 dis "Number of Columns: " `C';
 dis "Number of Rows: " `R';
 
+local years 2000;
 *Use urbanization dummies to generate a region variable for each year;
-foreach year in 2000 2005 2010 2015{;
+foreach year of local years{;
 use "..\\..\\..\\data\\dtas\\analyze_me_land.dta", clear;
 
 *Check we're using correct ubergrid settings;
@@ -101,24 +102,23 @@ replace gpw_v4_national_identifier_gri=-9999 if gpw_v4_national_identifier_gri==
 replace country="Sea, Inland Water, other Uninhabitable" if gpw_v4_national_identifier_gri==-9999;
 
 egen countryXregion`year'=group(country urban_wb`year'), label;
-preserve;
+gen region_str="";
+replace region_str="urban" if urban_wb`year'==1;
+replace region_str="rural" if urban_wb`year'==0;
 
 collapse (count) uber_code (firstnm) gpw_v4_national_identifier_gri 
-(mean) Terra`year' (sum) area, by(countryXregion`year' country urban_wb`year');
+(mean) Terra`year' (sum) area, by(countryXregion`year' country region_str);
 
-preserve;
 drop countryXregion`year';
 drop uber_code;
-reshape wide Terra`year' area, i(country) j(urban_wb`year');
+reshape wide Terra`year' area, i(country) j(region_str) string;
 
-
-save "S:\\particulates\\data_processing\\data\\dtas\\country_regions\\country_lvl.dta", replace;
-restore;
+save "S:\\particulates\\data_processing\\data\\dtas\\country_regions\\country_lvl`year'.dta", replace;
 
 };
 pause;
 
-foreach year in 2000 2005 2010 2015{;
+foreach year of local years{;
 
 *Repeated code;
 use "..\\..\\..\\data\\dtas\\analyze_me_land.dta", clear;
