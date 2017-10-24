@@ -4,7 +4,7 @@
 program drop _all;
 pause on;
 set more off;
-set trace off;
+set trace on;
 
 *ubercode2rc generates variables with row and column coordinates for all cells in
 *an ubergrid.
@@ -89,7 +89,8 @@ local R=ROWCOUNT[1];
 dis "Number of Columns: " `C';
 dis "Number of Rows: " `R';
 
-local years 2000;
+local years 2000 2005 2010 2015;
+
 *Use urbanization dummies to generate a region variable for each year;
 foreach year of local years{;
 use "..\\..\\..\\data\\dtas\\analyze_me_land.dta", clear;
@@ -102,33 +103,11 @@ replace gpw_v4_national_identifier_gri=-9999 if gpw_v4_national_identifier_gri==
 replace country="Sea, Inland Water, other Uninhabitable" if gpw_v4_national_identifier_gri==-9999;
 
 egen countryXregion`year'=group(country urban_wb`year'), label;
-gen region_str="";
-replace region_str="urban" if urban_wb`year'==1;
-replace region_str="rural" if urban_wb`year'==0;
 
-collapse (count) uber_code (firstnm) gpw_v4_national_identifier_gri 
-(mean) Terra`year' (sum) area, by(countryXregion`year' country region_str);
+preserve;
 
-drop countryXregion`year';
-drop uber_code;
-reshape wide Terra`year' area, i(country) j(region_str) string;
-
-save "S:\\particulates\\data_processing\\data\\dtas\\country_regions\\country_lvl`year'.dta", replace;
-
-};
-pause;
-
-foreach year of local years{;
-
-*Repeated code;
-use "..\\..\\..\\data\\dtas\\analyze_me_land.dta", clear;
-
-*Check we're using correct ubergrid settings;
-assert _N==`R'*`C';
-
-*Create country label for nonland;
-replace gpw_v4_national_identifier_gri=-9999 if gpw_v4_national_identifier_gri==.;
-replace country="Sea, Inland Water, other Uninhabitable" if gpw_v4_national_identifier_gri==-9999;
+collapse (count) uber_code Terra`year'_count=Terra`year' (firstnm) gpw_v4_national_identifier_gri
+(mean) Terra`year'_mean=Terra`year' (sum) area, by(countryXregion`year' country urban_wb`year');
 
 *Generate copy of id variable, for future merge;
 gen neighbor_=countryXregion`year';
@@ -140,105 +119,73 @@ rename urban_wb`year' neighbor_rgn_;
 *Order identical id vars first;
 order countryXregion`year' neighbor_;
 
-save "S:\particulates\data_processing\data\dtas\country_codes_names`year'.dta", replace;
+save "..\\..\\..\\data\\dtas\\country\\country_codes_names`year'.dta", replace;
 
 restore;
 
-*Generate region variables, per year;
+***Generate Mean winds;
 
-*Should generate sea/water "country";
-*Two ways to do it: use missing values in gpw_national_identifier_grid or in borders;
-
-/*;
-local ubercodetest=uber_code[_N];
-neighborsca `ubercodetest' `C' `R';
-return list;
-*/;
 sort uber_code;
 isborder countryXregion`year' uber_code `C' `R' .;
-
-*Preserve, then generate macros with neighbor codes for each region;
-/*;
-preserve;
-
-keep uber_code* gpw_v4_national_identifier_gri isborder_* neighbor_*;
-
-reshape long isborder_ neighbor_, i(uber_code) j(cardir) string;
-
-collapse (count) uber_code, by ( gpw_v4_national_identifier_gri neighbor_);
-#delimit;
-levelsof gpw_v4_national_identifier_gri, local(countrycodes);
-
-foreach countrycode of local countrycodes{;
-
-levelsof neighbor_ if gpw_v4_national_identifier_gri==`countrycode', local(neighbors`countrycode');
-*Next two lines remove own country code from list. Can be generalized to remove
-*other codes too (e.g. international borders if looking at urban to rural);
-local own `countrycode';
-local neighbors`countrycode': list neighbors`countrycode' - own;
-foreach neighbor of local neighbors`countrycode'{;
-dis `neighbor';
-
-};
-};
-
-*Restore analyze_me.dta with neighbor macros in place;
-*N's neighbors are stored in macro neighborsN;
-
-restore;
-*/;
-*forvalues year=2000(5)2015{;
 
 gen Nt`year'=max(vwnd_`year',0)*Terra`year';
 gen St`year'=max(-vwnd_`year',0)*Terra`year';
 gen Et`year'=max(uwnd_`year',0)*Terra`year';
 gen Wt`year'=max(-uwnd_`year',0)*Terra`year';
 
+gen Nw`year'=max(vwnd_`year',0);
+gen Sw`year'=max(-vwnd_`year',0);
+gen Ew`year'=max(uwnd_`year',0);
+gen Ww`year'=max(-uwnd_`year',0);
+
 keep uber_code isborder_* country gpw_v4_national_identifier_gri countryXregion`year'
-neighbor_* Nt* St* Et* Wt* area Terra*;
+neighbor_* Nt* St* Et* Wt* Nw* Sw* Ew* Ww*
+area Terra`year' vwnd_`year' uwnd_`year';
 
 keep if isborder_N | isborder_S | isborder_E | isborder_W;
 
-*This reshape might be unnecesary now, since regions change with time;
-*reshape long Nt St Et Wt Terra, i(uber_code) j(year);
-
 rename (Nt`year' St`year' Et`year' Wt`year') (transfer_N transfer_S transfer_E transfer_W);
-reshape long isborder_ neighbor_ transfer_, i(uber_code) j(dir) string;
+rename (Nw`year' Sw`year' Ew`year' Ww`year') (wind_N wind_S wind_E wind_W);
+
+reshape long isborder_ neighbor_ transfer_ wind_, i(uber_code) j(dir) string;
 
 *Generate length of pixel as sqrt(area);
 gen length=sqrt(area);
 
 *merge m:1 neighbor_ using "S:\particulates\data_processing\data\dtas\country_codes_names`year'.dta";
-*gen interior_border=(country==neighbor_country_name);
-
-collapse (count) isborder_ (sum) length transfer_ if isborder_, by( countryXregion`year' neighbor_);
+*;
+collapse (count) isborder_ vwnd_pixels=vwnd_ uwnd_pixels=uwnd_ (sum) length transfer_ (mean) vwnd_mean=vwnd_ uwnd_mean=uwnd_ if isborder_, by( countryXregion`year' neighbor_);
 
 label variable isborder_ "Number of border pixels used in computations";
 label variable length "Approximate length of border (km)";
 label variable transfer_ "Flux from countryXregion to interior or world (depends on interior_border)";
 
-merge m:1 countryXregion`year' using "S:\particulates\data_processing\data\dtas\country_codes_names`year'.dta", nogen;
+merge m:1 countryXregion`year' using "..\\..\\..\\data\\dtas\\country\\country_codes_names`year'.dta", nogen;
+rename Terra`year'_mean sender_Terra`year'_mean;
+rename Terra`year'_count sender_Terra`year'_count;
+
 rename neighbor_country_name_ sender_country_name;
 rename neighbor_ctry_ sender_country;
 rename neighbor_rgn_ sender_region;
 rename countryXregion`year' sending_countryXregion`year';
 
-merge m:1 neighbor_ using "S:\particulates\data_processing\data\dtas\country_codes_names`year'.dta", nogen;
+***Check Terra variables: count and average. Rename them to keep track of them after
+* later merge;
+
+merge m:1 neighbor_ using "..\\..\\..\\data\\dtas\country\\country_codes_names`year'.dta", nogen;
 drop countryXregion`year';
 
-*Now have all pairs of sender and receiver regions, with their countries and ruban status ;
-*Have to generate an interior dummy and then collapse on sums to get non-repeated pairs;
-*so must collapse twice, to get total flows in and total flows out, over world/interior;
-*collapse over sender gives flows out, over receiver out;
-*Receiver groups are interior/world?
+rename Terra`year'_mean receiver_Terra`year'_mean;
+rename Terra`year'_count receiver_Terra`year'_count;
 
-pause;
+*Now have all pairs of sender and receiver regions, with their countries and ruban status ;
 
 label variable sending_countryXregion`year' "Sender Region";
 label variable neighbor_ "Receiver Region";
 
 *Now must define sending & receiving, netting both interior transfers;
+gen interior_border=(sender_country_name==neighbor_country_name);
 
-save "S:\\particulates\\data_processing\\data\\boundaries\\generated\\flux\\flux`year'.dta", replace;
-*pause;
+save "..\\..\\..\\data\\dtas\\country_regions\\flux\\flux`year'.dta", replace;
+
 };
