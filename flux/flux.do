@@ -189,3 +189,4 @@ gen interior_border=(sender_country_name==neighbor_country_name);
 save "..\\..\\..\\data\\dtas\\country_regions\\flux\\flux`year'.dta", replace;
 
 };
+	
