@@ -33,10 +33,7 @@ relabeling 2104 vars as 2015 vars, and 2001 as 2000;
 local samplepixels "Terra2000!=. & Terra2005!=. & Terra2010!=. & Terra2015!=. 
 & gpwpop2000!=. & gpwpop2005!=. & gpwpop2010!=. & gpwpop2015!
 =. & water2005<=380 & water2010<=380 
-& countrypixels>100 
-& Coal2000!=. & Coal2005!=. & Coal2010!=. & Coal2015!=. &
-Oil2000!=. & Oil2005!=. & Oil2010!=. & Oil2015!=.
-& Gas2000!=. & Gas2005!=. & Gas2010!=. & Gas2015!=.";
+& countrypixels>100";
 
 if 1==1{;
 	*Keep country total population before dropping any pixels;
@@ -70,17 +67,24 @@ if 1==1{;
 
 	sum pwquality, detail;
 	gen highqualGPW=(pwquality<=`r(p50)');
-
+	
 	save "S:\\particulates\\data_processing\\analysis\\AODvariation10k\\temp_data\\country_data_quality.dta", replace;
 
 	restore;
 
 	merge m:1 country using "S:\\particulates\\data_processing\\analysis\\AODvariation10k\\temp_data\\country_data_quality.dta", nogen;
-
+	
+	foreach year in 2000 2005 2010 2015{;
+	gen finalsample`year' = (highqualGPW & 
+	Coal`year'!=. & Oil`year'!=. & Gas`year'!=. &
+	country!="Israel" & country!="Kuwait" & country!="Taiwan" &
+	country!="United Arab Emirates" & country!="Viet Nam");
+	};
+	pause;
 };
 
 *3. Rename and drop variables for convenience;
-if 1==2{;
+if 1==1{;
 	*Rename variables to fit stata's constraints;
 	rename (projected_aggregated_gpw_2000 projected_aggregated_gpw_2005 
 	projected_aggregated_gpw_2010 projected_aggregated_gpw_2015)
@@ -136,7 +140,7 @@ rename (water2012 trees2012 pasture2012 barren2012 crops2012 urban2012 other2012
 (water2015 trees2015 pasture2015 barren2015 crops2015 urban2015 other2015);
 };
 *4. Generate exposure and per capita variables for 2000-2015;
-if 1==2{;
+if 1==1{;
 foreach year in 2000 2005 2010 2015{;
 capture drop exposure`year';
 gen exposure`year'=Terra`year'*gpwpop`year';
@@ -277,7 +281,7 @@ save "S:\\particulates\\data_processing\\analysis\\AODvariation10k\\by_country\\
 
 *Keep defined sample and save two reshaped files:;
 *all_pooled contains all years, and mod5 contains only mod5 years;
-if 1==2{;
+if 1==1{;
 use "S:\particulates\data_processing\data\dtas\analyze_me_land.dta", clear;
 
 keep if `samplepixels';

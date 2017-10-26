@@ -1,5 +1,5 @@
 #delimit;
-set trace on;
+set trace off;
 set more off;
 
 /*;
@@ -20,7 +20,7 @@ local rho 100;
 local h 1000;
 local k; 
 
-*0.
+*1.Compute wind from world;
 *First, load flux dtas. These have country neighbor pair as unit of observation;
 foreach year of local years{;
 use "..\\..\\..\\data\\dtas\\country_regions\\flux\\flux`year'.dta", clear;
@@ -29,6 +29,7 @@ gen total_neighbor_vwnd=vwnd_mean * vwnd_pixels;
 
 collapse (sum)
 total_neighbor_uwnd uwnd_pixels total_neighbor_vwnd vwnd_pixels
+transfer_
 , by (neighbor_ interior_border);
 
 *These are average wind flowing into neighbor_ from world and interior.;
@@ -40,8 +41,10 @@ replace bordtype_str="interior" if interior_border==1;
 replace bordtype_str="world" if interior_border==0; 
 drop interior_border total_neighbor_uwnd uwnd_pixels total_neighbor_vwnd vwnd_pixels;
 
-reshape wide uwnd_avg_ vwnd_avg_, i(neighbor_) j(bordtype_str) string;
-drop vwnd_avg_interior uwnd_avg_interior;
+rename transfer_ flux_from_;
+
+reshape wide uwnd_avg_ vwnd_avg_ flux_from, i(neighbor_) j(bordtype_str) string;
+drop vwnd_avg_interior uwnd_avg_interior flux_from_interior;
 
 rename vwnd_avg_world vwnd_avg_from_world;
 rename uwnd_avg_world uwnd_avg_from_world;
@@ -49,9 +52,33 @@ rename neighbor_ countryXregion`year';
 
 save "..\\..\\..\\data\\dtas\\country_regions\\wind\\wind_from_world`year'.dta", replace;
 
+
 };
+*2.Compute flux from world/interior;
+*First, load flux dtas. These have country neighbor pair as unit of observation;
+/*;
+foreach year of local years{;
+use "..\\..\\..\\data\\dtas\\country_regions\\flux\\flux`year'.dta", clear;
 
+collapse (sum) transfer_, by(sending_countryXregion`year' interior_border);
 
+gen bordtype_str="";
+replace bordtype_str="interior" if interior_border==1;
+replace bordtype_str="world" if interior_border==0; 
+rename sending_countryXregion`year' countryXregion`year';
+
+reshape wide transfer_, i(countryXregion`year') j(bordtype_str) string;
+save "..\\..\\..\\data\\dtas\\country_regions\\aux_dtas\\flux_to_world`year'.dta", replace;
+
+merge m:1 countryXregion`year' using "..\\..\\..\\data\\dtas\\country\\country_codes_names`year'.dta";
+
+gen regtype_str="";
+replace regtype_str="_urban" if neighbor_rgn_==1;
+replace regtype_str="_rural" if neighbor_rgn_==0;
+drop neighbor_rgn_;
+
+};
+*/;
 *Again, load flux dtas. These have country neighbor pair as unit of observation;
 foreach year of local years{;
 use "..\\..\\..\\data\\dtas\\country_regions\\flux\\flux`year'.dta", clear;
@@ -61,9 +88,11 @@ gen total_neighbor_AOD=receiver_Terra`year'_mean * receiver_Terra`year'_count;
 gen total_neighbor_uwnd=uwnd_mean * uwnd_pixels;
 gen total_neighbor_vwnd=vwnd_mean * vwnd_pixels;
 
+*transfer_ here is total transfer from own to world and interior;
 collapse (sum) total_neighbor_AOD receiver_Terra`year'_count 
 total_neighbor_uwnd uwnd_pixels total_neighbor_vwnd vwnd_pixels
-length, by (sending_countryXregion`year' interior_border);
+length transfer_
+, by (sending_countryXregion`year' interior_border);
 
 gen bordtype_str="";
 replace bordtype_str="interior" if interior_border==1;
@@ -79,11 +108,12 @@ merge m:1 countryXregion`year' using "..\\..\\..\\data\\dtas\\country\\country_c
 rename Terra`year'_count sending_Terra`year'_count;
 rename Terra`year'_mean sending_Terra`year'_mean;
 rename area sending_area;
+rename transfer_ flux_to_;
 
 drop total_neighbor_AOD receiver_Terra`year'_count _merge interior_border
 total_neighbor_uwnd uwnd_pixels total_neighbor_vwnd vwnd_pixels;
 
-reshape wide Terra_avg length uwnd_avg_ vwnd_avg_, i(countryXregion`year') j(bordtype_str) string;
+reshape wide Terra_avg length uwnd_avg_ vwnd_avg_ flux_to_, i(countryXregion`year') j(bordtype_str) string;
 merge 1:1 countryXregion`year' using "..\\..\\..\\data\\dtas\\country_regions\\wind\\wind_from_world`year'.dta", nogen;
 
 drop countryXregion`year' neighbor_ uber_code;
@@ -98,6 +128,8 @@ sending_Terra`year'_count sending_Terra`year'_mean sending_area
 uwnd_avg_interior uwnd_avg_world
 vwnd_avg_interior vwnd_avg_world
 uwnd_avg_from_world vwnd_avg_from_world
+flux_to_interior flux_to_world
+flux_from_world
 , i(neighbor_country_name_) j(regtype_str) string;
 
 drop lengthinterior_rural;
@@ -148,31 +180,86 @@ label var uwnd_avg_from_world_rural "Average eastward wind speed (m/s) from worl
 label var vwnd_avg_from_world_urban "Average northward wind speed (m/s) from world to urban";
 label var vwnd_avg_from_world_rural "Average northward wind speed (m/s) from world to rural";
 
-label var sending_area_rural "Area of rural region"; 
 label var sending_area_urban "Area of urban region";
+label var sending_area_rural "Area of rural region"; 
 
+label var flux_to_interior_urban "Flow from urban to rural, computed using pixel-flow model";
+label var flux_to_interior_rural "Flow from rural to urban, computed using pixel-flow model";
+
+label var flux_to_world_urban "Flow from urban to world, computed using pixel-flow model";
+label var flux_to_world_rural "Flow from rural to world, computed using pixel-flow model";
+
+label var flux_from_world_rural "Flow from world to rural, computed using pixel-flow model";
+label var flux_from_world_urban "Flow from world to urban, computed using pixel-flow model";
+
+*Generate and label variables using Matt's model;
 gen flow_urban_world=`h'*`rho'* Terra_avg_interior_urban * length_urban_world_border *1000 * (abs(uwnd_avg_world_urban)+abs(vwnd_avg_world_urban));
 gen flow_rural_world=`h'*`rho'* Terra_avg_interior_rural * length_rural_world_border *1000 * (abs(uwnd_avg_world_rural)+abs(vwnd_avg_world_rural)) ;
-
-gen flow_urban_rural=`h'*`rho'* Terra_avg_interior_urban * length_interior_border *1000 * (abs(uwnd_avg_interior_urban)+abs(vwnd_avg_interior_urban));
-gen flow_rural_urban=`h'*`rho'* Terra_avg_interior_rural * length_interior_border *1000 * (abs(uwnd_avg_interior_rural)+abs(vwnd_avg_interior_rural));
-
-gen flow_world_rural=`h'*`rho'* Terra_avg_world_rural * length_rural_world_border *1000 * (abs(uwnd_avg_from_world_rural)+abs(vwnd_avg_from_world_rural));
-gen flow_world_urban=`h'*`rho'* Terra_avg_world_urban * length_urban_world_border *1000 * (abs(uwnd_avg_from_world_urban)+abs(vwnd_avg_from_world_urban));
 
 label var flow_urban_world "Flow from urban to world, computed as in Matt's model";
 label var flow_rural_world "Flow from rural to world, computed as in Matt's model";
 
+gen flow_urban_rural=`h'*`rho'* Terra_avg_interior_urban * length_interior_border *1000 * (abs(uwnd_avg_interior_urban)+abs(vwnd_avg_interior_urban));
+gen flow_rural_urban=`h'*`rho'* Terra_avg_interior_rural * length_interior_border *1000 * (abs(uwnd_avg_interior_rural)+abs(vwnd_avg_interior_rural));
+
 label var flow_urban_rural "Flow from urban to rural, computed as in Matt's model";
 label var flow_rural_urban "Flow from rural to urban, computed as in Matt's model";
+
+gen flow_world_rural=`h'*`rho'* Terra_avg_world_rural * length_rural_world_border *1000 * (abs(uwnd_avg_from_world_rural)+abs(vwnd_avg_from_world_rural));
+gen flow_world_urban=`h'*`rho'* Terra_avg_world_urban * length_urban_world_border *1000 * (abs(uwnd_avg_from_world_urban)+abs(vwnd_avg_from_world_urban));
 
 label var flow_world_rural "Flow from world to rural, computed as in Matt's model";
 label var flow_world_urban "Flow from world to urban, computed as in Matt's model";
 
+gen wind_urban_world=flux_to_world_urban/(`h'*`rho'* Terra_avg_interior_urban * length_urban_world_border *1000);
+gen wind_rural_world=flux_to_world_rural/(`h'*`rho'* Terra_avg_interior_rural * length_rural_world_border *1000) ;
+
+label var wind_urban_world "Average wind speed from urban to world, computed from flows & Matt's model";
+label var wind_rural_world "Average wind speed from rural to world, computed from flows & Matt's model";
+
+gen wind_urban_rural=flux_to_interior_urban/(`h'*`rho'* Terra_avg_interior_urban * length_interior_border *1000);
+gen wind_rural_urban=flux_to_interior_rural/(`h'*`rho'* Terra_avg_interior_rural * length_interior_border *1000);
+
+label var wind_urban_rural "Average wind speed from urban to rural, computed from flows & Matt's model";
+label var wind_rural_urban "Average wind speed from rural to urban, computed from flows & Matt's model";
+
+gen wind_world_rural=flux_from_world_rural/(`h'*`rho'* Terra_avg_world_rural * length_rural_world_border *1000);
+gen wind_world_urban=flux_from_world_urban/(`h'*`rho'* Terra_avg_world_urban * length_urban_world_border *1000);
+
+label var wind_world_rural "Average wind speed from world to rural, computed from flows & Matt's model";
+label var wind_world_urban "Average wind speed from world to urban, computed from flows & Matt's model";
+
 merge 1:1 gpw_v4_national_identifier_gri using "..\\..\\..\\data\\dtas\\country\\macro_model_inputs_`year'.dta", nogen;
 
 drop Terra`year'rural pop_rural`year' arearural Terra`year'urban pop_urban`year' areaurban
-rgdpe`year' rgdpo`year' urbanshare`year' countrypop`year';
+rgdpe`year' rgdpo`year' countrypop`year';
+
+gen urban_sender_pixel_model=(flux_to_interior_rural<flux_to_interior_urban);
+label var urban_sender_pixel_model "Urban sender dummy, defined by net pixel-model flux";
+
+gen urban_sender_region_model=(flow_urban_rural>flow_rural_urban);
+label var urban_sender_region_model "Urban sender dummy, defined by net region-model flux";
+
+dis "flux_to_interior_urban flow_urban_rural";
+pwcorr flux_to_interior_urban flow_urban_rural;
+
+dis "flux_to_interior_rural flow_rural_urban";
+pwcorr flux_to_interior_rural flow_rural_urban;
+
+dis "flux_from_world_urban flow_world_urban";
+pwcorr flux_from_world_urban flow_world_urban;
+
+dis "flux_from_world_rural flow_world_rural";
+pwcorr flux_from_world_rural flow_world_rural;
+
+dis "flow_rural_world flux_to_world_rural";
+pwcorr flow_rural_world flux_to_world_rural;
+
+dis "flow_urban_world flux_to_world_urban";
+pwcorr flow_urban_world flux_to_world_urban;
+
+dis "urban_sender_pixel_model urban_sender_region_model";
+pwcorr urban_sender_pixel_model urban_sender_region_model;
 
 save "..\\..\\..\\data\\dtas\\country\\box_model_inputs`year'.dta", replace;
 
