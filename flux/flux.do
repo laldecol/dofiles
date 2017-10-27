@@ -154,7 +154,11 @@ gen length=sqrt(area);
 
 *merge m:1 neighbor_ using "S:\particulates\data_processing\data\dtas\country_codes_names`year'.dta";
 *;
+
 collapse (count) isborder_ vwnd_pixels=vwnd_ uwnd_pixels=uwnd_ (sum) length transfer_ (mean) vwnd_mean=vwnd_ uwnd_mean=uwnd_ if isborder_, by( countryXregion`year' neighbor_);
+
+replace vwnd_mean = 3.6*vwnd_mean;
+replace uwnd_mean = 3.6*uwnd_mean;
 
 label variable isborder_ "Number of border pixels used in computations";
 label variable length "Approximate length of border (km)";
@@ -188,5 +192,9 @@ gen interior_border=(sender_country_name==neighbor_country_name);
 
 save "..\\..\\..\\data\\dtas\\country_regions\\flux\\flux`year'.dta", replace;
 
+label var vwnd_mean "Average Northward Wind Speed (km/h)";
+label var uwnd_mean "Average Eastward Wind Speed (km/h)";
+label var sender_Terra2000_mean "Average AOD in sender region, AOD units";
+label var receiver_Terra2000_mean "Average AOD in receiver region, AOD units";
+
 };
-	
