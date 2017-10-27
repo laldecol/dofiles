@@ -157,9 +157,6 @@ gen length=sqrt(area);
 
 collapse (count) isborder_ vwnd_pixels=vwnd_ uwnd_pixels=uwnd_ (sum) length transfer_ (mean) vwnd_mean=vwnd_ uwnd_mean=uwnd_ if isborder_, by( countryXregion`year' neighbor_);
 
-replace vwnd_mean = 3.6*vwnd_mean;
-replace uwnd_mean = 3.6*uwnd_mean;
-
 label variable isborder_ "Number of border pixels used in computations";
 label variable length "Approximate length of border (km)";
 label variable transfer_ "Flux from countryXregion to interior or world (depends on interior_border)";

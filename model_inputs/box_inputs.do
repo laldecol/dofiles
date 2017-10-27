@@ -52,7 +52,6 @@ rename neighbor_ countryXregion`year';
 
 save "..\\..\\..\\data\\dtas\\country_regions\\wind\\wind_from_world`year'.dta", replace;
 
-
 };
 *2.Compute flux from world/interior;
 *First, load flux dtas. These have country neighbor pair as unit of observation;

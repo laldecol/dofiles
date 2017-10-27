@@ -22,6 +22,8 @@ local k 10;
 foreach year of local years{;
 use "..\\..\\..\\data\\dtas\\country\\box_model_inputs`year'.dta", clear;
 
+
+
 tempvar Cs;
 tempvar Cr;
 
