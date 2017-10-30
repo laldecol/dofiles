@@ -118,7 +118,7 @@ gen lat=`TOP'-`CELLSIZEY'*(rowno-1);
 *northern base length=b=(cellsizex/360)2pi*radius*cos(latitude);
 *southern base length=B=(cellsizex/360)2pi*radius*cos(latitude-cellsizey);
 *height=h=(cellsizey/360)2pi*radius;
-*area ~= (b+B)*h/2;
+*area ~= (b+B)*h/2 in km;
 
 gen area=(cos(lat*c(pi)/180)+cos((lat+`CELLSIZEY')*c(pi)/180))*2*(c(pi)*`CELLSIZEX'*`earthradius'/360)^2;
 

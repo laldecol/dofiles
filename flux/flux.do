@@ -93,7 +93,7 @@ local years 2000 2005 2010 2015;
 
 *Use urbanization dummies to generate a region variable for each year;
 foreach year of local years{;
-use "..\\..\\..\\data\\dtas\\analyze_me_land.dta", clear;
+use "..\\..\\..\\data\\dtas\\analyze_me_land_std_units.dta", clear;
 
 *Check we're using correct ubergrid settings;
 assert _N==`R'*`C';
@@ -191,7 +191,7 @@ save "..\\..\\..\\data\\dtas\\country_regions\\flux\\flux`year'.dta", replace;
 
 label var vwnd_mean "Average Northward Wind Speed (km/h)";
 label var uwnd_mean "Average Eastward Wind Speed (km/h)";
-label var sender_Terra2000_mean "Average AOD in sender region, AOD units";
-label var receiver_Terra2000_mean "Average AOD in receiver region, AOD units";
+label var sender_Terra`year'_mean "Average AOD in sender region, AOD units";
+label var receiver_Terra`year'_mean "Average AOD in receiver region, AOD units";
 
 };

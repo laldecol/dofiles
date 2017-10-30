@@ -15,7 +15,7 @@ Last modified: October 25, 2017, by Lorenzo
 */;
 
 *Define set of years we want to process;
-local years 2000 2005 2010 2015;
+local years 2005;
 local rho 100;
 local h 1000;
 local k; 
@@ -98,11 +98,14 @@ replace bordtype_str="interior" if interior_border==1;
 replace bordtype_str="world" if interior_border==0; 
 rename sending_countryXregion`year' countryXregion`year';
 
+*We will recover urban and rural AOD from neighbor's AOD & urban/rural status;
 gen Terra_avg_=total_neighbor_AOD/receiver_Terra`year'_count;
 gen uwnd_avg_=total_neighbor_uwnd/uwnd_pixels;
 gen vwnd_avg_=total_neighbor_vwnd/vwnd_pixels;
 
 merge m:1 countryXregion`year' using "..\\..\\..\\data\\dtas\\country\\country_codes_names`year'.dta";
+
+pause;
 
 rename Terra`year'_count sending_Terra`year'_count;
 rename Terra`year'_mean sending_Terra`year'_mean;
@@ -161,72 +164,72 @@ label var length_interior_border "Length of rural-urban border (km)";
 label var length_urban_world_border "Length of urban-world border (km)";
 label var length_rural_world_border "Length of rural-world border (km)";
 
-label var uwnd_avg_interior_urban "Average eastward wind speed (m/s) from urban to rural";
-label var uwnd_avg_interior_rural "Average eastward wind speed (m/s) from rural to urban";
+label var uwnd_avg_interior_urban "Average eastward wind speed (km/hr) from urban to rural";
+label var uwnd_avg_interior_rural "Average eastward wind speed (km/hr) from rural to urban";
 
-label var uwnd_avg_world_urban "Average eastward wind speed (m/s) from urban to world";
-label var uwnd_avg_world_rural "Average eastward wind speed (m/s) from rural to world";
+label var uwnd_avg_world_urban "Average eastward wind speed (km/hr) from urban to world";
+label var uwnd_avg_world_rural "Average eastward wind speed (km/hr) from rural to world";
 
-label var vwnd_avg_interior_urban "Average northward wind speed (m/s) from urban to rural";
-label var vwnd_avg_interior_rural "Average northward wind speed (m/s) from rural to urban";
+label var vwnd_avg_interior_urban "Average northward wind speed (km/hr) from urban to rural";
+label var vwnd_avg_interior_rural "Average northward wind speed (km/hr) from rural to urban";
 
-label var vwnd_avg_world_urban "Average northward wind speed (m/s) from urban to world";
-label var vwnd_avg_world_rural "Average northward wind speed (m/s) from rural to world";
+label var vwnd_avg_world_urban "Average northward wind speed (km/hr) from urban to world";
+label var vwnd_avg_world_rural "Average northward wind speed (km/hr) from rural to world";
 
-label var uwnd_avg_from_world_urban "Average eastward wind speed (m/s) from world to urban";
-label var uwnd_avg_from_world_rural "Average eastward wind speed (m/s) from world to rural";
+label var uwnd_avg_from_world_urban "Average eastward wind speed (km/hr) from world to urban";
+label var uwnd_avg_from_world_rural "Average eastward wind speed (km/hr) from world to rural";
 
-label var vwnd_avg_from_world_urban "Average northward wind speed (m/s) from world to urban";
-label var vwnd_avg_from_world_rural "Average northward wind speed (m/s) from world to rural";
+label var vwnd_avg_from_world_urban "Average northward wind speed (km/hr) from world to urban";
+label var vwnd_avg_from_world_rural "Average northward wind speed (km/hr) from world to rural";
 
 label var sending_area_urban "Area of urban region";
 label var sending_area_rural "Area of rural region"; 
 
-label var flux_to_interior_urban "Flow from urban to rural, computed using pixel-flow model";
-label var flux_to_interior_rural "Flow from rural to urban, computed using pixel-flow model";
+label var flux_to_interior_urban "Flow from urban to rural, computed using pixel-flow model, AOD units per hour";
+label var flux_to_interior_rural "Flow from rural to urban, computed using pixel-flow model, AOD units per hour";
 
-label var flux_to_world_urban "Flow from urban to world, computed using pixel-flow model";
-label var flux_to_world_rural "Flow from rural to world, computed using pixel-flow model";
+label var flux_to_world_urban "Flow from urban to world, computed using pixel-flow model, AOD units per hour";
+label var flux_to_world_rural "Flow from rural to world, computed using pixel-flow model, AOD units per hour";
 
-label var flux_from_world_rural "Flow from world to rural, computed using pixel-flow model";
-label var flux_from_world_urban "Flow from world to urban, computed using pixel-flow model";
+label var flux_from_world_rural "Flow from world to rural, computed using pixel-flow model, AOD units per hour";
+label var flux_from_world_urban "Flow from world to urban, computed using pixel-flow model, AOD units per hour";
 
 *Generate and label variables using Matt's model;
-gen flow_urban_world=`h'*`rho'* Terra_avg_interior_urban * length_urban_world_border *1000 * (abs(uwnd_avg_world_urban)+abs(vwnd_avg_world_urban));
-gen flow_rural_world=`h'*`rho'* Terra_avg_interior_rural * length_rural_world_border *1000 * (abs(uwnd_avg_world_rural)+abs(vwnd_avg_world_rural)) ;
+gen flow_urban_world=`h'*`rho'* Terra_avg_interior_urban * length_urban_world_border * (abs(uwnd_avg_world_urban)+abs(vwnd_avg_world_urban));
+gen flow_rural_world=`h'*`rho'* Terra_avg_interior_rural * length_rural_world_border * (abs(uwnd_avg_world_rural)+abs(vwnd_avg_world_rural)) ;
 
 label var flow_urban_world "Flow from urban to world, computed as in Matt's model";
 label var flow_rural_world "Flow from rural to world, computed as in Matt's model";
 
-gen flow_urban_rural=`h'*`rho'* Terra_avg_interior_urban * length_interior_border *1000 * (abs(uwnd_avg_interior_urban)+abs(vwnd_avg_interior_urban));
-gen flow_rural_urban=`h'*`rho'* Terra_avg_interior_rural * length_interior_border *1000 * (abs(uwnd_avg_interior_rural)+abs(vwnd_avg_interior_rural));
+gen flow_urban_rural=`h'*`rho'* Terra_avg_interior_urban * length_interior_border * (abs(uwnd_avg_interior_urban)+abs(vwnd_avg_interior_urban));
+gen flow_rural_urban=`h'*`rho'* Terra_avg_interior_rural * length_interior_border * (abs(uwnd_avg_interior_rural)+abs(vwnd_avg_interior_rural));
 
 label var flow_urban_rural "Flow from urban to rural, computed as in Matt's model";
 label var flow_rural_urban "Flow from rural to urban, computed as in Matt's model";
 
-gen flow_world_rural=`h'*`rho'* Terra_avg_world_rural * length_rural_world_border *1000 * (abs(uwnd_avg_from_world_rural)+abs(vwnd_avg_from_world_rural));
-gen flow_world_urban=`h'*`rho'* Terra_avg_world_urban * length_urban_world_border *1000 * (abs(uwnd_avg_from_world_urban)+abs(vwnd_avg_from_world_urban));
+gen flow_world_rural=`h'*`rho'* Terra_avg_world_rural * length_rural_world_border * (abs(uwnd_avg_from_world_rural)+abs(vwnd_avg_from_world_rural));
+gen flow_world_urban=`h'*`rho'* Terra_avg_world_urban * length_urban_world_border * (abs(uwnd_avg_from_world_urban)+abs(vwnd_avg_from_world_urban));
 
 label var flow_world_rural "Flow from world to rural, computed as in Matt's model";
 label var flow_world_urban "Flow from world to urban, computed as in Matt's model";
 
-gen wind_urban_world=flux_to_world_urban/(`h'*`rho'* Terra_avg_interior_urban * length_urban_world_border *1000);
-gen wind_rural_world=flux_to_world_rural/(`h'*`rho'* Terra_avg_interior_rural * length_rural_world_border *1000) ;
+gen wind_urban_world=flux_to_world_urban/(`h'*`rho'* Terra_avg_interior_urban * length_urban_world_border );
+gen wind_rural_world=flux_to_world_rural/(`h'*`rho'* Terra_avg_interior_rural * length_rural_world_border ) ;
 
-label var wind_urban_world "Average wind speed from urban to world, computed from flows & Matt's model";
-label var wind_rural_world "Average wind speed from rural to world, computed from flows & Matt's model";
+label var wind_urban_world "Average wind speed from urban to world, computed from flows & Matt's model, km/hr";
+label var wind_rural_world "Average wind speed from rural to world, computed from flows & Matt's model, km/hr";
 
-gen wind_urban_rural=flux_to_interior_urban/(`h'*`rho'* Terra_avg_interior_urban * length_interior_border *1000);
-gen wind_rural_urban=flux_to_interior_rural/(`h'*`rho'* Terra_avg_interior_rural * length_interior_border *1000);
+gen wind_urban_rural=flux_to_interior_urban/(`h'*`rho'* Terra_avg_interior_urban * length_interior_border );
+gen wind_rural_urban=flux_to_interior_rural/(`h'*`rho'* Terra_avg_interior_rural * length_interior_border );
 
-label var wind_urban_rural "Average wind speed from urban to rural, computed from flows & Matt's model";
-label var wind_rural_urban "Average wind speed from rural to urban, computed from flows & Matt's model";
+label var wind_urban_rural "Average wind speed from urban to rural, computed from flows & Matt's model, km/hr";
+label var wind_rural_urban "Average wind speed from rural to urban, computed from flows & Matt's model, km/hr";
 
-gen wind_world_rural=flux_from_world_rural/(`h'*`rho'* Terra_avg_world_rural * length_rural_world_border *1000);
-gen wind_world_urban=flux_from_world_urban/(`h'*`rho'* Terra_avg_world_urban * length_urban_world_border *1000);
+gen wind_world_rural=flux_from_world_rural/(`h'*`rho'* Terra_avg_world_rural * length_rural_world_border );
+gen wind_world_urban=flux_from_world_urban/(`h'*`rho'* Terra_avg_world_urban * length_urban_world_border );
 
-label var wind_world_rural "Average wind speed from world to rural, computed from flows & Matt's model";
-label var wind_world_urban "Average wind speed from world to urban, computed from flows & Matt's model";
+label var wind_world_rural "Average wind speed from world to rural, computed from flows & Matt's model, km/hr";
+label var wind_world_urban "Average wind speed from world to urban, computed from flows & Matt's model, km/hr";
 
 merge 1:1 gpw_v4_national_identifier_gri using "..\\..\\..\\data\\dtas\\country\\macro_model_inputs_`year'.dta", nogen;
 
@@ -263,4 +266,3 @@ pwcorr urban_sender_pixel_model urban_sender_region_model;
 save "..\\..\\..\\data\\dtas\\country\\box_model_inputs`year'.dta", replace;
 
 };
-

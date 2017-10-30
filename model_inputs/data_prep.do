@@ -52,6 +52,7 @@ if 1==1{;
 	Terra2000!=. & Terra2010!=. &
 	Terra2005!=. & Terra2014!=.;
 };
+
 *2. Generates a population weighted measure of GPW data quality, by country, and 
 *tags those countries in variable highqualGPW;
 if 1==1{;
@@ -73,13 +74,8 @@ if 1==1{;
 	restore;
 
 	merge m:1 country using "S:\\particulates\\data_processing\\analysis\\AODvariation10k\\temp_data\\country_data_quality.dta", nogen;
+	merge m:1 gpw_v4_national_identifier_gri using "S:\particulates\calibration_v1\data\country_regions\country_lvl2005_calib1.dta", keepusing(calibration_sample_05) nogen;
 	
-	foreach year in 2000 2005 2010 2015{;
-	gen finalsample`year' = (highqualGPW & 
-	Coal`year'!=. & Oil`year'!=. & Gas`year'!=. &
-	country!="Israel" & country!="Kuwait" & country!="Taiwan" &
-	country!="United Arab Emirates" & country!="Viet Nam");
-	};
 	pause;
 };
 
