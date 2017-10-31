@@ -31,9 +31,13 @@ relabeling 2104 vars as 2015 vars, and 2001 as 2000;
 *samplepixels determines the sample to be used;
 *Keep all pixels with data for mod5 years;
 local samplepixels "Terra2000!=. & Terra2005!=. & Terra2010!=. & Terra2015!=. 
-& gpwpop2000!=. & gpwpop2005!=. & gpwpop2010!=. & gpwpop2015!
-=. & water2005<=380 & water2010<=380 
-& countrypixels>100";
+& gpwpop2000!=. & gpwpop2005!=. & gpwpop2010!=. & gpwpop2015!=.";
+
+/*;
+& Coal2000!=. & Coal2005!=. & Coal2010!=. & Coal2015!=.
+& Oil2000!=. & Oil2005!=. & Oil2010!=. & Oil2015!=.
+& Gas2000!=. & Gas2005!=. & Gas2010!=. & Gas2015!=.";
+*/;
 
 if 1==1{;
 	*Keep country total population before dropping any pixels;
@@ -76,7 +80,6 @@ if 1==1{;
 	merge m:1 country using "S:\\particulates\\data_processing\\analysis\\AODvariation10k\\temp_data\\country_data_quality.dta", nogen;
 	merge m:1 gpw_v4_national_identifier_gri using "S:\particulates\calibration_v1\data\country_regions\country_lvl2005_calib1.dta", keepusing(calibration_sample_05) nogen;
 	
-	pause;
 };
 
 *3. Rename and drop variables for convenience;
@@ -216,8 +219,6 @@ save "S:\\particulates\\data_processing\\data\\dtas\\analyze_me_land.dta", repla
 ***Diagnostic;
 reg Terra2000 urban_wb2000 if urban2000>0;
 reg Terra2000 urban_wb2000;
-
-pause;
 
 use "S:\\particulates\\data_processing\\data\\projections\\generated\\settings.dta", clear;
 

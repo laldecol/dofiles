@@ -81,13 +81,14 @@ drop neighbor_rgn_;
 *Again, load flux dtas. These have country neighbor pair as unit of observation;
 foreach year of local years{;
 use "..\\..\\..\\data\\dtas\\country_regions\\flux\\flux`year'.dta", clear;
-*Keep total AOD for each neighbor country;
 
+*Keep total AOD for each neighbor country X region;
 gen total_neighbor_AOD=receiver_Terra`year'_mean * receiver_Terra`year'_count;
 gen total_neighbor_uwnd=uwnd_mean * uwnd_pixels;
 gen total_neighbor_vwnd=vwnd_mean * vwnd_pixels;
 
 *transfer_ here is total transfer from own to world and interior;
+*We have kept neighbor region AOD;
 collapse (sum) total_neighbor_AOD receiver_Terra`year'_count 
 total_neighbor_uwnd uwnd_pixels total_neighbor_vwnd vwnd_pixels
 length transfer_
@@ -115,16 +116,20 @@ rename transfer_ flux_to_;
 drop total_neighbor_AOD receiver_Terra`year'_count _merge interior_border
 total_neighbor_uwnd uwnd_pixels total_neighbor_vwnd vwnd_pixels;
 
+*Terra_avg is the ;
 reshape wide Terra_avg length uwnd_avg_ vwnd_avg_ flux_to_, i(countryXregion`year') j(bordtype_str) string;
 merge 1:1 countryXregion`year' using "..\\..\\..\\data\\dtas\\country_regions\\wind\\wind_from_world`year'.dta", nogen;
 
 drop countryXregion`year' neighbor_ uber_code;
 
 gen regtype_str="";
+*_urban and _rural are neighbor region types, if neighbor_rgn_ is indeed neighbor region type;
+*Then, Terra_avg_interior_urban is the AOD average of the interior, urban neighbor of a certain country X region, i.e. urban AOD for that country;
 replace regtype_str="_urban" if neighbor_rgn_==1;
 replace regtype_str="_rural" if neighbor_rgn_==0;
 drop neighbor_rgn_;
 
+*Check what Terra_avg_interior_ is;
 reshape wide lengthworld Terra_avg_world Terra_avg_interior lengthinterior 
 sending_Terra`year'_count sending_Terra`year'_mean sending_area
 uwnd_avg_interior uwnd_avg_world

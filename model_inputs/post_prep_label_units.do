@@ -42,20 +42,19 @@ label var `windvar'`year' "Average `direction' wind speed, km/hr";
 
 forvalues year = 2000/2015{;
 
-*Change units from kilotonnes of oil equivalent per year 
-*to tonnes of oil equivalent per hour;
+*Change units from million tonnes of oil equivalent per year 
+*to kilotonnes of oil equivalent per hour;
 
-*1000toe in a ktoe;
+*1000ktoe in a mtoe;
 *8760 hours in a year;
 
 replace Coal`year'=Coal`year'/8.76;
 replace Oil`year'=Oil`year'/8.76;
 replace Gas`year'=Gas`year'/8.76;
 
-label var Coal`year' "Coal energy consumption, toe/hr";
-label var Oil`year' "Oil energy consumption, toe/hr";
-label var Gas`year' "Gas energy consumption, toe/hr";
-
+label var Coal`year' "Coal energy consumption, ktoe/hr";
+label var Oil`year' "Oil energy consumption, ktoe/hr";
+label var Gas`year' "Gas energy consumption, ktoe/hr";
 
 };
 
