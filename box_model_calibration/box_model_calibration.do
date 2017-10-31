@@ -14,7 +14,7 @@ Last modified: October 26, 2017, by Lorenzo
 */;
 
 *Define set of years we want to process;
-local years 2005;
+local years 2000 2005 2010 2015;
 local rho=100;
 local lambda=3;
 local vd=3; 
@@ -33,8 +33,23 @@ replace wind_rural_urban = 0 if country=="China Hong Kong Special Administrative
 replace wind_urban_rural = 0 if country=="China Hong Kong Special Administrative Region";
 replace wind_urban_world = 0 if country=="China Hong Kong Special Administrative Region";
 replace wind_rural_world = 0 if country=="China Hong Kong Special Administrative Region";
+
+*These are read off from country_codes_names;
+if `year'==2000{;
+replace Terra_avg_interior_urban = .5164375 if country=="China Hong Kong Special Administrative Region";
+
+};
+if `year'==2005{;
 replace Terra_avg_interior_urban = .6505333 if country=="China Hong Kong Special Administrative Region";
 replace Terra_avg_interior_rural = .795 if country=="China Hong Kong Special Administrative Region";
+};
+if `year'==2010{;
+replace Terra_avg_interior_urban = .6140625 if country=="China Hong Kong Special Administrative Region";
+};
+
+if `year'==2015{;
+replace Terra_avg_interior_urban = .613125 if country=="China Hong Kong Special Administrative Region";
+};
 
 gen Cs=.;
 gen Cr=.;
@@ -151,6 +166,7 @@ replace error_sender=Terra_avg_interior_rural
 					-sender_eq_Rcoal_Coeff*Coal`year'
 					-sender_eq_Roil_Coeff*Oil`year'
 					-sender_eq_constant if urban_sender_pixel_model==0;
+					
 replace error_receiver=Terra_avg_interior_urban
 					-receiver_eq_B_Coeff*Fire`year'rural
 					-receiver_eq_Rcoal_Coeff*Coal`year'
@@ -167,6 +183,12 @@ replace error_receiver=Terra_avg_interior_rural
 					-receiver_eq_Rcoal_Coeff*Coal`year'
 					-receiver_eq_Roil_Coeff*Oil`year'
 					-receiver_eq_constant if urban_sender_pixel_model==1;
-};
+		
+sum error_*;
 
-save "..\\..\\..\\data\\dtas\\country\\box_model_calibration_v1_2005.dta", replace;
+pause;
+					
+save "..\\..\\..\\data\\dtas\\country\\box_model_calibration_v1_`year'.dta", replace;
+
+					};
+
