@@ -15,7 +15,7 @@ Last modified: October 25, 2017, by Lorenzo
 */;
 
 *Define set of years we want to process;
-local years 2005;
+local years 2000 2005 2010 2015;
 local rho 100;
 local h 1000;
 local k; 
@@ -83,6 +83,7 @@ foreach year of local years{;
 use "..\\..\\..\\data\\dtas\\country_regions\\flux\\flux`year'.dta", clear;
 
 *Keep total AOD for each neighbor country X region;
+*Receiver_Terra`year' is receiver's AOD;
 gen total_neighbor_AOD=receiver_Terra`year'_mean * receiver_Terra`year'_count;
 gen total_neighbor_uwnd=uwnd_mean * uwnd_pixels;
 gen total_neighbor_vwnd=vwnd_mean * vwnd_pixels;
@@ -100,11 +101,14 @@ replace bordtype_str="world" if interior_border==0;
 rename sending_countryXregion`year' countryXregion`year';
 
 *We will recover urban and rural AOD from neighbor's AOD & urban/rural status;
+*Terra_avg_ is interior neighbor's AOD in the next line's definition. obsolete as of Oct 31;
 gen Terra_avg_=total_neighbor_AOD/receiver_Terra`year'_count;
 gen uwnd_avg_=total_neighbor_uwnd/uwnd_pixels;
 gen vwnd_avg_=total_neighbor_vwnd/vwnd_pixels;
 
 merge m:1 countryXregion`year' using "..\\..\\..\\data\\dtas\\country\\country_codes_names`year'.dta";
+*Care should be taken here. in country_codes_names, neighbor_rgn means own region urban status.
+*This is bad notation but is correct for the computations, after Lint's comment on Oct 31;
 
 pause;
 
@@ -116,20 +120,19 @@ rename transfer_ flux_to_;
 drop total_neighbor_AOD receiver_Terra`year'_count _merge interior_border
 total_neighbor_uwnd uwnd_pixels total_neighbor_vwnd vwnd_pixels;
 
-*Terra_avg is the ;
+*Terra_avg is own Terra ;
 reshape wide Terra_avg length uwnd_avg_ vwnd_avg_ flux_to_, i(countryXregion`year') j(bordtype_str) string;
 merge 1:1 countryXregion`year' using "..\\..\\..\\data\\dtas\\country_regions\\wind\\wind_from_world`year'.dta", nogen;
 
 drop countryXregion`year' neighbor_ uber_code;
 
 gen regtype_str="";
-*_urban and _rural are neighbor region types, if neighbor_rgn_ is indeed neighbor region type;
-*Then, Terra_avg_interior_urban is the AOD average of the interior, urban neighbor of a certain country X region, i.e. urban AOD for that country;
+*Terra_avg_interior_urban is the AOD average of own region, i.e. urban if own region (called neighbor_rgn_in data) is urban;
+*See above. neighbor_rgn is own urban status;
 replace regtype_str="_urban" if neighbor_rgn_==1;
 replace regtype_str="_rural" if neighbor_rgn_==0;
 drop neighbor_rgn_;
 
-*Check what Terra_avg_interior_ is;
 reshape wide lengthworld Terra_avg_world Terra_avg_interior lengthinterior 
 sending_Terra`year'_count sending_Terra`year'_mean sending_area
 uwnd_avg_interior uwnd_avg_world
@@ -152,8 +155,11 @@ length_interior_border length_urban_world_border
 length_rural_world_border
 Terra_avg_interior_urban Terra_avg_interior_rural;
 
-drop sending_Terra`year'_count_rural sending_Terra`year'_mean_rural 
-sending_Terra`year'_count_urban sending_Terra`year'_mean_urban;
+drop sending_Terra`year'_count_rural Terra_avg_interior_rural
+sending_Terra`year'_count_urban Terra_avg_interior_urban;
+
+rename sending_Terra`year'_mean_rural Terra_avg_interior_rural;
+rename sending_Terra`year'_mean_urban Terra_avg_interior_urban;
 
 *Label:;
 *Last part of name is origin region type;
