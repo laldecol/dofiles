@@ -31,7 +31,8 @@ relabeling 2104 vars as 2015 vars, and 2001 as 2000;
 *samplepixels determines the sample to be used;
 *Keep all pixels with data for mod5 years;
 local samplepixels "Terra2000!=. & Terra2005!=. & Terra2010!=. & Terra2015!=. 
-& gpwpop2000!=. & gpwpop2005!=. & gpwpop2010!=. & gpwpop2015!=.";
+& gpwpop2000!=. & gpwpop2005!=. & gpwpop2010!=. & gpwpop2015!=.
+& country!="" ";
 
 /*;
 & Coal2000!=. & Coal2005!=. & Coal2010!=. & Coal2015!=.
@@ -39,7 +40,7 @@ local samplepixels "Terra2000!=. & Terra2005!=. & Terra2010!=. & Terra2015!=.
 & Gas2000!=. & Gas2005!=. & Gas2010!=. & Gas2015!=.";
 */;
 
-if 1==1{;
+if 1==2{;
 	*Keep country total population before dropping any pixels;
 	use "S:\particulates\data_processing\data\dtas\analyze_me.dta", clear;
 	foreach year in 2000 2005 2010 2015{;
