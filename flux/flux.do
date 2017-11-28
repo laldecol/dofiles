@@ -2,6 +2,7 @@
 *Output dtas can be converted to ubergrid rasters using raster2dta
 #delimit;
 program drop _all;
+capture log close;
 pause on;
 set more off;
 set trace on;
@@ -77,6 +78,9 @@ gen neighbor_W=`bordervar'[`ubercodevar'_west];
 
 *drop `ubercodevar'_*;
 end;
+
+log using flux, replace;
+
 
 *For each uber_code, generate four variables: uber_code of northern, southern, western, and eastern neighbor.;
 *Calculations:;
@@ -195,3 +199,4 @@ label var sender_Terra`year'_mean "Average AOD in sender region, AOD units";
 label var receiver_Terra`year'_mean "Average AOD in receiver region, AOD units";
 
 };
+log close;

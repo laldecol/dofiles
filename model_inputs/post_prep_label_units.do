@@ -10,7 +10,7 @@ This .do file:
 2. Labels variables to make the normalizations explicit;
 3. Saves output with a new name;
 
-Affected variables are of three types:;
+Affected variables are:;
 1.Wind;
 2.Energy;
 
