@@ -186,6 +186,7 @@ if 1==1{;
 if 1==1{;
 	cd model_inputs;
 	do data_prep.do;
+	do post_prep_label_units.do
 	cd ..;
 };
 
@@ -204,4 +205,3 @@ if 1==1{;
 	do reg_inputs.do;
 	cd ..;
 };
-
