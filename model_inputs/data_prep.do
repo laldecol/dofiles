@@ -53,7 +53,7 @@ log using dataprep.log, text replace;
 
 *I. Generate and relabel variables, and define sample;
 if 1==1{;
-	use "S:\particulates\data_processing\data\dtas\analyze_me.dta", clear;
+	use "..\\..\\..\\data\dtas\analyze_me.dta", clear;
 
 	*0. Generate country-level total population before dropping any pixels;
 	foreach year in 2000 2005 2010 2015{;
@@ -90,12 +90,12 @@ if 1==1{;
 		sum pwquality, detail;
 		gen highqualGPW=(pwquality<=`r(p50)');
 		
-		save "S:\\particulates\\data_processing\\analysis\\AODvariation10k\\temp_data\\country_data_quality.dta", replace;
+		save "..\\..\\..\\analysis\\AODvariation10k\\temp_data\\country_data_quality.dta", replace;
 
 		restore;
 
-		merge m:1 country using "S:\\particulates\\data_processing\\analysis\\AODvariation10k\\temp_data\\country_data_quality.dta", nogen;
-		merge m:1 gpw_v4_national_identifier_gri using "S:\particulates\calibration_v1\data\country_regions\country_lvl2005_calib1.dta", keepusing(calibration_sample_05) nogen;	
+		merge m:1 country using "..\\..\\..\\analysis\\AODvariation10k\\temp_data\\country_data_quality.dta", nogen;
+		merge m:1 gpw_v4_national_identifier_gri using "..\\..\\..\\data\\country_regions\country_lvl2005_calib1.dta", keepusing(calibration_sample_05) nogen;	
 	};
 	*2. END;
 
@@ -185,12 +185,12 @@ if 1==1{;
 	*END 4.;
 
 compress;
-save "S:\\particulates\\data_processing\\data\\dtas\\analyze_me_land.dta", replace;
+save "..\\..\\..\\data\\\\dtas\\analyze_me_land.dta", replace;
 
 	*5. Generate urban dummies, using GPW-WB data.;
 	if 1==1{;
 		*5.1 Generate urban dummy from GPW-WB;
-		use "S:\particulates\data_processing\data\dtas\analyze_me.dta";
+		use "..\\..\\..\\data\\dtas\analyze_me.dta";
 		levelsof country, local(countries);
 
 		*First, must generate the cutoff (either in proportions or total population);
@@ -208,16 +208,16 @@ save "S:\\particulates\\data_processing\\data\\dtas\\analyze_me_land.dta", repla
 		keep uber_code urban_wb*;
 		recode urban_wb* (.=-9999);
 
-		save "S:\\particulates\\data_processing\\data\\World_Bank\\generated\\urban_pixels.dta", replace;
+		save "..\\..\\..\\data\\World_Bank\\generated\\urban_pixels.dta", replace;
 
-		use "S:\\particulates\\data_processing\\data\\dtas\\analyze_me_land.dta", clear;
+		use "..\\..\\..\\data\\dtas\\analyze_me_land.dta", clear;
 
-		merge 1:1 uber_code using "S:\\particulates\\data_processing\\data\\World_Bank\\generated\\urban_pixels.dta", nogen;
+		merge 1:1 uber_code using "..\\..\\..\\data\\World_Bank\\generated\\urban_pixels.dta", nogen;
 
-		save "S:\\particulates\\data_processing\\data\\dtas\\analyze_me_land.dta", replace;
+		save "..\\..\\..\\data\\dtas\\analyze_me_land.dta", replace;
 
 		*Create dta to map urban region, high quality GPW countries, and model sample;
-		use "S:\\particulates\\data_processing\\data\\projections\\generated\\settings.dta", clear;
+		use "..\\..\\..\\data\\projections\\generated\\settings.dta", clear;
 
 		*Define C,R as column and row totals in current ubergrid.;
 		local C=COLUMNCOUNT[1];
@@ -225,27 +225,27 @@ save "S:\\particulates\\data_processing\\data\\dtas\\analyze_me_land.dta", repla
 		dis "Number of Columns: " `C';
 		dis "Number of Rows: " `R';
 
-		use "S:\\particulates\\data_processing\\data\\dtas\\analyze_me_land.dta", clear;
+		use "..\\..\\..\\data\\dtas\\analyze_me_land.dta", clear;
 
 		gen modelsample=.;
 		replace modelsample=1 if `samplepixels';
 		keep uber_code urban_wb2000 highqualGPW modelsample;
 
-		save "S:\\particulates\\data_processing\\data\\dta2raster\\temp\\merge_me.dta", replace;
+		save "..\\..\\..\\data\\dta2raster\\temp\\merge_me.dta", replace;
 		clear;
 
 		local Nobs=`C'*`R';
 
 		set obs `Nobs';
 		gen uber_code=_n;
-		merge 1:1 uber_code using "S:\\particulates\\data_processing\\data\\dta2raster\\temp\\merge_me.dta", nogen;
+		merge 1:1 uber_code using "..\\..\\..\\data\\dta2raster\\temp\\merge_me.dta", nogen;
 		recode highqualGPW urban_wb2000 modelsample (.=-9999);
-		save "S:\\particulates\\data_processing\\data\\dta2raster\\dtas\\urban_dummy_maps.dta", replace;
+		save "..\\..\\..\\data\\dta2raster\\dtas\\urban_dummy_maps.dta", replace;
 
 		*End map dta;
 		
 		compress;
-		use "S:\\particulates\\data_processing\\data\\dtas\\analyze_me_land.dta", clear;
+		use "..\\..\\..\\data\\dtas\\analyze_me_land.dta", clear;
 
 		keep uber_code gpwpop2000 gpwpop2010 country urbanshare2000 urbanshare2010
 		gpw_qual_rank urban_wb2000 urban_wb2010;
@@ -259,7 +259,7 @@ save "S:\\particulates\\data_processing\\data\\dtas\\analyze_me_land.dta", repla
 		collapse (firstnm) gpw_qual_rank urbanshare (sum) gpwpop (count) uber_code, by(country year urban_wb);
 		bysort country year: egen ctrypop=total(gpwpop);
 		gen region_share=gpwpop*100/ctrypop;
-		save "S:\\particulates\\data_processing\\analysis\\AODvariation10k\\by_country\\urban_dummy_GPW_descriptives.dta", replace;
+		save "..\\..\\..\\analysis\\AODvariation10k\\by_country\\urban_dummy_GPW_descriptives.dta", replace;
 
 	};
 	*END 5.;
@@ -275,11 +275,11 @@ save "S:\\particulates\\data_processing\\data\\dtas\\analyze_me_land.dta", repla
 *Keep defined sample and save two reshaped files:;
 *all_pooled contains all years, and mod5 contains only mod5 years;
 if 1==1{;
-	use "S:\particulates\data_processing\data\dtas\analyze_me_land.dta", clear;
+	use "..\\..\\..\\data\\dtas\analyze_me_land.dta", clear;
 
 	keep if `samplepixels';
 
-	save "S:\particulates\data_processing\data\dtas\pixel_sample.dta", replace;
+	save "..\\..\\..\\data\\dtas\pixel_sample.dta", replace;
 
 	*All countries pooled;
 	reshape long Terra Fire Data gpwpop water trees pasture barren crops urban other urban_wb 
@@ -294,7 +294,7 @@ if 1==1{;
 	replace fiveyearint=3 if year>2010 & year<=2015;
 
 	compress;
-	save "S:\particulates\data_processing\data\dtas\analyze_me_land_allpooled.dta", replace;
+	save "..\\..\\..\\data\\dtas\analyze_me_land_allpooled.dta", replace;
 
 	***Keep modulo 5 years;
 	keep if year==2000 | year==2005 | year==2010 | year==2015;
@@ -303,7 +303,7 @@ if 1==1{;
 	gen landshare=(400-water)/400;
 	gen density=gpwpop/(area*landshare);
 
-	save "S:\particulates\data_processing\data\dtas\analyze_me_land_mod5.dta", replace;
+	save "..\\..\\..\\data\\dtas\analyze_me_land_mod5.dta", replace;
 };
 
 log close;
