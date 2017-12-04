@@ -105,7 +105,7 @@ replace psi_o=	(Terra_avg_interior_urban-A*(psi_b*Fire`year'rural+flux_from_worl
 replace psi_c=`k'*psi_o if urban_sender_pixel_model==0;
 
 
-merge 1:1 gpw_v4_national_identifier_gri using "S:\particulates\calibration_v1\data\country_regions\country_lvl2005_calib1.dta", nogen;
+merge 1:1 gpw_v4_national_identifier_gri using "..\\..\\..\\data\\country_regions\country_lvl2005_calib1.dta", nogen;
 order country gpw_v4_national_identifier_gri psi_b psi_o psi_c;
 keep if calibration_sample_05;
 
