@@ -305,5 +305,5 @@ if 1==1{;
 
 	save "..\\..\\..\\data\\dtas\analyze_me_land_mod5.dta", replace;
 };
-
+*END II.;
 log close;

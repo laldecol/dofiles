@@ -17,7 +17,7 @@ Affected variables are:;
 Created: October 27, 2017, by Lorenzo
 Last modified: October 27, 2017, by Lorenzo
 */;
-use "S:\particulates\data_processing\data\dtas\analyze_me_land.dta", clear;
+use "..\\..\\..\\data\dtas\analyze_me_land.dta", clear;
 
 *Wind variables: change units and label variables;
 foreach windvar in uwnd_ vwnd_{;
@@ -58,7 +58,7 @@ label var Gas`year' "Gas energy consumption, ktoe/hr";
 
 };
 
-save "S:\particulates\data_processing\data\dtas\analyze_me_land_std_units.dta", replace;
+save "..\\..\\..\\dtas\analyze_me_land_std_units.dta", replace;
 
 /*;
 Can keep Fire vars the same by reinterpreting the \psi^b;

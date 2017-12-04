@@ -95,7 +95,7 @@ drop temp_receiver temp_sender;
 
 collapse (sum) transfer_, by(sender_country_name neighbor_country_name_);
 
-save "S:\\particulates\\data_processing\\data\dtas\\country\\aux_dtas\\orderded_country_transfer`year'.dta", replace;
+save "..\\..\\..\\data\dtas\\country\\aux_dtas\\orderded_country_transfer`year'.dta", replace;
 
 gen temp_sender=sender_country_name;
 gen temp_receiver=neighbor_country_name;
@@ -107,11 +107,11 @@ replace transfer_=-transfer_;
 
 drop temp_receiver temp_sender;
 
-save "S:\\particulates\\data_processing\\data\dtas\\country\\aux_dtas\\inverted_country_transfer`year'.dta", replace;
+save "..\\..\\..\\data\dtas\\country\\aux_dtas\\inverted_country_transfer`year'.dta", replace;
 
-append using "S:\\particulates\\data_processing\\data\dtas\\country\\aux_dtas\\orderded_country_transfer`year'.dta";
+append using "..\\..\\..\\data\dtas\\country\\aux_dtas\\orderded_country_transfer`year'.dta";
 
-save "S:\\particulates\\data_processing\\data\\dtas\\country\\regression_inputs_flux`year'.dta", replace;
+save "..\\..\\..\\data\\dtas\\country\\regression_inputs_flux`year'.dta", replace;
 	
 };
 };
