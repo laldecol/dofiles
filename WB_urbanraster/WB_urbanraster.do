@@ -14,7 +14,7 @@ cls;
 set more off;
 pause off;
 
-use "S:\particulates\data_processing\data\dtas\analyze_me.dta";
+use "..\\..\\..\\data\dtas\analyze_me.dta";
 levelsof country, local(countries);
 *First, must generate the cutoff (either in proportions or total population);
 foreach year in 2000 2005 2010 2015{;

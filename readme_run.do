@@ -1,11 +1,10 @@
-
 /**********************************************
 R E A D M E _ R U N. D O
 
 This program serves as a driver and documentation 
 for all the code in \\particulates;
 
-last modified: Apr 30, 2017, by la
+last modified: Nov 30, 2017, by la
 **********************************************/
 * set up;
 #delimit;
