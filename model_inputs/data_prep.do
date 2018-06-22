@@ -95,7 +95,7 @@ if 1==1{;
 		restore;
 
 		merge m:1 country using "..\\..\\..\\analysis\\AODvariation10k\\temp_data\\country_data_quality.dta", nogen;
-		merge m:1 gpw_v4_national_identifier_gri using "..\\..\\..\\data\\country_regions\country_lvl2005_calib1.dta", keepusing(calibration_sample_05) nogen;	
+		merge m:1 gpw_v4_national_identifier_gri using "..\\..\\..\\..\\calibration_v1\\data\\country_regions\country_lvl2005_calib1.dta", keepusing(calibration_sample_05) nogen;	
 	};
 	*2. END;
 

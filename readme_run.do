@@ -149,7 +149,7 @@ if 1==2{;
 **************************;
 *Merges all .dta files from the specified directories together and saves them.;
 
-if 1==1{;
+if 1==2{;
 	cd mergedtas;
 	do mergedtas.do 8 "MODIS_AOD\generated\yearly\ubergrid\dtas"
 	"GPW4\generated\projected\dtas"
@@ -169,7 +169,7 @@ if 1==1{;
 *Cleans and merges sources of country level data, preserving all pixels;
 *BPclean defines a EU country and must be run last;
 
-if 1==1{;
+if 1==2{;
 	cd mergecountrydata;
 	do PWTclean.do;
 	do urbanshareclean.do;
@@ -184,8 +184,8 @@ if 1==1{;
 
 if 1==1{;
 	cd model_inputs;
-	do data_prep.do;
-	do post_prep_label_units.do
+	*do data_prep.do;
+	do post_prep_label_units.do;
 	cd ..;
 };
 

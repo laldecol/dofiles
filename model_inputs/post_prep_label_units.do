@@ -58,7 +58,7 @@ label var Gas`year' "Gas energy consumption, ktoe/hr";
 
 };
 
-save "..\\..\\..\\dtas\analyze_me_land_std_units.dta", replace;
+save "..\\..\\..\\data\\dtas\analyze_me_land_std_units.dta", replace;
 
 /*;
 Can keep Fire vars the same by reinterpreting the \psi^b;
