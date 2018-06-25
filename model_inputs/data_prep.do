@@ -27,6 +27,7 @@ I. Generate and relabel variables, and define sample;
 
 3. 	Rename population, land use, and climate variables. 
 	Relabel 2104 vars as 2015, and 2001 as 2000;
+	Generate construction variables from urban land use;
 
 4. Generate exposure, GDP per capita, and country pixel count variables;
 
@@ -101,6 +102,7 @@ if 1==1{;
 
 	*3.	Rename population, land use, and climate variables. 
 	*Relabel 2104 vars as 2015, and 2001 as 2000;
+	*Generate construction variables from urban land use;
 
 	if 1==1{;
 		*Rename variables to fit stata's constraints;
@@ -148,7 +150,8 @@ if 1==1{;
 		};	
 		*END foreach LUvar;
 		
-		*Rename land use variables;
+		*Rename land use variables and generate construction;
+		
 		foreach year in 2000 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012{;
 			rename LU0dummy`year' water`year';
 			rename LU1dummy`year' trees`year';
@@ -157,19 +160,37 @@ if 1==1{;
 			rename LU4dummy`year' crops`year';
 			rename LU5dummy`year' urban`year';
 			rename LU6dummy`year' other`year';
+			
+			if `year'>2002{;
+			local lag=`year'-1;
+			};
+			
+			if `year'==2002{;
+			local lag=2000;
+			};
+			
+			capture gen construction1yr`year'=urban`year'-urban`lag';
+			
+			
 		};
 		*END foreach year;
 
-		rename (water2012 trees2012 pasture2012 barren2012 crops2012 urban2012 other2012)
-		(water2015 trees2015 pasture2015 barren2015 crops2015 urban2015 other2015);
+		rename (water2012 trees2012 pasture2012 barren2012 crops2012 urban2012 other2012 construction1yr2012)
+		(water2015 trees2015 pasture2015 barren2015 crops2015 urban2015 other2015 construction1yr2015);
+		
+		
 	};
 	*END 3.;
 	
-	*4. Generate exposure, GDP per capita, and country pixel count variables;
+	*4. Generate exposure, GDP per capita, country pixel counts, and 5yr construction variables;
 	if 1==1{;
 		foreach year in 2000 2005 2010 2015{;
 			capture drop exposure`year';
 			gen exposure`year'=Terra`year'*gpwpop`year';
+			if `year'>2000{;
+				local lag=`year'-5;
+				gen construction5yr`year'=urban`year'-urban`lag'; 
+			};
 		};
 		*END foreach; 
 	
@@ -284,6 +305,7 @@ if 1==1{;
 	*All countries pooled;
 	reshape long Terra Fire Data gpwpop water trees pasture barren crops urban other urban_wb 
 	cld wet vap tmp frs Oil Coal Gas urbanshare 
+	construction1yr construction5yr
 	rgdpe rgdpo countrypop countryGDPpc vwnd_ uwnd_,
 	 i(uber_code country area) j(year);
 	 

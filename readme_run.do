@@ -182,22 +182,22 @@ if 1==2{;
 ** Step 10: Process data for analysis and model calibration  **;
 ***************************************************************;
 
-if 1==1{;
+if 1==2{;
 	cd model_inputs;
-	*do data_prep.do;
+	do data_prep.do;
 	do post_prep_label_units.do;
 	cd ..;
 };
 
 *Compute flux between regions using a pixel-level box model;
-if 1==1{;
+if 1==2{;
 	cd flux;
 	do flux.do;
 	cd ..;
 };
 
 *Calculate variables to feed the models;
-if 1==1{;
+if 1==2{;
 	cd model_inputs;
 	do box_inputs.do;
 	do macro_inputs.do;
