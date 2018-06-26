@@ -1,5 +1,11 @@
-***This .do file computes 
+***This .do file computes AOD transfers between regions, given wind, AOD, and region information.
+*It assumes a pixel-level input .dta, where pixels are indexed by the variable 'uber_code';
+*It also takes as given a settings file that describes the dimensions of the reference rasters.;
 *Output dtas can be converted to ubergrid rasters using raster2dta
+
+*Created by: Lorenzo 
+*
+
 #delimit;
 program drop _all;
 capture log close;
