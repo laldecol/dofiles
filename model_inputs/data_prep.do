@@ -33,7 +33,7 @@ I. Generate and relabel variables, and define sample;
 
 5. 	Generate urban dummy, using WB urbanization rate and GPW population;
 
-II. Reshapes and saves separate .dtas for analysis.
+II. Reshapes, collapses, and saves separate .dtas for analysis.
 
 */;
 
@@ -53,7 +53,7 @@ local samplepixels "Terra2000!=. & Terra2005!=. & Terra2010!=. & Terra2015!=.
 log using dataprep.log, text replace;
 
 *I. Generate and relabel variables, and define sample;
-if 1==1{;
+if 1==2{;
 	use "..\\..\\..\\data\dtas\analyze_me.dta", clear;
 
 	*0. Generate country-level total population before dropping any pixels;
@@ -295,6 +295,8 @@ save "..\\..\\..\\data\\\\dtas\\analyze_me_land.dta", replace;
 
 *Keep defined sample and save two reshaped files:;
 *all_pooled contains all years, and mod5 contains only mod5 years;
+
+*Using mod5 years, save country year level averages of pixel level data;
 if 1==1{;
 	use "..\\..\\..\\data\\dtas\analyze_me_land.dta", clear;
 
@@ -324,8 +326,30 @@ if 1==1{;
 	*gen landshare to adjust density;
 	gen landshare=(400-water)/400;
 	gen density=gpwpop/(area*landshare);
-
+	gen area_urban=urban_wb*area;
 	save "..\\..\\..\\data\\dtas\analyze_me_land_mod5.dta", replace;
+	#delimit;
+	use "..\\..\\..\\data\\dtas\analyze_me_land_mod5.dta", clear;
+	*Generate country year averages of pixel level variables;
+	collapse (mean) density_ctryyr=density urban_wb_ctryyr=urban_wb
+	rgdpe Oil Coal Gas urbanshare countryGDPpc
+	gpwpop
+	water_ctryyr=water trees_ctryyr=trees pasture_ctryyr=pasture 
+	barren_ctryyr=barren crops_ctryyr=crops 
+	other_ctryyr=other
+	Fire_ctryyr=Fire construction_ctryyr=construction5yr
+	(sum)
+	area_urban_ctryyr=area_urban
+	area_ctryyr=area
+	
+	, by(country year);
+	
+	gen share_area_urban=area_urban_ctryyr/area_ctryyr;
+	save "S:\particulates\data_processing\data\dtas\country_year\pixel_data_country_avgs.dta", replace;
+		
 };
+
+
+
 *END II.;
 log close;
