@@ -1,118 +1,33 @@
-/*****************************************************************************
-IEAclean.do
-
-This .do file imports data from BP's Statistical Review of World Energy 2016
-into stata, cleans it, and merges it into the ubergrid database.
-
-It also groups all states in the EU as a single country; for this reason this
-.do file must run after all other country-level merges.
-
-*Last modified: Jan 2 2017 la
-*****************************************************************************/
-
-* set up;
 #delimit;
-clear all;
-cls;
-set more off;
+pause on; 
+use "S:\particulates\data_processing\data\IEA\source\coal.dta", clear;
+rename var1 country;
+rename var2 year;
+rename product flow;
 
-import excel "..\\..\\..\\data\\IEA\\source\\IEA_HeadlineEnergyData_2016.xlsx", sheet("TimeSeries_1971-2015") cellrange(A2:BD5897) firstrow clear;
+drop if _n==1;
+drop if flow=="Energy industry own use";
+replace country=country[_n-1] if country=="";
+replace year=year[_n-1] if year=="";
 
-foreach v of varlist G-AX {;
-   local x : variable label `v';
-   rename `v' y`x';
-   *label variable y`x' "`v'";
-};
+destring year anthracitekt cokingcoalkt otherbituminouscoalkt subbituminouscoalkt 
+lignitekt cokeovencokekt coaltarkt peatkt peatproductskt oilshaleandoilsandskt, 
+ignore(.) replace;
 
-keep if Flow =="Total final consumption (ktoe)";
-keep if Product == "Coal, peat and oil shale" | Product == "Oil products" | Product == "Natural gas";
+sort country year flow;
+drop flow;
+by country year: gen concept=_n;
 
-replace Country="Republic of Korea" if Country=="Korea";
-replace Country="United States of America" if Country=="United States";
-replace Country="China" if Country=="People's Republic of China";
-replace Country="Slovakia" if Country=="Slovak Republic";
-replace Country="United Kingdom of Great Britain and Northern Ireland"
- if Country=="United Kingdom";
+reshape wide anthracitekt cokingcoalkt otherbituminouscoalkt subbituminouscoalkt 
+lignitekt cokeovencokekt coaltarkt peatkt peatproductskt oilshaleandoilsandskt
+, i(year country) j(concept);
 
-foreach product in "Coal, peat and oil shale" "Oil products" "Natural gas"{;
-preserve;
-keep if Product=="`product'";
-local name=subinstr("`product'",",","",.);
-local name=subinstr("`name'"," ","",.);
-rename Country country;
+tempfile IEAcoal;
+save `IEAcoal';
 
-save `"..\\..\\..\\data\\IEA\\generated/`name'.dta"', replace;
+use "S:\\particulates\\data_processing\\data\\BP\\generated\\CoalConsumption.dta";
+reshape long Coal, i(country) j(year);
 
-<<<<<<< HEAD
-use "..\\..\\..\\data\\dtas\\analyze_me.dta", clear;
-merge m:1 country using `"..\\..\\..\\data\\IEA\\generated/`name'.dta"';
-=======
-use "..\..\\..\\data\\dtas\\analyze_me.dta", clear;
-merge m:1 country using `"..\\..\\data\\IEA\\generated/`name'.dta"';
->>>>>>> master
-save "..\\..\\..\\data\\dtas\\analyze_me.dta",replace;
-
-restore;
-};
-
-keep if country!="";
-keep if _merge==3 | _merge==1;
-
-gen popweights=.;
-gen pwquality=.;
-gen EU=.;
-
-replace EU=1 if country=="Austria" |
-country=="Belgium" |
-country=="Bulgaria" |
-country=="Croatia" |
-country=="Cyprus" |
-country=="Czech Republic" |
-country=="Denmark" |
-country=="Estonia" |
-country=="Finland" |
-country=="France" |
-country=="Germany" |
-country=="Greece" |
-country=="Hungary" |
-country=="Ireland" |
-country=="Italy" |
-country=="Latvia" |
-country=="Lithuania" |
-country=="Luxembourg" |
-country=="Malta" |
-country=="Netherlands" |
-country=="Poland" |
-country=="Portugal" |
-country=="Romania" |
-country=="Slovakia" |
-country=="Slovenia" |
-country=="Spain" |
-country=="Sweden" |
-country=="United Kingdom of Great Britain and Northern Ireland"
-;
-
-egen countrycode=group(country);
-sum countrycode;
-forvalues i=1/`r(max)' {;
-tab country if countrycode==`i';
-sum projected_aggregated_gpw_2010 if countrycode==`i';
-replace popweights=projected_aggregated_gpw_2010/(r(N)*r(mean)) if countrycode==`i';
-replace pwquality=popweights*gpw_v4_data_quality_indicators;
-};
-
-collapse (sum) pwquality (mean) _merge (mean) EU (count) Terra2010count=Terra2010avg countrycount=pwquality, by(country);
-gen CoverageTerra2010= Terra2010count/ countrycount
-;
-gsort -_merge -EU pwquality -CoverageTerra2010
-;
-order country _merge EU pwquality CoverageTerra2010
-;
-
-
-
-clear;
-
-
-
-
+merge 1:m year country using `IEAcoal', nogen;
+replace Coal=Coal*1000;
+reg Coal anthracitekt1 cokingcoalkt1 otherbituminouscoalkt1 subbituminouscoalkt1 lignitekt1 cokeovencokekt1 coaltarkt1 peatkt1 peatproductskt1 oilshaleandoilsandskt1 anthracitekt2 cokingcoalkt2 otherbituminouscoalkt2 subbituminouscoalkt2 lignitekt2 cokeovencokekt2 coaltarkt2 peatkt2 peatproductskt2 oilshaleandoilsandskt2;
