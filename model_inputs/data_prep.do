@@ -7,6 +7,8 @@ pause on;
 set emptycells drop;
 capture log close;
 clear;
+set trace on;
+set tracedepth 1;
 /*;
 
 *********************************************
@@ -33,7 +35,7 @@ I. Generate and relabel variables, and define sample;
 
 5. 	Generate urban dummy, using WB urbanization rate and GPW population;
 
-II. Reshapes, collapses, and saves separate .dtas for analysis.
+*II. Choose samples, save separate .dtas for each, and calculate country year and country level means and totals;
 
 */;
 
@@ -210,25 +212,44 @@ save "..\\..\\..\\data\\\\dtas\\analyze_me_land.dta", replace;
 
 	*5. Generate urban dummies, using GPW-WB data.;
 	if 1==1{;
-		*5.1 Generate urban dummy from GPW-WB;
 		use "..\\..\\..\\data\\dtas\analyze_me.dta";
 		levelsof country, local(countries);
 
-		*First, must generate the cutoff (either in proportions or total population);
+		* 5.1 Interpolate pixel population for intermediate years;
 		foreach year in 2000 2005 2010 2015{;
-
+		
+			if `year'!=2015{;
+			
+				local end_year=`year'+5;
+				
+				forvalues t=1/4{;
+				
+					local tyear=`year'+`t';
+					gen projected_aggregated_gpw_`tyear'=projected_aggregated_gpw_`year'+`t'*(projected_aggregated_gpw_`end_year'-projected_aggregated_gpw_`year')/(5);
+					
+				};
+			};
+		};
+		
+		*5.2 Generate urban dummy from GPW-WB;
+		foreach year in 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2015{;
+			
 			dis "`country'" `year';
+			*First, must generate the cutoff (either in proportions or total population);
 			gsort country -projected_aggregated_gpw_`year';
 			by country: egen totalpop`year'=total(projected_aggregated_gpw_`year');
 			by country: gen runsum`year'=sum(projected_aggregated_gpw_`year'); 
+			
 			gen urban_wb`year'=(runsum`year'*100/totalpop`year'<=urbanshare`year' & country!="");
-
+			
 		};
+			
+		
 		*END foreach;
 	
 		keep uber_code urban_wb*;
 		recode urban_wb* (.=-9999);
-
+		
 		save "..\\..\\..\\data\\World_Bank\\generated\\urban_pixels.dta", replace;
 
 		use "..\\..\\..\\data\\dtas\\analyze_me_land.dta", clear;
@@ -288,7 +309,7 @@ save "..\\..\\..\\data\\\\dtas\\analyze_me_land.dta", replace;
 };
 *END I.;
 	
-*II. Choose samples and save separate .dtas for each;
+*II. Choose samples, save separate .dtas for each, and calculate country year and country level means and totals;
 
 **Reshape to create two .dtas: one for all years and one for mod5years, for the 
 *sample specified in local samplepixels;
@@ -296,7 +317,6 @@ save "..\\..\\..\\data\\\\dtas\\analyze_me_land.dta", replace;
 *Keep defined sample and save two reshaped files:;
 *all_pooled contains all years, and mod5 contains only mod5 years;
 
-*Using mod5 years, save country year level averages of pixel level data;
 if 1==1{;
 	use "..\\..\\..\\data\\dtas\analyze_me_land.dta", clear;
 
@@ -310,7 +330,7 @@ if 1==1{;
 	construction1yr construction5yr
 	rgdpe rgdpo countrypop countryGDPpc vwnd_ uwnd_,
 	 i(uber_code country area) j(year);
-	 
+	
 	*generate interval variables;
 	gen fiveyearint=.;
 	replace fiveyearint=1 if year>=2000 & year<=2005;
@@ -320,6 +340,14 @@ if 1==1{;
 	compress;
 	save "..\\..\\..\\data\\dtas\analyze_me_land_allpooled.dta", replace;
 
+	*Collapse to country level to keep country means and totals;
+	
+	use "../../../data/dtas/analyze_me_land.dta";
+	collapse (mean) Terra* (sum) Fire* gpwpop* (firstnm) Oil* Coal* Gas*, by(gpw_v4_national_identifier_gri country);
+	save "../../../data/dtas/country/country_aggregates/country_aggregates.dta", replace;
+	
+	*Using mod5 years, save country year level averages of pixel level data;
+	use "..\\..\\..\\data\\dtas\analyze_me_land_allpooled.dta", clear;
 	***Keep modulo 5 years;
 	keep if year==2000 | year==2005 | year==2010 | year==2015;
 

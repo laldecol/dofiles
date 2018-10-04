@@ -99,7 +99,7 @@ local R=ROWCOUNT[1];
 dis "Number of Columns: " `C';
 dis "Number of Rows: " `R';
 
-local years 2000 2005 2010 2015;
+local years 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2015;
 
 *Use urbanization dummies to generate a region variable for each year;
 foreach year of local years{;
@@ -169,7 +169,7 @@ collapse (count) isborder_ vwnd_pixels=vwnd_ uwnd_pixels=uwnd_ (sum) length tran
 
 label variable isborder_ "Number of border pixels used in computations";
 label variable length "Approximate length of border (km)";
-label variable transfer_ "Flux from countryXregion to interior or world (depends on interior_border)";
+label variable transfer_ "Flux from countryXregion to interior or world (depends on interior_border), in AOD units per hr";
 
 merge m:1 countryXregion`year' using "..\\..\\..\\data\\dtas\\country\\country_codes_names`year'.dta", nogen;
 rename Terra`year'_mean sender_Terra`year'_mean;
