@@ -2,6 +2,7 @@
 set trace off;
 set tracedepth 1;
 pause on;
+capture program drop _all;
 /*;
 This .do:
 
@@ -14,6 +15,55 @@ This .do:
 **1.2. Append all country-region files together;
 **1.3. Merge in country-year level energy consumption data;
 
+program nleq8;
+	version 15;
+	syntax varlist(min=4 max=5) if, at(name);
+	local pred_inflow : word 1 of `varlist';
+	local Xk : word 2 of `varlist';
+	local Oil: word 3 of `varlist';
+	local Coal: word 4 of `varlist';
+	local Fire: word 5 of `varlist';
+	// Retrieve parameters out of at matrix;
+	tempname 	sigma_c 	sigma_o 	sigma_f
+				psi_c 		psi_o 		psi_f
+				vd_s 		vd_r
+				c_s 		c_r;
+
+	*We estimate a transformation of the parameter, so that it is restricted to 
+	*a certain range;
+	
+	*invlogit returns values in (0,1);
+	scalar `sigma_c' = invlogit(`at'[1, 1]);
+	scalar `sigma_o' = invlogit(`at'[1, 2]);
+	scalar `sigma_f' = invlogit(`at'[1, 3]);
+	
+	*exp returns values in (0, inf);
+	scalar `psi_c'	 = exp(`at'[1, 4]);
+	scalar `psi_o'	 = exp(`at'[1, 5]);
+	scalar `psi_f'	 = exp(`at'[1, 6]);
+	scalar `vd_s'	 = exp(`at'[1, 7]);
+	scalar `vd_r'	 = exp(`at'[1, 8]);
+	scalar `c_s'	 = `at'[1, 9];
+	scalar `c_r'	 = `at'[1, 10];
+
+	// Fill in dependent variable;
+	replace `pred_inflow' = -`vd_s'*`Xk'
+							+`sigma_c'*`psi_c'*`Coal'
+							+`sigma_o'*`psi_o'*`Oil'
+							+`sigma_f'*`psi_f'*`Fire'
+							+`c_s'
+							`if' & sender_dummy_==1;
+	
+	replace `pred_inflow' = -`vd_r'*`Xk'
+							+`sigma_c'*`psi_c'*`Coal'
+							+`sigma_o'*`psi_o'*`Oil'
+							+`sigma_f'*`psi_f'*`Fire'
+							+`c_r'
+							`if' & sender_dummy_==0;
+end;
+
+
+
 local rho 10;
 local h 1000;
 
@@ -21,7 +71,7 @@ local years 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 201
 
 foreach year of local years{;
 	use "S:\particulates\data_processing\data\dtas\country\emission_factor_inputs_`year'.dta", clear;
-		
+	
 	keep 
 	country gpw_v4_national_identifier_gri 
 	flux_to_interior_rural flux_to_world_rural flux_from_world_rural
@@ -90,6 +140,7 @@ foreach product of local products{;
 merge m:1 country using "../../../data/dtas/country/country_aggregates/country_aggregates.dta", nogen keepusing(Fire*) keep(match);
 
 reshape long Oil Coal Fire net_flow_into Terra_ area_ sender_dummy_ Xk, i(country gpw_v4_national_identifier_gri region) j(year);
+drop if year==2014;
 ***Check and label units;
 
 *Notice sending region switches from rural to urban in some years for some countries;
@@ -100,11 +151,14 @@ gen constant_sender=(sender_freq==15 | sender_freq==0) if !missing(sender_dummy_
 gen constant_urban_sender= ((sender_freq==15 & region=="urban") | (sender_freq==0 & region=="rural")) if !missing(sender_dummy_);
 gen constant_rural_sender= ((sender_freq==15 & region=="rural") | (sender_freq==0 & region=="urban")) if !missing(sender_dummy_);
 
+save "../../../data/dtas/country_year/emission_factor_inputs.dta", replace;
+
 preserve;
 collapse (firstnm) constant_urban_sender constant_rural_sender if constant_sender==1, by(country gpw_v4_national_identifier_gri);
 tempfile constant_senders;
 save `constant_senders';
 restore;
+
 
 levelsof gpw_v4_national_identifier_gri if constant_sender==1, local(countries);
 local ncountries : word count `countries';
@@ -123,22 +177,35 @@ matrix colname Rural =  gpw_v4_national_identifier_gri `parms_rural' constant;
 local rownames_urban first;
 local rownames_rural first;
 
-capture rm "../../../data/dtas/country_regions/emission_factors/urban_emission_factors.dta";
-touch "../../../data/dtas/country_regions/emission_factors/urban_emission_factors.dta", replace;
+capture rm "../../../data/dtas/country_regions/emission_factors/all_emission_factors.dta";
+touch "../../../data/dtas/country_regions/emission_factors/all_emission_factors.dta";
 
-capture rm "../../../data/dtas/country_regions/emission_factors/rural_emission_factors.dta";
-touch "../../../data/dtas/country_regions/emission_factors/rural_emission_factors.dta", replace;
 
-pause;
 foreach country of local countries{;
 
 	dis "`country'";
 	
-	capture noisily reg net_flow_into `parms_urban' if gpw_v4_national_identifier_gri==`country' & region=="urban";
+	*capture noisily reg net_flow_into `parms_urban' if gpw_v4_national_identifier_gri==`country' & region=="urban";
+	capture noisily nl eq8 @ net_flow_into `parms_urban' if gpw_v4_national_identifier_gri==`country', 
+	parameters(
+ 	sigma_c 	sigma_o 	sigma_f
+	psi_c 		psi_o 		psi_f
+	vd_s 		vd_r
+	c_s 		c_r
+	)
+	initial(
+	sigma_c 0	sigma_o 0	sigma_f 0
+	psi_c 5	psi_o 5	psi_f 5
+	vd_s 5		vd_r 5
+	c_s 0 		c_r 0)
+	;
+	
+	*capture noisily nl (net_flow_into = exp({ln_pOil})*Oil  +exp({ln_pCoal})*Coal + exp({ln_pFire})*Fire-exp({ln_Vd})*Xk + {c}) if gpw_v4_national_identifier_gri==`country' & region=="urban", 
+	nolog variables(Oil Coal Fire Xk);
 	
 	if _rc==0{;
 		
-		capture regsave `parms_urban' using "../../../data/dtas/country_regions/emission_factors/urban_emission_factors.dta", ci append
+		capture regsave _cons using "../../../data/dtas/country_regions/emission_factors/all_emission_factors.dta", ci append
 		addlabel(gpw_v4_national_identifier_gri, `country');
 		*matrix beta_urban=(`country', e(b));
 		*matrix Urban=Urban\beta_urban;
@@ -146,23 +213,11 @@ foreach country of local countries{;
 	};
 	capture ereturn clear;
 	
-	dis "`country'";
-	capture noisily reg net_flow_into `parms_rural' if gpw_v4_national_identifier_gri==`country' & region=="rural";
-	if _rc==0{;
-		capture regsave `parms_rural' using "../../../data/dtas/country_regions/emission_factors/rural_emission_factors.dta", ci append
-		addlabel(gpw_v4_national_identifier_gri, `country', );
-		*matrix beta_rural=(`country', e(b));
-		*matrix Rural=Rural\beta_rural;
-		*local rownames_rural `rownames_rural' `country';
-	};
-	capture ereturn clear;
-	
 };
-
 local regions urban rural;
 
 *Plot coefficients as estimated;
-
+/*;
 foreach region of local regions {;
 	foreach parm of local parms_`region'{;
 		use "../../../data/dtas/country_regions/emission_factors/`region'_emission_factors.dta", clear;
@@ -172,46 +227,33 @@ foreach region of local regions {;
 		graph export "../../../analysis/emission_factors/figures/`region'_emission_estimates_`parm'.png", replace;
 	};
 };
-
+*/;
 *Clean regression output;
-foreach region of local regions{;
+
+/*;foreach region of local regions{;
 	
 	use "../../../data/dtas/country_regions/emission_factors/`region'_emission_factors.dta", clear;
 	merge m:1 gpw_v4_national_identifier_gri using "../../../data/dtas/country/emission_factor_inputs_2000.dta", nogen keepusing(country);
+	
+	pause;
+	gen double temp_coef=exp(coef);
+	drop coef;
+	rename temp_coef coef;
+	
+	replace var=subinstr(var, "ln_p", "",.);
+	replace var=subinstr(var, "ln_", "",.);
+	replace var=subinstr(var, ":_cons", "",.);
 	
 	foreach var of varlist coef stderr ci_lower ci_upper N r2{;
 		rename `var' `region'_`var';
 	};
 	save "../../../data/dtas/country_regions/emission_factors/`region'_emission_factors.dta", replace;
 };
-
-*Use estimated aggregate emission factors to back out regional consumption shares and overall emission shares;
-
 use "../../../data/dtas/country_regions/emission_factors/rural_emission_factors.dta", clear;
 merge 1:1 gpw_v4_national_identifier_gri var using "../../../data/dtas/country_regions/emission_factors/urban_emission_factors.dta", nogen;
 merge m:1 gpw_v4_national_identifier_gri using `constant_senders', nogen keep(match);
 
-gen coef_source=urban_coef*constant_urban_sender+rural_coef*constant_rural_sender if !missing(constant_urban_sender, constant_rural_sender) & (var=="Coal" | var=="Oil" | var=="Fire");
-gen coef_receiv=rural_coef*constant_urban_sender+urban_coef*constant_rural_sender if !missing(constant_urban_sender, constant_rural_sender) & (var=="Coal" | var=="Oil" | var=="Fire");
+save "../../../data/dtas/country_regions/emission_factors/all_emission_factors.dta", replace;
+*/;
 
-gen sigma=coef_source/(coef_source+coef_receiv);
-gen psi=sigma*coef_source;
-
-local sigmavars Coal Oil Fire;
-
-sort var sigma;
-by var (sigma): gen sigma_order=_n;
-
-sort var psi;
-by var (psi): gen psi_order=_n;
-
-foreach sigmavar of local sigmavars{;
-	sort var sigma;
-	twoway line sigma sigma_order if var=="`sigmavar'", ti("`sigmavar' share in sending region") by(constant_urban_sender) yline(0 1)  caption("Horizontal lines at sigma=0 and sigma=1");
-	graph export "../../../analysis/emission_factors/figures/sigma_estimates_`sigmavar'.png", replace;
-	
-	sort var psi;
-	twoway line psi psi_order if var=="`sigmavar'" & psi_order>3 & psi_order<31, ti("`sigmavar' PM10 emissions , kg per unit") by(constant_urban_sender) yline(0);
-	graph export "../../../analysis/emission_factors/figures/psi_estimates_`sigmavar'.png", replace;
-
-};
+*Use estimated aggregate emission factors to back out regional consumption shares and overall emission shares;
