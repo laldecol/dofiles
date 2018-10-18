@@ -22,7 +22,7 @@ local rho 100;
 local h 1000;
 local k; 
 
-if 1==2{;
+if 1==1{;
 	*1.Compute wind from world;
 	*First, load flux dtas. These have country neighbor pair as unit of observation;
 	foreach year of local years{;

@@ -55,7 +55,7 @@ local samplepixels "Terra2000!=. & Terra2005!=. & Terra2010!=. & Terra2015!=.
 log using dataprep.log, text replace;
 
 *I. Generate and relabel variables, and define sample;
-if 1==2{;
+if 1==1{;
 	use "..\\..\\..\\data\dtas\analyze_me.dta", clear;
 
 	*0. Generate country-level total population before dropping any pixels;
@@ -85,7 +85,7 @@ if 1==2{;
 		gen pwquality=projected_aggregated_gpw_2000*gpw_v4_data_quality_indicators/CTprojected_aggregated_gpw;
 
 		preserve;
-		collapse (sum) pwquality (count) uber_code, by(country) fast;
+		collapse (sum) pwquality (count) uber_code, by(country gpw_v4_national_identifier_gri) fast;
 		sort pwquality;
 
 		gen gpw_qual_rank=_n;
@@ -93,11 +93,11 @@ if 1==2{;
 		sum pwquality, detail;
 		gen highqualGPW=(pwquality<=`r(p50)');
 		
-		save "..\\..\\..\\analysis\\AODvariation10k\\temp_data\\country_data_quality.dta", replace;
+		save "..\\..\\..\\data\\dtas\\country\\gpw_quality\\country_data_quality.dta", replace;
 
 		restore;
 
-		merge m:1 country using "..\\..\\..\\analysis\\AODvariation10k\\temp_data\\country_data_quality.dta", nogen;
+		merge m:1 country using "..\\..\\..\\data\\dtas\\country\\gpw_quality\\country_data_quality.dta", nogen;
 		merge m:1 gpw_v4_national_identifier_gri using "..\\..\\..\\..\\calibration_v1\\data\\country_regions\country_lvl2005_calib1.dta", keepusing(calibration_sample_05) nogen;	
 	};
 	*2. END;
@@ -232,8 +232,9 @@ save "..\\..\\..\\data\\\\dtas\\analyze_me_land.dta", replace;
 		};
 		
 		*5.2 Generate urban dummy from GPW-WB;
-		foreach year in 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2015{;
-			
+		*foreach year in 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2015{;
+		foreach year in 2000 2005 2010 2015{;
+
 			dis "`country'" `year';
 			*First, must generate the cutoff (either in proportions or total population);
 			gsort country -projected_aggregated_gpw_`year';
@@ -244,6 +245,7 @@ save "..\\..\\..\\data\\\\dtas\\analyze_me_land.dta", replace;
 			
 		};
 			
+		gen urban_wb_constant=urban_wb2010;
 		
 		*END foreach;
 	
@@ -271,7 +273,7 @@ save "..\\..\\..\\data\\\\dtas\\analyze_me_land.dta", replace;
 
 		gen modelsample=.;
 		replace modelsample=1 if `samplepixels';
-		keep uber_code urban_wb2000 highqualGPW modelsample;
+		keep uber_code urban_wb* highqualGPW modelsample;
 
 		save "..\\..\\..\\data\\dta2raster\\temp\\merge_me.dta", replace;
 		clear;
@@ -281,7 +283,7 @@ save "..\\..\\..\\data\\\\dtas\\analyze_me_land.dta", replace;
 		set obs `Nobs';
 		gen uber_code=_n;
 		merge 1:1 uber_code using "..\\..\\..\\data\\dta2raster\\temp\\merge_me.dta", nogen;
-		recode highqualGPW urban_wb2000 modelsample (.=-9999);
+		recode highqualGPW urban_wb* modelsample (.=-9999);
 		save "..\\..\\..\\data\\dta2raster\\dtas\\urban_dummy_maps.dta", replace;
 
 		*End map dta;

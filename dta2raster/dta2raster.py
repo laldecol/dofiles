@@ -19,8 +19,8 @@
 # 2 - Converts the spawns, one by one, to ascii.
 # 3 - Take the ascii spawns and modify them, using ubergrid settings, so that they can be used by AsciitoRaster
 # 4 - Convert them all to rasters.
-# Created by Marcel in 6/21/2017
-# Last modified by Marcel in 6/23/2017
+# Created by Lorenzo in 6/21/2017
+# Last modified by Lorenzo in 12/10/2018
 # ---------------------------------------------------------------------------
 
 
@@ -54,7 +54,7 @@ def dta2raster(inputfile,datatype,outputfolder):
     dofile = "prepare_dta.do"
     
     # Generate dta spawns:
-    cmd = ["C:\Program Files (x86)\Stata13\StataMP-64", "do", dofile, outputfolder, inputfile]    
+    cmd = ["C:\Program Files (x86)\Stata15\StataMP-64", "do", dofile, outputfolder, inputfile]    
     subprocess.call(cmd, shell = 'true')     
     logging.info('Done creating dta spawns.')
         
@@ -223,7 +223,7 @@ if __name__ == '__main__':
     ###############################Please Imform Function Inputs#######################################
 
     # Define input file (ouput automatically stored within it)
-    inputfile = "S:\\particulates\\data_processing\\data\\dta2raster\\dtas\\construction10yr.dta"
+    inputfile = "S:\\particulates\\data_processing\\data\\dta2raster\\dtas\\urban_dummy_maps.dta"
     # Define type of data ("FLOAT" or "INTEGER")
     datatype = "INTEGER"
     outputfolder = "S:\\particulates\\data_processing\\data\\dta2raster\\maps"

@@ -1,7 +1,7 @@
 #delimit;
-set trace off;
+set trace on;
 set tracedepth 1;
-pause on;
+pause off;
 capture program drop _all;
 /*;
 This .do:
@@ -55,9 +55,9 @@ program nleq8;
 							`if' & sender_dummy_==1;
 	
 	replace `pred_inflow' = -`vd_r'*`Xk'
-							+`sigma_c'*`psi_c'*`Coal'
-							+`sigma_o'*`psi_o'*`Oil'
-							+`sigma_f'*`psi_f'*`Fire'
+							+(1-`sigma_c')*`psi_c'*`Coal'
+							+(1-`sigma_o')*`psi_o'*`Oil'
+							+(1-`sigma_f')	*`psi_f'*`Fire'
 							+`c_r'
 							`if' & sender_dummy_==0;
 end;
@@ -180,11 +180,11 @@ local rownames_rural first;
 capture rm "../../../data/dtas/country_regions/emission_factors/all_emission_factors.dta";
 touch "../../../data/dtas/country_regions/emission_factors/all_emission_factors.dta";
 
-
 foreach country of local countries{;
 
 	dis "`country'";
-	
+	tab country if gpw_v4_national_identifier_gri==`country';
+	*reg net_flow_into `parms_urban' if gpw_v4_national_identifier_gri==`country'; 
 	*capture noisily reg net_flow_into `parms_urban' if gpw_v4_national_identifier_gri==`country' & region=="urban";
 	capture noisily nl eq8 @ net_flow_into `parms_urban' if gpw_v4_national_identifier_gri==`country', 
 	parameters(
@@ -195,7 +195,7 @@ foreach country of local countries{;
 	)
 	initial(
 	sigma_c 0	sigma_o 0	sigma_f 0
-	psi_c 5	psi_o 5	psi_f 5
+	psi_c 10	psi_o 10	psi_f 10
 	vd_s 5		vd_r 5
 	c_s 0 		c_r 0)
 	;
@@ -212,7 +212,6 @@ foreach country of local countries{;
 		*local rownames_urban `rownames_urban' `country';
 	};
 	capture ereturn clear;
-	
 };
 local regions urban rural;
 
@@ -230,10 +229,13 @@ foreach region of local regions {;
 */;
 *Clean regression output;
 
+use "../../../data/dtas/country_regions/emission_factors/all_emission_factors.dta", clear;
+merge m:1 gpw_v4_national_identifier_gri using "../../../data/dtas/country/emission_factor_inputs_2000.dta", nogen keepusing(country);
+merge m:1 gpw_v4_national_identifier_gri using `constant_senders', nogen keep(match);
+save "../../../data/dtas/country_regions/emission_factors/all_emission_factors.dta", replace;
+
 /*;foreach region of local regions{;
 	
-	use "../../../data/dtas/country_regions/emission_factors/`region'_emission_factors.dta", clear;
-	merge m:1 gpw_v4_national_identifier_gri using "../../../data/dtas/country/emission_factor_inputs_2000.dta", nogen keepusing(country);
 	
 	pause;
 	gen double temp_coef=exp(coef);

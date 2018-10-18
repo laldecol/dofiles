@@ -137,12 +137,9 @@ if __name__=='__main__':
     
     
     #Set of years we want to process
-<<<<<<< HEAD
     years=[str(year) for year in range(2001,2013)]
     nw=len(years)
-=======
-    years=[str(year) for year in range(2000,2013)]
->>>>>>> master
+
     
     pool=Pool(processes=nw)
     

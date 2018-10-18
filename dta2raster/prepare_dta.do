@@ -3,7 +3,10 @@ dta2table.do
 *********
 / * This program is used by dta2raster to prepare a dta file to be processed and 
 transfored in a raster */
-/* Created by Marcel, 6/22/2017 */
+/* 
+Created by Marcel, 6/22/2017
+Last modified by Lorenzo, 12/10/2018
+*/
 
 
 * set up;
@@ -52,7 +55,7 @@ foreach var of varlist *
 		preserve;
 		collapse `var'_group, by(`var');		
 		cd "`arg1'\mapping_str_variables";
-		save "`var'_str2num_map", replace;
+		saveold "`var'_str2num_map", replace v(13);
 		restore;
 		*Drop original;
 		drop `var';
@@ -67,7 +70,7 @@ foreach var of varlist *
 	{;
 	preserve;
 	keep `var';
-	save "`var'_ubergrid", replace;
+	saveold "`var'_ubergrid", replace v(13);
 	restore;
 	};
 	

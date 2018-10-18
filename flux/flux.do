@@ -112,19 +112,19 @@ assert _N==`R'*`C';
 replace gpw_v4_national_identifier_gri=-9999 if gpw_v4_national_identifier_gri==.;
 replace country="Sea, Inland Water, other Uninhabitable" if gpw_v4_national_identifier_gri==-9999;
 
-egen countryXregion`year'=group(country urban_wb`year'), label;
+egen countryXregion`year'=group(country urban_wb2010), label;
 
 preserve;
 
 collapse (count) uber_code Terra`year'_count=Terra`year' (firstnm) gpw_v4_national_identifier_gri
-(mean) Terra`year'_mean=Terra`year' (sum) area, by(countryXregion`year' country urban_wb`year');
+(mean) Terra`year'_mean=Terra`year' (sum) area, by(countryXregion`year' country urban_wb2010);
 
 *Generate copy of id variable, for future merge;
 gen neighbor_=countryXregion`year';
 
 rename gpw_v4_national_identifier_gri neighbor_ctry_;
 rename country neighbor_country_name_;
-rename urban_wb`year' neighbor_rgn_;
+rename urban_wb2010 neighbor_rgn_;
 
 *Order identical id vars first;
 order countryXregion`year' neighbor_;
