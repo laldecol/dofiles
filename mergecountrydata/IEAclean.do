@@ -70,6 +70,7 @@ foreach using of local usings{;
 merge 1:1 country time source_name using `using', nogen;
 };
 tempfile source_merged;
+pause;
 save `source_merged';
 
 ***Import conversion factors;
@@ -141,41 +142,49 @@ bro if _merge==2;
 gen fuel_units=units_Energy;
 drop units_*;
 
-local coalvars anthracite bkb charcoal coaltar otherbituminouscoal subbituminouscoal;
-local oilvars bitumen crudeoil oilshaleandoilsands;
-local gasvars ;
+local coalvars 	anthracite subbituminouscoal lignite charcoal  otherbituminouscoal
+				peat peatproducts cokingcoal patentfuel cokeovencoke gascoke bkb coaltar
+
+;
+local oilvars 	bitumen crudeoil oilshaleandoilsands aviationgasoline 
+				motorgasolineexclbiofuels biodiesels biogasoline otherkerosene
+				otherliquidbiofuels gasolinetypejetfuel kerosenetypejetfuelexclbi
+				otheroilproducts liquefiedpetroleumgaseslp
+				fueloil refineryfeedstocks additivesblendingcomponen otherhydrocarbons 
+				refinerygas  gasdieseloilexclbiofuels naphtha whitespiritsbp lubricants
+				paraffinwaxes petroleumcoke
+
+
+;
+local gasvars 	ethane naturalgasliquids;
 
 /*;
-additivesblendingcomponen
-         aviationgasoline
-               biodiesels
-              biogasoline
-             cokeovencoke
-               cokingcoal
-                   ethane
-                  fueloil
-                  gascoke
- gasdieseloilexclbiofuels
-      gasolinetypejetfuel
-kerosenetypejetfuelexclbi
-                  lignite
-liquefiedpetroleumgaseslp
-               lubricants
-motorgasolineexclbiofuels
-                  naphtha
-        naturalgasliquids
-        otherhydrocarbons
-            otherkerosene
-      otherliquidbiofuels
-         otheroilproducts
-            paraffinwaxes
-               patentfuel
-                     peat
-             peatproducts
+This is what BP says sbout their Oil, Coal, and Gas Consumption variables: 
+Coal:  * Commercial solid fuels only, i.e. bituminous coal and anthracite (hard coal), and lignite and brown (sub-bituminous) coal, and other commercial solid fuels. 
+https://www.bp.com/en/global/corporate/energy-economics/statistical-review-of-world-energy/coal/coal-consumption.html
+Anthracite	Sub-bituminous
+and bituminous	and lignite
+
+Gas: * Excludes natural gas converted to liquid fuels but includes derivatives of coal as well as natural gas consumed in Gas-to-Liquids transformation.
+https://www.bp.com/en/global/corporate/energy-economics/statistical-review-of-world-energy/natural-gas/natural-gas-consumption.html
+
+Oil:  * Inland demand plus international aviation and marine bunkers and refinery fuel and loss. Consumption of biogasoline (such as ethanol), biodiesel and derivatives of coal and natural gas are also included.
+https://www.bp.com/en/global/corporate/energy-economics/statistical-review-of-world-energy/oil/oil-and-oil-product-consumption.html
+‘Light distillates’ consists of aviation and motor gasolines and light distillate feedstock (LDF).
+‘Middle distillates’ consists of jet and heating kerosenes, and gas and diesel oils (including marine bunkers).
+‘Fuel oil’ includes marine bunkers and crude oil used directly as fuel.
+‘Others’ consists of refinery gas, liquefied petroleum gas (LPG), solvents, petroleum coke, lubricants, bitumen, wax, other refined products and refinery fuel and loss.
+
+*/;
+
+/*;
+
+               
+ 
+            
             petroleumcoke
-       refineryfeedstocks
-              refinerygas
-           whitespiritsbp
+              
+           
 */;
 
 . 
