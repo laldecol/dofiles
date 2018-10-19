@@ -55,7 +55,7 @@ local samplepixels "Terra2000!=. & Terra2005!=. & Terra2010!=. & Terra2015!=.
 log using dataprep.log, text replace;
 
 *I. Generate and relabel variables, and define sample;
-if 1==1{;
+if 1==2{;
 	use "..\\..\\..\\data\dtas\analyze_me.dta", clear;
 
 	*0. Generate country-level total population before dropping any pixels;
@@ -345,7 +345,7 @@ if 1==1{;
 	*Collapse to country level to keep country means and totals;
 	
 	use "../../../data/dtas/analyze_me_land.dta";
-	collapse (mean) Terra* (sum) Fire* gpwpop* (firstnm) Oil* Coal* Gas*, by(gpw_v4_national_identifier_gri country);
+	collapse (mean) Terra* (sum) Fire* gpwpop* area (firstnm) Oil* Coal* Gas* highqualGPW, by(gpw_v4_national_identifier_gri country);
 	save "../../../data/dtas/country/country_aggregates/country_aggregates.dta", replace;
 	
 	*Using mod5 years, save country year level averages of pixel level data;
