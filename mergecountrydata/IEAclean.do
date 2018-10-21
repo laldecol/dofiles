@@ -4,240 +4,203 @@ set trace off;
 set tracedepth 1;
 
 ***Import source files;
-local ieafiles: dir "..\\..\\..\\data\\IEA\\source" files "IEA_energy_data*.csv", respectcase;
+local ieafiles: dir "..\\..\\..\\data\\IEA\\source\\fuel_use" files "*.csv", respectcase;
 local filecount=0;
 local tempfs;
-local master temp1;
+if 1==1{;
+	foreach ieafile of local ieafiles{;
+		
+		import delimited "..\\..\\..\\data\\IEA\\source\\fuel_use/`ieafile'", varnames(2) rowrange(2) clear ;
+		
+		capture drop v*;
+		*Name and create temporary files for merge;
+		tempfile temp`filecount';
+		local ++filecount;
+		local tempfs `tempfs' temp`filecount';
+		
+		distinct country;
+		
 
-foreach ieafile of local ieafiles{;
-	
-	import delimited "..\\..\\..\\data\\IEA\\source/`ieafile'", varnames(2) rowrange(2) clear ;
-	
-	capture drop v*;
-	*Name and create temporary files for merge;
-	tempfile temp`filecount';
-	local ++filecount;
-	local tempfs `tempfs' temp`filecount';
-	
-	*Keep list of sources variables;
-	ds country time flow, not;
-	local sourcelist `r(varlist)';
-	
-	*Fill in missing country and time data;
-	replace country=country[_n-1] if country=="";
-	replace time=time[_n-1] if time==.;
-	
-	destring time `sourcelist', ignore(. x c) replace;
+		
+		*Keep list of sources variables;
+		ds country time flow, not;
+		local sourcelist `r(varlist)';
+		
+		*Clean flow names;
+		replace flow=subinstr(flow,"/","",.);
+		replace flow=subinstr(flow,"-","",.);
 
-	foreach sourcevar of local sourcelist{;
-		dis "`sourcevar'";
-		local newvarname=substr("`sourcevar'", 1, 25);
+		*Fill in missing country and time data;
+		replace country=country[_n-1] if country=="";
+		replace time=time[_n-1] if time==.;
 		
-		dis "`newvarname'";
-		rename `sourcevar' `newvarname';
-		local label : var label `newvarname';
-		rename `newvarname' source_`newvarname';
+		destring time `sourcelist', ignore(. x c) replace;
+
+		foreach sourcevar of local sourcelist{;
+			dis "`sourcevar'";
+			local newvarname=substr("`sourcevar'", 1, 25);
+			
+			dis "`newvarname'";
+			rename `sourcevar' `newvarname';
+			local label : var label `newvarname';
+			rename `newvarname' source_`newvarname';
+			
+			gen units_`newvarname'="`label'";
+			
+			
+			
+		};
 		
-		gen units_`newvarname'="`label'";
+
+		replace flow="Tr_Main_Elec" if flow=="Main activity producer electricity plants (transf.)";
+		replace flow="Tr_Auto_Elec" if flow=="Autoproducer electricity plants (transf.)";
+		replace flow="Tr_Main_CHP" if flow=="Main activity producer CHP plants (transf.)";
+		replace flow="Tr_Auto_CHP" if flow=="Autoproducer CHP plants (transf.)";
+		replace flow="Tr_Main_Heat" if flow=="Main activity producer heat plants (transf.)";
+		replace flow="Tr_Auto_Heat" if flow=="Autoproducer heat plants (transf.)";
+		replace flow="Tr_Blast" if flow=="Blast furnaces (transf.)";
+		replace flow="Tr_Coke" if flow=="Coke ovens (transf.)";
 		
+		reshape long source_ units_, i(country time flow)  j(source_name) string;
+		reshape wide source_ units_, i(country time source_name) j(flow) string;
+		
+		replace source_name=subinstr(source_name,"kt","",.);
+		replace source_name=subinstr(source_name,"tjnet","",.);
+		replace source_name=subinstr(source_name,"tjne","",.);
+		replace source_name=subinstr(source_name,"tjn","",.);
+		replace source_name=subinstr(source_name,"tjgross","",.);
+		replace source_name=subinstr(source_name,"tjgros","",.);
+		replace source_name=subinstr(source_name,"tjgro","",.);
+		replace source_name=subinstr(source_name,"tjgr","",.);
+		replace source_name=subinstr(source_name,"tjg","",.);
+		replace source_name=subinstr(source_name,"tj","",.);
+		replace source_name="gasdieseloilexclbiofuels" if source_name=="gasdieseloilexclbiofuelsk";
+		
+		save temp`filecount', replace;
+		keep country time source_name;
+		save idappend`filecount', replace;
 	};
-	
-	reshape long source_ units_, i(country time flow)  j(source_name) string;	
-	reshape wide source_ units_, i(country time source_name) j(flow) string;
-	replace source_name=subinstr(source_name,"kt","",.);
-	replace source_name=subinstr(source_name,"tjnet","",.);
-	replace source_name=subinstr(source_name,"tjne","",.);
-	replace source_name=subinstr(source_name,"tjn","",.);
-	replace source_name=subinstr(source_name,"tjgross","",.);
-	replace source_name=subinstr(source_name,"tjgros","",.);
-	replace source_name=subinstr(source_name,"tjgro","",.);
-	replace source_name=subinstr(source_name,"tjgr","",.);
-	replace source_name=subinstr(source_name,"tjg","",.);
-	replace source_name=subinstr(source_name,"tj","",.);
-	replace source_name="gasdieseloilexclbiofuels" if source_name=="gasdieseloilexclbiofuelsk";
-	
-	save temp`filecount', replace;
-};
-
-*Keep list of using files to merge;
-local usings: list tempfs - master;
-dis "`usings'";
-clear;
-
-*Merge all usings to master;
-use temp1;
-foreach using of local usings{;
-merge 1:1 country time source_name using `using', nogen;
-};
-tempfile source_merged;
-pause;
-save `source_merged';
-
-***Import conversion factors;
-local convfiles: dir "S:\\particulates\\data_processing\\data\\IEA\\source\\conversion_factors" files "*.csv", respectcase;
-local filecount=0;
-local tempfs;
-local master temp1;
-
-foreach convfile of local convfiles{;
-	
-	import delimited "..\\..\\..\\data\\IEA\\source\\conversion_factors/`convfile'", varnames(2) rowrange(2) clear ;
-	
-	*Name and create temporary files for merge;
-	tempfile temp`filecount';
-	local ++filecount;
-	local tempfs `tempfs' temp`filecount';
-	capture drop v*;
-	*Keep list of sources variables;
-	ds country time flow unit, not;
-	
-	local sourcelist `r(varlist)';
-	
-	*Fill in missing country and time data;
-	replace country=country[_n-1] if country=="";
-	replace time=time[_n-1] if time==.;
-	
-	destring time `sourcelist', ignore(. x) replace;
-	
-	foreach sourcevar of local sourcelist{;
-		dis "`sourcevar'";
-		local newvarname=substr("`sourcevar'", 1, 25);
-		dis "`newvarname'";
-		rename `sourcevar' `newvarname';
-		rename `newvarname' conv_`newvarname';
+	local master temp`masternum';
+	use idappend1, clear;
+	forvalues filevals=2/`filecount'{;
+	append using idappend`filevals';
 	};
+	tempfile id_master;
+	save `id_master';
 	
-	reshape long conv_, i(unit country time flow)  j(source_name) string;
-	reshape wide conv_, i(country time source_name) j(flow) string;
-	
-	sort country time;
-	save temp`filecount', replace;
-	*in this data, gas diesel oils are called gasdieseloilexclbiofuels;
-};
+	*Keep list of using files to merge;
+	*local usings: list tempfs - master;
+	dis "`usings'";
+	clear;
 
-*Keep list of using files to merge;
-local usings: list tempfs - master;
-dis "`usings'";
-clear;
-
-*Merge all usings to master;
-use temp1;
-foreach using of local usings{;
+	*Merge all usings to master;
+	use `id_master';
+	foreach using of local usings{;
 	merge 1:1 country time source_name using `using', nogen;
+	};
+	tempfile source_merged;
+	save `source_merged';
+	pause;
 };
 
-tempfile conv_merged;
-save `conv_merged';
-pause;
-merge 1:1 country time source_name using `source_merged';
+if 1==1{;
+	***Import conversion factors;
+	local convfiles: dir "S:\\particulates\\data_processing\\data\\IEA\\source\\conversion_factors" files "*.csv", respectcase;
+	local filecount=0;
+	local tempfs;
+	local master temp1;
 
-egen fuel_consumption=rowtotal(source_Energy source_Final source_Transformation);
-drop source_Energy source_Final source_Transformation;
+	foreach convfile of local convfiles{;
+		
+		import delimited "..\\..\\..\\data\\IEA\\source\\conversion_factors/`convfile'", varnames(2) rowrange(2) clear ;
+		
+		*Name and create temporary files for merge;
+		tempfile temp`filecount';
+		local ++filecount;
+		local tempfs `tempfs' temp`filecount';
+		capture drop v*;
+		*Keep list of sources variables;
+		ds country time flow unit, not;
+		
+		local sourcelist `r(varlist)';
+		
+		*Fill in missing country and time data;
+		replace country=country[_n-1] if country=="";
+		replace time=time[_n-1] if time==.;
+		
+		destring time `sourcelist', ignore(. x) replace;
+		
+		foreach sourcevar of local sourcelist{;
+			dis "`sourcevar'";
+			local newvarname=substr("`sourcevar'", 1, 25);
+			dis "`newvarname'";
+			rename `sourcevar' `newvarname';
+			rename `newvarname' conv_`newvarname';
+		};	
 
-sort country time _merge source_name fuel_consumption;
-order _merge country time source_name fuel_consumption;
-drop if fuel_consumption==0;
+		replace flow="avg" if flow=="Average net calorific value";
+		replace flow="production" if flow=="NCV of production";
+		replace flow="other_sources" if flow=="NCV of other sources";
+		replace flow="imports" if flow=="NCV of imports";
+		replace flow="exports" if flow=="NCV of exports";
+		replace flow="cokeovens" if flow=="NCV of coke ovens";
+		replace flow="blast" if flow=="NCV of blast furnaces";
+		replace flow="mapep" if flow=="NCV in main activity producer electricity plants";
+		replace flow="aep" if flow=="NCV in autoproducer electricity plants";
+		replace flow="ma_chp" if flow=="NCV in main activity CHP plants";
+		replace flow="auto_chp" if flow=="NCV in autoproducer CHP plants";
+		replace flow="mahp" if flow=="NCV in main activity heat plants";
+		replace flow="ahp" if flow=="NCV in autoproducer heat plants";
+		replace flow="industry" if flow=="NCV in industry";
+		replace flow="other_use" if flow=="NCV for other uses";
 
-bro if _merge==2;
-gen fuel_units=units_Energy;
-drop units_*;
+		reshape long conv_, i(unit country time flow)  j(source_name) string;
+		reshape wide conv_, i(country time source_name) j(flow) string;
+		sort country time;
+		save temp`filecount', replace;
+	};
 
-local coalvars 	anthracite subbituminouscoal lignite charcoal  otherbituminouscoal
-				peat peatproducts cokingcoal patentfuel cokeovencoke gascoke bkb coaltar
+	*Keep list of using files to merge;
+	local usings: list tempfs - master;
+	dis "`usings'";
+	clear;
 
-;
-local oilvars 	bitumen crudeoil oilshaleandoilsands aviationgasoline 
-				motorgasolineexclbiofuels biodiesels biogasoline otherkerosene
-				otherliquidbiofuels gasolinetypejetfuel kerosenetypejetfuelexclbi
-				otheroilproducts liquefiedpetroleumgaseslp
-				fueloil refineryfeedstocks additivesblendingcomponen otherhydrocarbons 
-				refinerygas  gasdieseloilexclbiofuels naphtha whitespiritsbp lubricants
-				paraffinwaxes petroleumcoke
+	*Merge all usings to master;
+	use temp1;
+	foreach using of local usings{;
+		merge 1:1 country time source_name using `using', nogen;
+	};
 
+	tempfile conv_merged;
+	save `conv_merged';
+	merge 1:1 country time source_name using `source_merged';
+	pause;
+	sort country time _merge source_name;
+	order _merge country time source_name;
 
-;
-local gasvars 	ethane naturalgasliquids;
+	bro if _merge==2;
+	gen fuel_units=units_Energy;
+	drop units*;
 
-/*;
-This is what BP says sbout their Oil, Coal, and Gas Consumption variables: 
-Coal:  * Commercial solid fuels only, i.e. bituminous coal and anthracite (hard coal), and lignite and brown (sub-bituminous) coal, and other commercial solid fuels. 
-https://www.bp.com/en/global/corporate/energy-economics/statistical-review-of-world-energy/coal/coal-consumption.html
-Anthracite	Sub-bituminous
-and bituminous	and lignite
+	replace conv_avg=1 if source_name=="crudeoil";
 
-Gas: * Excludes natural gas converted to liquid fuels but includes derivatives of coal as well as natural gas consumed in Gas-to-Liquids transformation.
-https://www.bp.com/en/global/corporate/energy-economics/statistical-review-of-world-energy/natural-gas/natural-gas-consumption.html
+	save "S:\particulates\data_processing\data\IEA\generated/sources_conv_factors.dta", replace;
+};
 
-Oil:  * Inland demand plus international aviation and marine bunkers and refinery fuel and loss. Consumption of biogasoline (such as ethanol), biodiesel and derivatives of coal and natural gas are also included.
-https://www.bp.com/en/global/corporate/energy-economics/statistical-review-of-world-energy/oil/oil-and-oil-product-consumption.html
-‘Light distillates’ consists of aviation and motor gasolines and light distillate feedstock (LDF).
-‘Middle distillates’ consists of jet and heating kerosenes, and gas and diesel oils (including marine bunkers).
-‘Fuel oil’ includes marine bunkers and crude oil used directly as fuel.
-‘Others’ consists of refinery gas, liquefied petroleum gas (LPG), solvents, petroleum coke, lubricants, bitumen, wax, other refined products and refinery fuel and loss.
+use "S:\particulates\data_processing\data\IEA\generated/sources_conv_factors.dta", clear;
+*Create new unit variable, to be used in conversion;
+gen units="";
+replace units="kt" if strpos(fuel_units, "(kt)")>0;
+replace units="TJ" if strpos(fuel_units, "(TJ-gross)")>0 | strpos(fuel_units, "(TJ-net)")>0 | strpos(fuel_units, "(TJ)")>0 | strpos(fuel_units, "TJ-net)")>0;
+replace units="GWh" if strpos(fuel_units, "(GWh)")>0;
+replace units="TJ" if fuel_units=="Heat from chemical sources"  | fuel_units=="Heat output from non-specified combustible fuels";
+replace units="GWh" if fuel_units=="Wind" |  fuel_units=="Nuclear" | fuel_units=="Electric boilers" |   fuel_units=="Hydro" | fuel_units=="Tide, wave and ocean" | fuel_units=="Solar photovoltaics" | fuel_units=="Heat pumps";
+tab fuel_units if units=="";
+drop if units=="";
 
-*/;
+*From https://www.iea.org/publications/freepublications/publication/statistics_manual.pdf;
+gen TJ_to_MTOE	=.00002388; 
+gen GWh_to_MTOE	=.000086;
 
-/*;
-
-               
- 
-            
-            petroleumcoke
-              
-           
-*/;
-
-. 
-
-/**;
-use "S:\particulates\data_processing\data\IEA\source\coal.dta", clear;
-rename var1 country;
-rename var2 year;
-rename product flow;
-
-drop if _n==1;
-replace country=country[_n-1] if country=="";
-replace year=year[_n-1] if year=="";
-
-
-
-destring year anthracitekt cokingcoalkt otherbituminouscoalkt subbituminouscoalkt 
-lignitekt cokeovencokekt coaltarkt peatkt peatproductskt oilshaleandoilsandskt, 
-ignore(.) replace;
-
-keep if year>=2000;
-
-sort country year flow;
-drop flow;
-by country year: gen concept=_n;
-
-reshape wide anthracitekt cokingcoalkt otherbituminouscoalkt subbituminouscoalkt 
-lignitekt cokeovencokekt coaltarkt peatkt peatproductskt oilshaleandoilsandskt
-, i(year country) j(concept);
-
-tempfile IEAcoal;
-
-replace country="United States of America" if country=="United States";
-replace country="China" if country=="People's Republic of China";
-replace country="China Hong Kong Special Administrative Region" if country=="Hong Kong (China)";
-replace country="Republic of Korea" if country=="Korea";
-replace country="United Kingdom of Great Britain and Northern Ireland" if country=="United Kingdom";
-
-
-save `IEAcoal';
-
-use "S:\\particulates\\data_processing\\data\\BP\\generated\\CoalConsumption.dta";
-reshape long Coal, i(country) j(year);
-
-merge 1:m year country using `IEAcoal';
-replace Coal=Coal*1000;
-
-tab country if _merge==1;
-tab country if _merge==2;
-
-reg Coal anthracitekt1 cokingcoalkt1 otherbituminouscoalkt1 subbituminouscoalkt1 lignitekt1 cokeovencokekt1 coaltarkt1 peatkt1 peatproductskt1 oilshaleandoilsandskt1 anthracitekt2 cokingcoalkt2 otherbituminouscoalkt2 subbituminouscoalkt2 lignitekt2 cokeovencokekt2 coaltarkt2 peatkt2 peatproductskt2 oilshaleandoilsandskt2;
-
-egen IEAtotalcoal=rowtotal(anthracitekt* cokingcoalkt* otherbituminouscoalkt* subbituminouscoalkt* lignitekt* cokeovencokekt* coaltarkt* peatkt* peatproductskt* oilshaleandoilsandskt*);
-
-scatter (Coal IEAtotalcoal) || function y = x, range(Coal);
-**/;
+*kt to MTOE is complex because it depends on the fuel and the sector;
+gen kt_to_MTOE_=.;
