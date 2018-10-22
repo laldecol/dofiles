@@ -61,53 +61,50 @@ if 1==1{;
 		replace flow="Tr_Blast" if flow=="Blast furnaces (transf.)";
 		replace flow="Tr_Coke" if flow=="Coke ovens (transf.)";
 		
-		reshape long source_ units_, i(country time flow)  j(source_name) string;
-		reshape wide source_ units_, i(country time source_name) j(flow) string;
-		
-		replace source_name=subinstr(source_name,"kt","",.);
-		replace source_name=subinstr(source_name,"tjnet","",.);
-		replace source_name=subinstr(source_name,"tjne","",.);
-		replace source_name=subinstr(source_name,"tjn","",.);
-		replace source_name=subinstr(source_name,"tjgross","",.);
-		replace source_name=subinstr(source_name,"tjgros","",.);
-		replace source_name=subinstr(source_name,"tjgro","",.);
-		replace source_name=subinstr(source_name,"tjgr","",.);
-		replace source_name=subinstr(source_name,"tjg","",.);
-		replace source_name=subinstr(source_name,"tj","",.);
-		replace source_name="gasdieseloilexclbiofuels" if source_name=="gasdieseloilexclbiofuelsk";
 		
 		save temp`filecount', replace;
-		keep country time source_name;
-		save idappend`filecount', replace;
+	
 	};
-	local master temp`masternum';
-	use idappend1, clear;
-	forvalues filevals=2/`filecount'{;
-	append using idappend`filevals';
-	};
-	tempfile id_master;
-	save `id_master';
+	
+	use temp1, clear;
 	
 	*Keep list of using files to merge;
-	*local usings: list tempfs - master;
+	local usings: list tempfs-temp1;
 	dis "`usings'";
 	clear;
 
+	append using `tempfs';
+	
+	*Keep list of using files to merge;
+	*local usings: list tempfs - master;
+	
 	*Merge all usings to master;
-	use `id_master';
-	foreach using of local usings{;
-	merge 1:1 country time source_name using `using', nogen;
-	};
+	
+	reshape long source_ units_, i(country time flow)  j(source_name) string;
+	reshape wide source_ units_, i(country time source_name) j(flow) string;
+		
+	replace source_name=subinstr(source_name,"kt","",.);
+	replace source_name=subinstr(source_name,"tjnet","",.);
+	replace source_name=subinstr(source_name,"tjne","",.);
+	replace source_name=subinstr(source_name,"tjn","",.);
+	replace source_name=subinstr(source_name,"tjgross","",.);
+	replace source_name=subinstr(source_name,"tjgros","",.);
+	replace source_name=subinstr(source_name,"tjgro","",.);
+	replace source_name=subinstr(source_name,"tjgr","",.);
+	replace source_name=subinstr(source_name,"tjg","",.);
+	replace source_name=subinstr(source_name,"tj","",.);
+	replace source_name="gasdieseloilexclbiofuels" if source_name=="gasdieseloilexclbiofuelsk";
+	
+	
 	tempfile source_merged;
 	save `source_merged';
-	pause;
 };
 
 if 1==1{;
 	***Import conversion factors;
 	local convfiles: dir "S:\\particulates\\data_processing\\data\\IEA\\source\\conversion_factors" files "*.csv", respectcase;
 	local filecount=0;
-	local tempfs;
+	local tempcfs;
 	local master temp1;
 
 	foreach convfile of local convfiles{;
@@ -115,9 +112,9 @@ if 1==1{;
 		import delimited "..\\..\\..\\data\\IEA\\source\\conversion_factors/`convfile'", varnames(2) rowrange(2) clear ;
 		
 		*Name and create temporary files for merge;
-		tempfile temp`filecount';
+		tempfile tempcf`filecount';
 		local ++filecount;
-		local tempfs `tempfs' temp`filecount';
+		local tempcfs `tempcfs' tempcf`filecount';
 		capture drop v*;
 		*Keep list of sources variables;
 		ds country time flow unit, not;
@@ -154,27 +151,26 @@ if 1==1{;
 		replace flow="industry" if flow=="NCV in industry";
 		replace flow="other_use" if flow=="NCV for other uses";
 
-		reshape long conv_, i(unit country time flow)  j(source_name) string;
-		reshape wide conv_, i(country time source_name) j(flow) string;
+		
 		sort country time;
-		save temp`filecount', replace;
+		save tempcf`filecount', replace;
 	};
 
 	*Keep list of using files to merge;
-	local usings: list tempfs - master;
-	dis "`usings'";
+	*local usings: list tempfs - master;
+	*dis "`usings'";
 	clear;
 
 	*Merge all usings to master;
-	use temp1;
-	foreach using of local usings{;
-		merge 1:1 country time source_name using `using', nogen;
-	};
-
+	append using `tempcfs';
+	
+	reshape long conv_, i(unit country time flow)  j(source_name) string;
+	reshape wide conv_, i(country time source_name) j(flow) string;
+	
 	tempfile conv_merged;
 	save `conv_merged';
-	merge 1:1 country time source_name using `source_merged';
-	pause;
+	
+	merge 1:1 country time source_name using `source_merged', keep(match using);
 	sort country time _merge source_name;
 	order _merge country time source_name;
 
@@ -182,25 +178,7 @@ if 1==1{;
 	gen fuel_units=units_Energy;
 	drop units*;
 
-	replace conv_avg=1 if source_name=="crudeoil";
-
 	save "S:\particulates\data_processing\data\IEA\generated/sources_conv_factors.dta", replace;
 };
 
 use "S:\particulates\data_processing\data\IEA\generated/sources_conv_factors.dta", clear;
-*Create new unit variable, to be used in conversion;
-gen units="";
-replace units="kt" if strpos(fuel_units, "(kt)")>0;
-replace units="TJ" if strpos(fuel_units, "(TJ-gross)")>0 | strpos(fuel_units, "(TJ-net)")>0 | strpos(fuel_units, "(TJ)")>0 | strpos(fuel_units, "TJ-net)")>0;
-replace units="GWh" if strpos(fuel_units, "(GWh)")>0;
-replace units="TJ" if fuel_units=="Heat from chemical sources"  | fuel_units=="Heat output from non-specified combustible fuels";
-replace units="GWh" if fuel_units=="Wind" |  fuel_units=="Nuclear" | fuel_units=="Electric boilers" |   fuel_units=="Hydro" | fuel_units=="Tide, wave and ocean" | fuel_units=="Solar photovoltaics" | fuel_units=="Heat pumps";
-tab fuel_units if units=="";
-drop if units=="";
-
-*From https://www.iea.org/publications/freepublications/publication/statistics_manual.pdf;
-gen TJ_to_MTOE	=.00002388; 
-gen GWh_to_MTOE	=.000086;
-
-*kt to MTOE is complex because it depends on the fuel and the sector;
-gen kt_to_MTOE_=.;
