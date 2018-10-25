@@ -328,7 +328,9 @@ if 1==1{;
 
 	*All countries pooled;
 	reshape long Terra Fire Data gpwpop water trees pasture barren crops urban other urban_wb 
-	cld wet vap tmp frs Oil Coal Gas urbanshare 
+	cld wet vap tmp frs Oil Coal Gas
+	IEA_Coal IEA_Oil IEA_Other
+	urbanshare 
 	construction1yr construction5yr
 	rgdpe rgdpo countrypop countryGDPpc vwnd_ uwnd_,
 	 i(uber_code country area) j(year);
@@ -345,7 +347,7 @@ if 1==1{;
 	*Collapse to country level to keep country means and totals;
 	
 	use "../../../data/dtas/analyze_me_land.dta";
-	collapse (mean) Terra* (sum) Fire* gpwpop* area (firstnm) Oil* Coal* Gas* highqualGPW, by(gpw_v4_national_identifier_gri country);
+	collapse (mean) Terra* (sum) Fire* gpwpop* area (firstnm) Oil* Coal* Gas* IEA* highqualGPW, by(gpw_v4_national_identifier_gri country);
 	save "../../../data/dtas/country/country_aggregates/country_aggregates.dta", replace;
 	
 	*Using mod5 years, save country year level averages of pixel level data;
@@ -362,7 +364,7 @@ if 1==1{;
 	use "..\\..\\..\\data\\dtas\analyze_me_land_mod5.dta", clear;
 	*Generate country year averages of pixel level variables;
 	collapse (mean) density_ctryyr=density urban_wb_ctryyr=urban_wb
-	rgdpe Oil Coal Gas urbanshare countryGDPpc
+	rgdpe Oil Coal Gas IEA_Coal IEA_Oil IEA_Other urbanshare countryGDPpc
 	gpwpop
 	water_ctryyr=water trees_ctryyr=trees pasture_ctryyr=pasture 
 	barren_ctryyr=barren crops_ctryyr=crops 

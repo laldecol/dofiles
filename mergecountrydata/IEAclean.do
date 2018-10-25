@@ -7,6 +7,7 @@ set tracedepth 1;
 local ieafiles: dir "..\\..\\..\\data\\IEA\\source\\fuel_use" files "*.csv", respectcase;
 local filecount=0;
 local tempfs;
+
 if 1==1{;
 	foreach ieafile of local ieafiles{;
 		
@@ -60,6 +61,14 @@ if 1==1{;
 		replace flow="Tr_Auto_Heat" if flow=="Autoproducer heat plants (transf.)";
 		replace flow="Tr_Blast" if flow=="Blast furnaces (transf.)";
 		replace flow="Tr_Coke" if flow=="Coke ovens (transf.)";
+		replace flow="Tr_Coke" if flow=="Coke ovens (transf.)";
+		replace flow="Electr_Output" if flow=="Electricity output (GWh)";
+		
+		replace flow="Electr_MA_Ele" if flow=="Electricity output (GWh)main activity producer electricity plants";
+		replace flow="Electr_Auto_Ele" if flow=="Electricity output (GWh)autoproducer electricity plants";
+		replace flow="Electr_MA_CHP" if flow=="Electricity output (GWh)main activity producer CHP plants";
+		replace flow="Electr_Auto_CHP" if flow=="Electricity output (GWh)autoproducer CHP plants";
+		replace flow="Heat_Output" if flow=="Heat output (TJ)";
 		
 		
 		save temp`filecount', replace;
@@ -79,7 +88,7 @@ if 1==1{;
 	*local usings: list tempfs - master;
 	
 	*Merge all usings to master;
-	
+	pause;
 	reshape long source_ units_, i(country time flow)  j(source_name) string;
 	reshape wide source_ units_, i(country time source_name) j(flow) string;
 		
@@ -180,5 +189,3 @@ if 1==1{;
 
 	save "S:\particulates\data_processing\data\IEA\generated/sources_conv_factors.dta", replace;
 };
-
-use "S:\particulates\data_processing\data\IEA\generated/sources_conv_factors.dta", clear;

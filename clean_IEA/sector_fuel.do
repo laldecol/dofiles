@@ -65,30 +65,99 @@ set tracedepth 1;
 	
 *Collapse into year, country, sector, group variable in ktoe;
 
+	collapse (sum) source_, by(country time sector_ fuel_group);
+	tab sector_;
+	
+	pause;
+	keep if 	sector_=="Industry" |
+				sector_=="Transport" |
+				sector_=="Residential" | 
+				sector_=="Commercial" |
+				sector_=="Agricultureforestry" |
+				sector_=="Fishing" |
+				sector_=="Non-Specified" |
+				sector_=="Transformation" |
+				sector_=="Energy" |
+				sector_=="Electr_Auto_CHP" |
+				sector_=="Electr_Auto_Ele" |
+				sector_=="Electr_MA_CHP" |
+				sector_=="Electr_MA_Ele" |
+				sector_=="Electr_Output" |
+				sector_=="Heat_Output" |
+				sector_=="Tr_Auto_CHP" |
+				sector_=="Tr_Auto_Elec" |
+				sector_=="Tr_Auto_Heat" |
+				sector_=="Tr_Main_CHP" |
+				sector_=="Tr_Main_Elec" |
+				sector_=="Tr_Main_Heat";
+     
+				replace sector_="Energy industry own use" if sector_=="Energy";
+				replace sector_="Commercial and public services" if sector_=="Commercial";
+				replace sector_="Electricity Output, Autoproducer CHP Plants" if sector_=="Electr_Auto_CHP";
+				replace sector_="Electricity Output, Autoproducer Electricity Plants" if sector_=="Electr_Auto_Ele";
+				replace sector_="Electricity Output, Main Activity CHP Plants" if sector_=="Electr_MA_CHP";
+				replace sector_="Electricity Output, Main Activity Electricity Plants" if sector_=="Electr_MA_Ele";
+				replace sector_="Electricity Output, Total" if sector_=="Electr_Output";
+				replace sector_="Heat Output" if sector_=="Heat_Output";
+				replace sector_="Transformation Inputs, Autoproducer CHP Plants" if sector_=="Tr_Auto_CHP";
+				replace sector_="Transformation Inputs, Autoproducer Electricity Plants" if sector_=="Tr_Auto_Elec";
+				replace sector_="Transformation Inputs, Autoproducer CHP Plants" if sector_=="Tr_Auto_Heat";
+				replace sector_="Transformation Inputs, Main Activity CHP Plants" if sector_=="Tr_Main_CHP";
+				replace sector_="Transformation Inputs, Electricity Plants" if sector_=="Tr_Main_Elec";
+				replace sector_="Transformation Inputs, Heat Plants" if sector_=="Tr_Main_Heat";
+     
+	
+	rename source_ energy_consumption;
 
-collapse (sum) source_, by(country time sector_ fuel_group);
-tab sector_;
-keep if 	sector_=="Industry" |
-			sector_=="Transport" |
-			sector_=="Residential" | 
-			sector_=="Commercial" |
-			sector_=="Agricultureforestry" |
-			sector_=="Fishing" |
-			sector_=="Non-Specified" |
-			sector_=="Transformation" |
-			sector_=="Energy";
-			
-replace sector_="Energy industry own use" if sector_=="Energy";
-replace sector_="Commercial and public services" if sector_=="Commercial";
-			
-rename source_ energy_consumption;
+	label variable energy_consumption "Energy consumption by country, year, economic sector, and fuel group in ktoe";
+	fillin country time sector_ fuel_group;
+	replace energy_consumption=0 if _fillin;
+	drop _fillin;
 
-label variable energy_consumption "Energy consumption by country, year, economic sector, and fuel group in ktoe";
-fillin country time sector_ fuel_group;
-replace energy_consumption=0 if _fillin;
-drop _fillin;
+	save "../../../data/IEA/generated/energy_use/energy_use.dta", replace;
 
-save "../../../data/IEA/generated/energy_use/energy_use.dta", replace;
+*Reshape to country year level;
+	collapse (sum) energy_consumption, by(fuel_group time country);
+
+	replace fuel_group="Oil_Shale" if fuel_group=="Oil Shale";
+	reshape wide energy_consumption,i(country time) j(fuel_group) string;
+
+*Reshape to country level and save for later merge;
+	rename energy_consumptionCoal IEA_Coal;
+	rename energy_consumptionOil IEA_Oil;
+	gen IEA_Other=energy_consumptionGas+energy_consumptionOther;
+
+	drop energy_consumption*;
+	reshape wide IEA_*, i(country) j(time);
+
+*using is GPW, master is IEA;
+*replace country=using if country==master;
+	merge 1:1 country using "../../../data/dtas/country/country_aggregates/country_aggregates.dta", keepusing(gpw_v4_national_identifier_gri) nogen keep(match master);
+	
+	replace gpw_v4_national_identifier_gri=826 if country=="United Kingdom";
+	replace gpw_v4_national_identifier_gri=840 if country=="United States";
+	replace gpw_v4_national_identifier_gri=68 if country=="Plurinational State of Bolivia";
+	replace gpw_v4_national_identifier_gri=862 if country=="Bolivarian Republic of Venezuela";
+	replace gpw_v4_national_identifier_gri=531 if country=="Curaçao/Netherlands Antilles";
+	replace gpw_v4_national_identifier_gri=384 if country=="Côte d'Ivoire";
+	replace gpw_v4_national_identifier_gri=807 if country=="Former Yugoslav Republic of Macedonia";
+	replace gpw_v4_national_identifier_gri=156 if country=="People's Republic of China";
+	replace gpw_v4_national_identifier_gri=364 if country=="Islamic Republic of Iran";
+	replace gpw_v4_national_identifier_gri=344 if country=="Hong Kong (China)";
+	replace gpw_v4_national_identifier_gri=703 if country=="Slovak Republic";
+	replace gpw_v4_national_identifier_gri=410 if country=="Korea";
+	replace gpw_v4_national_identifier_gri=178 if country=="Republic of the Congo";
+	
+	drop if gpw_v4_national_identifier_gri==.;
+	
+	save "../../../data/IEA/generated/energy_use/country_level.dta", replace;
+		
+	use "..\\..\\..\\data\dtas\analyze_me.dta", clear;
+
+	merge m:1 gpw_v4_national_identifier_gri using "../../../data/IEA/generated/energy_use/country_level.dta", nogen;
+
+	*New merged data replaces old data, but keeps name;
+	save "..\\..\\..\\data\dtas\analyze_me.dta", replace;
 /*;
 The IEA reports fuel consumption by the following sectors:
 Final Consumtpion

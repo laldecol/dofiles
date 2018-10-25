@@ -7,7 +7,7 @@ pause on;
 
 clear;
 
-set trace off;
+set trace on;
 set tracedepth 1;
 
 use "S:\particulates\data_processing/data/dtas/country/country_aggregates/country_aggregates.dta", clear;
@@ -63,10 +63,33 @@ gen has_BP_data=1 if !missing(	Oil2000, Oil2001, Oil2002, Oil2003, Oil2004, Oil2
 								Gas2000, Gas2001,	Gas2002, Gas2003, Gas2004, Gas2005,
 								Gas2006, Gas2007, Gas2008, Gas2009, Gas2010, Gas2011,
 								Gas2012, Gas2013, Gas2014, Gas2015);
+								
+gen has_IEA_data=1 if !missing(	IEA_Oil2000, IEA_Oil2001, IEA_Oil2002, IEA_Oil2003, IEA_Oil2004, IEA_Oil2005,
+								IEA_Oil2006, IEA_Oil2007, IEA_Oil2008, IEA_Oil2009, IEA_Oil2010, IEA_Oil2011,
+								IEA_Oil2012, IEA_Oil2013, IEA_Oil2014, IEA_Oil2015, 
+								IEA_Coal2000, IEA_Coal2001, IEA_Coal2002, IEA_Coal2003, IEA_Coal2004, IEA_Coal2005,
+								IEA_Coal2006, IEA_Coal2007, IEA_Coal2008, IEA_Coal2009, IEA_Coal2010, IEA_Coal2011,
+								IEA_Coal2012, IEA_Coal2013, IEA_Coal2014, IEA_Coal2015, 
+								IEA_Other2000, IEA_Other2001,	IEA_Other2002, IEA_Other2003, IEA_Other2004, IEA_Other2005,
+								IEA_Other2006, IEA_Other2007, IEA_Other2008, IEA_Other2009, IEA_Other2010, IEA_Other2011,
+								IEA_Other2012, IEA_Other2013, IEA_Other2014, IEA_Other2015);
+
+
+local fuel_types Oil Coal Other;
+local years 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015;
+foreach fuel_type of local fuel_types{;
+foreach year of local years{;
+local fuel_str=substr("`fuel_type'",1,4);
+local year_str=substr("`year'",3,2);
+rename IEA_`fuel_type'`year' `fuel_str'`year_str'IEA;
+};
+};
 replace has_BP_data=0 if has_BP_data==.;
+replace has_IEA_data=0 if has_IEA_data==.;
 
 forvalues year=2000/2015{;
-	gen CoalKm2`year'=Coal`year'/area;
+	local year_str=substr("`year'",3,2);
+	gen CoalKm2`year'=Coal`year_str'IEA/area;
 };
 
 keep if _merge!=2;

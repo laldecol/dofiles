@@ -52,9 +52,17 @@ replace Coal`year'=Coal`year'/8.76;
 replace Oil`year'=Oil`year'/8.76;
 replace Gas`year'=Gas`year'/8.76;
 
+replace IEA_Coal`year'=IEA_Coal`year'/8760;
+replace IEA_Oil`year'=IEA_Oil`year'/8760;
+replace IEA_Other`year'=IEA_Other`year'/8760;
+
 label var Coal`year' "Coal energy consumption, ktoe/hr";
 label var Oil`year' "Oil energy consumption, ktoe/hr";
 label var Gas`year' "Gas energy consumption, ktoe/hr";
+
+label var IEA_Coal`year' "IEA Coal energy consumption, ktoe/hr";
+label var IEA_Oil`year' "IEA Oil energy consumption, ktoe/hr";
+label var IEA_Other`year' "IEA Other energy consumption, ktoe/hr";
 
 };
 

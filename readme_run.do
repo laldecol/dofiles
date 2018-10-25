@@ -173,11 +173,20 @@ if 1==2{;
 	cd mergecountrydata;
 	do PWTclean.do;
 	do urbanshareclean.do;
+	
+	*Clean and import IEA country level;
+	do IEAclean.do;
+	cd "../clean_IEA";
+	do sector_fuel.do;
+	
+	cd "../mergecountrydata";
 	do BPclean.do;
 	cd ..;
+	
 	*Successfully ran do files
 	in \mergecountrydata;
 	};
+
 ***************************************************************;
 ** Step 10: Process data for analysis and model calibration  **;
 ***************************************************************;
