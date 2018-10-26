@@ -2,6 +2,13 @@
 pause on; 
 set trace off;
 set tracedepth 1;
+/*;
+***This .do file:
+
+1. Imports source IEA fuel use files;
+2. Imports conversion factor files;
+3. Saves output at country-year-fuel level, with flows as variables;
+*/;
 
 ***Import source files;
 local ieafiles: dir "..\\..\\..\\data\\IEA\\source\\fuel_use" files "*.csv", respectcase;
@@ -20,8 +27,6 @@ if 1==1{;
 		local tempfs `tempfs' temp`filecount';
 		
 		distinct country;
-		
-
 		
 		*Keep list of sources variables;
 		ds country time flow, not;

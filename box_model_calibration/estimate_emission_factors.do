@@ -130,6 +130,8 @@ foreach year of local years{;
  merge 1:1 country gpw_v4_national_identifier_gri region using `flows_merge`merge_year'', nogen;
  };
  
+ save "../../../data/dtas/country_regions/flux/net_flows_into.dta";
+ 
 local products Oil Coal;
 foreach product of local products{;
 

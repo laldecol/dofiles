@@ -156,8 +156,7 @@ Taiwan	using only (2)
 *If we merge it into an ubergrid file, and keep the id and flow variables, we can use dta2raster to export into a net flow raster that varies at the country region level, for each year. 
 #delimit;
 
-use "S:\particulates\data_processing\data\dtas\country_year\emission_factor_inputs.dta", clear ;
-reshape wide Terra_ area_ sender_dummy_ net_flow_into Xk Oil Coal Fire constant_sender constant_urban_sender constant_rural_sender, i(country gpw_v4_national_identifier_gri region) j(year);
+use "S:\particulates\data_processing\data\dtas\country_regions/flux/net_flows_into.dta", clear ;
 gen urban_wb2010=1 if region=="urban";
 replace urban_wb2010=0 if region=="rural";
 tempfile country_regionvars;
@@ -166,7 +165,7 @@ save `country_regionvars', replace;
 
 use "../../../data/dtas/analyze_me_land.dta", clear;
 merge m:1 gpw_v4_national_identifier_gri urban_wb2010 using `country_regionvars', keep(match);
-keep uber_code net_flow_into* constant_sender*;
+keep uber_code net_flow_into* ;
 tempfile uber_code_country_region;
 
 save `uber_code_country_region', replace;
@@ -186,8 +185,6 @@ set obs `Nobs';
 gen uber_code=_n;
 merge 1:1 uber_code using `uber_code_country_region', nogen;
 recode net_flow_into* (.=-9999);
-rename constant_sender2010 constant_sender;
-drop constant_sender2*;
 save "../../../data/dta2raster/dtas/country_region_flows.dta", replace;
 
 
