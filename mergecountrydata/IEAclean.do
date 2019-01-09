@@ -1,27 +1,34 @@
 #delimit;
+/*;
+***This .do file:
+1. Imports source IEA fuel use files
+2. Appends fuel files together;
+3. Imports conversion factor files;
+4. Appends conversion factor files together;
+5. Merges fuels and conversion factors at country-year-fuel level, with flows as variables, and saves output;
+
+Created: Lorenzo, Oct 22 2018;
+Last modified: Lorenzo, Oct 28 2018;
+*/;
+
+
 pause on; 
 set trace off;
 set tracedepth 1;
-/*;
-***This .do file:
 
-1. Imports source IEA fuel use files;
-2. Imports conversion factor files;
-3. Saves output at country-year-fuel level, with flows as variables;
-*/;
 
-***Import source files;
-local ieafiles: dir "..\\..\\..\\data\\IEA\\source\\fuel_use" files "*.csv", respectcase;
-local filecount=0;
-local tempfs;
+*1. Import source files;
 
-if 1==1{;
+	local ieafiles: dir "..\\..\\..\\data\\IEA\\source\\fuel_use" files "*.csv", respectcase;
+	local filecount=0;
+	local tempfs;
+
 	foreach ieafile of local ieafiles{;
 		
 		import delimited "..\\..\\..\\data\\IEA\\source\\fuel_use/`ieafile'", varnames(2) rowrange(2) clear ;
-		
 		capture drop v*;
-		*Name and create temporary files for merge;
+		
+		*Declare locals and tempfiles for merge;
 		tempfile temp`filecount';
 		local ++filecount;
 		local tempfs `tempfs' temp`filecount';
@@ -53,11 +60,9 @@ if 1==1{;
 			
 			gen units_`newvarname'="`label'";
 			
-			
-			
 		};
 		
-
+		*Rename to keep variables after reshape;
 		replace flow="Tr_Main_Elec" if flow=="Main activity producer electricity plants (transf.)";
 		replace flow="Tr_Auto_Elec" if flow=="Autoproducer electricity plants (transf.)";
 		replace flow="Tr_Main_CHP" if flow=="Main activity producer CHP plants (transf.)";
@@ -77,26 +82,29 @@ if 1==1{;
 		
 		
 		save temp`filecount', replace;
-	
+
 	};
+	
+*2. Append all fuel files together;
 	
 	use temp1, clear;
 	
-	*Keep list of using files to merge;
+	*Keep list of using files to append;
 	local usings: list tempfs-temp1;
 	dis "`usings'";
 	clear;
 
 	append using `tempfs';
 	
-	*Keep list of using files to merge;
-	*local usings: list tempfs - master;
+	foreach file of local tempfs{;
+	capture rm `file';
+	};
 	
-	*Merge all usings to master;
-	pause;
+	*Reshape to country-time-fuel level;
 	reshape long source_ units_, i(country time flow)  j(source_name) string;
 	reshape wide source_ units_, i(country time source_name) j(flow) string;
 		
+	*Clean fuel names;
 	replace source_name=subinstr(source_name,"kt","",.);
 	replace source_name=subinstr(source_name,"tjnet","",.);
 	replace source_name=subinstr(source_name,"tjne","",.);
@@ -109,21 +117,19 @@ if 1==1{;
 	replace source_name=subinstr(source_name,"tj","",.);
 	replace source_name="gasdieseloilexclbiofuels" if source_name=="gasdieseloilexclbiofuelsk";
 	
-	
+	*Save for merging;
 	tempfile source_merged;
 	save `source_merged';
-};
 
-if 1==1{;
-	***Import conversion factors;
-	local convfiles: dir "S:\\particulates\\data_processing\\data\\IEA\\source\\conversion_factors" files "*.csv", respectcase;
+*3. Imports conversion factor files;
+	local convfiles: dir "../../../data/IEA/source/conversion_factors" files "*.csv", respectcase;
 	local filecount=0;
 	local tempcfs;
 	local master temp1;
 
 	foreach convfile of local convfiles{;
 		
-		import delimited "..\\..\\..\\data\\IEA\\source\\conversion_factors/`convfile'", varnames(2) rowrange(2) clear ;
+		import delimited "../../../data/IEA/source/conversion_factors/`convfile'", varnames(2) rowrange(2) clear ;
 		
 		*Name and create temporary files for merge;
 		tempfile tempcf`filecount';
@@ -170,20 +176,22 @@ if 1==1{;
 		save tempcf`filecount', replace;
 	};
 
-	*Keep list of using files to merge;
-	*local usings: list tempfs - master;
-	*dis "`usings'";
+	*Append all conversion files together;
 	clear;
-
-	*Merge all usings to master;
 	append using `tempcfs';
 	
+	foreach file of local tempcfs{;
+	capture rm `file';
+	};
+	
+	*Reshape to country-time-fuel level;
 	reshape long conv_, i(unit country time flow)  j(source_name) string;
 	reshape wide conv_, i(country time source_name) j(flow) string;
 	
 	tempfile conv_merged;
 	save `conv_merged';
 	
+	*Merge IEA flows and conversion factors;
 	merge 1:1 country time source_name using `source_merged', keep(match using);
 	sort country time _merge source_name;
 	order _merge country time source_name;
@@ -192,5 +200,4 @@ if 1==1{;
 	gen fuel_units=units_Energy;
 	drop units*;
 
-	save "S:\particulates\data_processing\data\IEA\generated/sources_conv_factors.dta", replace;
-};
+	save "../../../data/IEA/generated/sources_conv_factors.dta", replace;

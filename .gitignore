@@ -49,3 +49,5 @@ testfolder/fauxcode.txt
 *.log
 *.log
 *.pyc
+*.dta
+*.dta

@@ -29,7 +29,7 @@ foreach product of local products{;
 pause;
 if "`product'"=="Oil"{;
 
-local sheetname "Oil Consumption – Tonnes";
+local sheetname "Oil Consumption â€“ Tonnes";
 local endrange "BC112";
 local lastvar "BC";
 local removerows=10;
@@ -43,7 +43,7 @@ local removerows=11;
 };
 
 else if "`product'"=="Gas"{;
-local sheetname "Gas Consumption – tonnes";
+local sheetname "Gas Consumption â€“ tonnes";
 local endrange "BD114";
 local lastvar "BD";
 local removerows=11;
