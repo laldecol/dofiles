@@ -197,12 +197,15 @@ label variable neighbor_ "Receiver Region";
 *Now must define sending & receiving, netting both interior transfers;
 gen interior_border=(sender_country_name==neighbor_country_name);
 
-save "..\\..\\..\\data\\dtas\\country_regions\\flux\\flux`year'.dta", replace;
-
 label var vwnd_mean "Average Northward Wind Speed (km/h)";
 label var uwnd_mean "Average Eastward Wind Speed (km/h)";
 label var sender_Terra`year'_mean "Average AOD in sender region, AOD units";
 label var receiver_Terra`year'_mean "Average AOD in receiver region, AOD units";
+
+label data "AOD transfer between sender and receiver country-regions, year `year'";
+
+save "..\\..\\..\\data\\dtas\\country_regions\\flux\\flux`year'.dta", replace;
+
 
 };
 log close;

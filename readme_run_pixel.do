@@ -144,10 +144,10 @@ if 1==2{;
 	*Successfully ran table2dta.do;
 	};
 
-**************************;
-** Step 8: Merge dtas   **;
-**************************;
-*Merges all .dta files from the specified directories together and saves them.;
+***********************************;
+** Step 8: Merge ubergrid dtas   **;
+***********************************;
+*Merges all ubergrid .dta files from the specified directories together and saves them.;
 
 if 1==1{;
 	cd mergedtas;
@@ -164,37 +164,4 @@ if 1==1{;
 	*Successfully ran mergedtas.do;
 	};
 
-**************************************************;
-** Step 9: Import and merge country level data  **;
-**************************************************;
-*Cleans and merges sources of country level data, preserving all pixels;
-*BPclean defines a EU country and must be run last;
 
-if 1==2{;
-	cd mergecountrydata;
-	
-	*Penn World Tables GDP data;
-	do PWTclean.do;
-	
-	*World bank urban shares;
-	do urbanshareclean.do;
-	
-	*IEA energy consumption, including breakdown by fuel and sector;
-	do IEAclean.do;
-	cd "../clean_IEA";
-	do sector_fuel.do;
-	
-	*BP energy consumption data;
-	cd "../mergecountrydata";
-	do BPclean.do;
-	cd ..;
-	
-	*Successfully ran do files
-	in \mergecountrydata;
-	};
-
-***********************************************;
-** Step 10: Prepare regressions and mapping  **;
-***********************************************;
-*Cleans and merges sources of country level data, preserving all pixels;
-*BPclean defines a EU country and must be run last;

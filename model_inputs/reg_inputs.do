@@ -5,13 +5,7 @@ pause on;
 clear;
 
 /*;
-This .do file computes, for each country:
 
-0. World wind, for the rural and urban region;
-1. World AOD, for the rural and urban region;
-2. Length of the interior, urban-world, and rural-world border;
-3. Average AOD in the urban and rural region;
-4. Urban and rural area;
 Created: October 22, 2017, by Lorenzo
 Last modified: October 25, 2017, by Lorenzo
 */;

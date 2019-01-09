@@ -30,16 +30,16 @@ if 1==1{;
 	use "..\\..\\..\\data\\dtas\\country_regions\\flux\\flux`year'.dta", clear;
 	gen total_neighbor_uwnd=uwnd_mean * uwnd_pixels;
 	gen total_neighbor_vwnd=vwnd_mean * vwnd_pixels;
-
+	
 	collapse (sum)
 	total_neighbor_uwnd uwnd_pixels total_neighbor_vwnd vwnd_pixels
 	transfer_
 	, by (neighbor_ interior_border);
-
+	
 	*These are average wind flowing into neighbor_ from world and interior.;
 	gen uwnd_avg_=total_neighbor_uwnd/uwnd_pixels;
 	gen vwnd_avg_=total_neighbor_vwnd/vwnd_pixels;
-
+	
 	gen bordtype_str="";
 	replace bordtype_str="interior" if interior_border==1;
 	replace bordtype_str="world" if interior_border==0; 
@@ -279,9 +279,11 @@ foreach year of local years{;
 	
 	if `year'==2000 | `year'==2005 | `year'==2010 | `year'==2015{;
 		merge 1:1 gpw_v4_national_identifier_gri using "..\\..\\..\\data\\dtas\\country\\macro_model_inputs_`year'.dta", nogen;
-
+		pause;
 		drop Terra`year'rural pop_rural`year' arearural Terra`year'urban pop_urban`year' areaurban
 		rgdpe`year' rgdpo`year' countrypop`year';
+		
+		label data "Country level variables, including AOD flows and fuel consumption";
 
 		save "..\\..\\..\\data\\dtas\\country\\box_model_inputs`year'.dta", replace;
 	};

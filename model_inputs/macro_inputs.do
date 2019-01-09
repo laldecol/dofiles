@@ -4,10 +4,8 @@ set more off;
 pause on;
 /*;
 This .do file computes the country_region level variables we use in the model,
-and reshapes into country-level.
+and reshapes into country level.
 Output variables are country-region level unless otherwise stated.
-
-This file uses output from bordersdta.do
 
 1. Area
 2. Average AOD (over pixels)
