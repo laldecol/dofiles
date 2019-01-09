@@ -193,35 +193,8 @@ if 1==2{;
 	in \mergecountrydata;
 	};
 
-***************************************************************;
-** Step 10: Process data for analysis and model calibration  **;
-***************************************************************;
-
-*Prepare data for regressions, model, and maps;
-if 1==2{;
-	cd model_inputs;
-	do data_prep.do;
-	do post_prep_label_units.do;
-	cd ..;
-};
-
-*Compute flux between regions using a pixel-level box model;
-if 1==2{;
-	cd flux;
-	do flux.do;
-	cd ..;
-};
-
-*Calculate variables to feed the models;
-if 1==2{;
-	cd model_inputs;
-	do box_inputs.do;
-	do macro_inputs.do;
-	do reg_inputs.do;
-	cd ..;
-};
-
-if 1==1{;
-	cd prepare_mapping;
-	do prepare_mapping.do;
-};
+***********************************************;
+** Step 10: Prepare regressions and mapping  **;
+***********************************************;
+*Cleans and merges sources of country level data, preserving all pixels;
+*BPclean defines a EU country and must be run last;

@@ -377,7 +377,7 @@ if 1==1{;
 	, by(country year);
 	
 	gen share_area_urban=area_urban_ctryyr/area_ctryyr;
-	save "S:\particulates\data_processing\data\dtas\country_year\pixel_data_country_avgs.dta", replace;
+	save "..\\..\\..\\data\\dtas\\country_year\\pixel_data_country_avgs.dta", replace;
 		
 };
 
