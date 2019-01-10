@@ -107,13 +107,13 @@ foreach year of local years{;
 	replace bordtype_str="interior" if interior_border==1;
 	replace bordtype_str="world" if interior_border==0; 
 	rename sending_countryXregion`year' countryXregion`year';
-
+	
 	*We will recover urban and rural AOD from neighbor's AOD & urban/rural status;
 	*Terra_avg_ is interior neighbor's AOD in the next line's definition. obsolete as of Oct 31;
 	gen Terra_avg_=total_neighbor_AOD/receiver_Terra`year'_count;
 	gen uwnd_avg_=total_neighbor_uwnd/uwnd_pixels;
 	gen vwnd_avg_=total_neighbor_vwnd/vwnd_pixels;
-
+	
 	merge m:1 countryXregion`year' using "..\\..\\..\\data\\dtas\\country\\country_codes_names`year'.dta";
 	*Care should be taken here. in country_codes_names, neighbor_rgn means own region urban status.
 	*This is bad notation but is correct for the computations, after Lint's comment on Oct 31;
@@ -174,8 +174,8 @@ foreach year of local years{;
 	label var Terra_avg_world_rural "World concentration for the rural area";
 	label var Terra_avg_world_urban "World concentration for the urban area";
 	
-	label var Terra_avg_interior_urban "Average AOD concentration in urban area";
-	label var Terra_avg_interior_rural "Average AOD concentration in rural area";
+	label var Terra_avg_interior_urban "Average AOD concentration in urban area, 2010 boundaries";
+	label var Terra_avg_interior_rural "Average AOD concentration in rural area, 2010 boundaries";
 	
 	label var length_interior_border "Length of rural-urban border (km)";
 	label var length_urban_world_border "Length of urban-world border (km)";
@@ -199,8 +199,8 @@ foreach year of local years{;
 	label var vwnd_avg_from_world_urban "Average northward wind speed (km/hr) from world to urban";
 	label var vwnd_avg_from_world_rural "Average northward wind speed (km/hr) from world to rural";
 
-	label var sending_area_urban "Area of urban region";
-	label var sending_area_rural "Area of rural region"; 
+	label var sending_area_urban "Area of urban region, 2010 boundaries";
+	label var sending_area_rural "Area of rural region, 2010 boundaries"; 
 
 	label var flux_to_interior_urban "Flow from urban to rural, computed using pixel-flow model, AOD units per hour";
 	label var flux_to_interior_rural "Flow from rural to urban, computed using pixel-flow model, AOD units per hour";

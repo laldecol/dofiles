@@ -40,13 +40,13 @@ save "..\\..\\..\\data\PWT\generated\pwt90.dta", replace;
 
 clear;
 
-use "..\\..\\..\\data\dtas\analyze_me.dta", clear;
+use "..\\..\\..\\data\dtas\analyze_me_pixel.dta", clear;
 
 merge m:1 country  using "..\\..\\..\\data\PWT\generated\pwt90.dta";
 
 drop _merge;
 
 *New merged data replaces old data, but keeps name;
-save "..\\..\\..\\data\dtas\analyze_me.dta", replace
-;
+capture mkdir "..\\..\\..\\data\dtas\temp";
+save "..\\..\\..\\data\dtas\temp\analyze_me.dta", replace;
 

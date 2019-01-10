@@ -53,12 +53,12 @@ if country ==
 "Congo, Rep.";
 
 replace country=
-"Côte d'Ivoire" 
+"CÃ´te d'Ivoire" 
 if country ==
 "Cote d'Ivoire";
 
 replace country=
-"Curaçao" 
+"CuraÃ§ao" 
 if country ==
 "Curacao";
 
@@ -90,7 +90,7 @@ if country ==
 replace country=
 "Democratic People's Republic of Korea" 
 if country ==
-"Korea, Dem. People’s Rep.";
+"Korea, Dem. Peopleâ€™s Rep.";
 
 replace country=
 "Republic of Korea"
@@ -247,7 +247,7 @@ drop if country=="`country'";
 
 save "..\\..\\..\\data\World_Bank\generated\urbanshare.dta", replace;
 
-use "..\\..\\..\\data\dtas\analyze_me.dta", clear;
+use "..\\..\\..\\data\dtas\temp\analyze_me.dta", clear;
 
 merge m:1 country using "..\\..\\..\\data\World_Bank\generated\urbanshare.dta";
 
@@ -256,4 +256,4 @@ drop if _merge==2;
 drop _merge;
 
 *New merged data replaces old data, but keeps name;
-save "..\\..\\..\\data\dtas\analyze_me.dta", replace;
+save "..\\..\\..\\data\dtas\temp\analyze_me.dta", replace;

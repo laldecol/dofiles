@@ -170,7 +170,7 @@ collapse (count) isborder_ vwnd_pixels=vwnd_ uwnd_pixels=uwnd_ (sum) length tran
 label variable isborder_ "Number of border pixels used in computations";
 label variable length "Approximate length of border (km)";
 label variable transfer_ "Flux from countryXregion to interior or world (depends on interior_border), in AOD units per hr";
-
+inter
 merge m:1 countryXregion`year' using "..\\..\\..\\data\\dtas\\country\\country_codes_names`year'.dta", nogen;
 rename Terra`year'_mean sender_Terra`year'_mean;
 rename Terra`year'_count sender_Terra`year'_count;

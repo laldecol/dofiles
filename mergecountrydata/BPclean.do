@@ -22,8 +22,6 @@ local products Oil Coal Gas;
 local satellites "Terra";
 local Terrayears 2000 2005 2010;
 
-use "..\\..\\..\\data\\dtas\\analyze_me.dta", clear;
-
 *Set the "parameters" of the import command for each product;
 foreach product of local products{;
 pause;
@@ -96,7 +94,7 @@ replace country="Viet Nam" if country=="Vietnam";
 sort country;
 save "..\\..\\..\\data\\BP\\generated/`product'Consumption.dta", replace;
 
-use "..\\..\\..\\data\\dtas\\analyze_me.dta", clear;
+use "..\\..\\..\\data\\dtas\\temp\\analyze_me.dta", clear;
 
 sort country;
 
@@ -104,7 +102,7 @@ merge m:1 country using "..\\..\\..\\data\\BP\\generated/`product'Consumption.dt
 rename _merge merge`product';
 
 *Saves version of dta with all country level variables and all pixels;
-save "..\\..\\..\\data\\dtas\\analyze_me.dta",replace;
+save "..\\..\\..\\data\\dtas\\temp\\analyze_me.dta",replace;
 
 };
 /*;
@@ -150,3 +148,5 @@ country=="United Kingdom of Great Britain and Northern Ireland"
 format %30s country;
 
 save "..\\..\\..\\data\\dtas\\analyze_me.dta",replace;
+rm "..\\..\\..\\data\\dtas\\temp\\analyze_me.dta";
+rmdir "..\\..\\..\\data\\dtas\\temp";

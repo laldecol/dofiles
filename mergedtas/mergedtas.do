@@ -122,7 +122,7 @@ gen lat=`TOP'-`CELLSIZEY'*(rowno-1);
 
 gen area=(cos(lat*c(pi)/180)+cos((lat+`CELLSIZEY')*c(pi)/180))*2*(c(pi)*`CELLSIZEX'*`earthradius'/360)^2;
 
-save "dtas\analyze_me.dta", replace;
+save "dtas\analyze_me_pixel.dta", replace;
 
 ** Back to original folder/;
 cd "`dofiledir'";

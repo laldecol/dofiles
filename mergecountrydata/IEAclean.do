@@ -13,14 +13,14 @@ Last modified: Lorenzo, Oct 28 2018;
 
 
 pause on; 
-set trace off;
+set trace on;
 set tracedepth 1;
 
 
 *1. Import source files;
 
 	local ieafiles: dir "..\\..\\..\\data\\IEA\\source\\fuel_use" files "*.csv", respectcase;
-	local filecount=0;
+	local filecount=1;
 	local tempfs;
 
 	foreach ieafile of local ieafiles{;
@@ -28,10 +28,6 @@ set tracedepth 1;
 		import delimited "..\\..\\..\\data\\IEA\\source\\fuel_use/`ieafile'", varnames(2) rowrange(2) clear ;
 		capture drop v*;
 		
-		*Declare locals and tempfiles for merge;
-		tempfile temp`filecount';
-		local ++filecount;
-		local tempfs `tempfs' temp`filecount';
 		
 		distinct country;
 		
@@ -80,17 +76,21 @@ set tracedepth 1;
 		replace flow="Electr_Auto_CHP" if flow=="Electricity output (GWh)autoproducer CHP plants";
 		replace flow="Heat_Output" if flow=="Heat output (TJ)";
 		
+		*Declare locals and tempfiles for merge;
 		
-		save temp`filecount', replace;
+		tempfile temp`filecount';
+		local tempfs `tempfs' temp`filecount';
+		save `temp`filecount'', replace;
+		local ++filecount;
 
 	};
 	
 *2. Append all fuel files together;
 	
 	use temp1, clear;
-	
+	local removelist temp1;
 	*Keep list of using files to append;
-	local usings: list tempfs-temp1;
+	local usings: list tempfs-removelist;
 	dis "`usings'";
 	clear;
 
