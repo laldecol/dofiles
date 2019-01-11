@@ -85,7 +85,7 @@ gen neighbor_W=`bordervar'[`ubercodevar'_west];
 *drop `ubercodevar'_*;
 end;
 
-log using flux, replace;
+log using flux.log, replace;
 
 
 *For each uber_code, generate four variables: uber_code of northern, southern, western, and eastern neighbor.;

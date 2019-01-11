@@ -51,3 +51,4 @@ testfolder/fauxcode.txt
 *.pyc
 *.dta
 *.dta
+*.smcl
