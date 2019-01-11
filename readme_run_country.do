@@ -20,7 +20,7 @@ local python "C:\Python27\ArcGIS10.2\python.exe";
 *Cleans and merges sources of country level data, preserving all pixels;
 *BPclean defines a EU country and must be run last;
 
-if 1==1{;
+if 1==2{;
 
 	cd mergecountrydata;
 	
@@ -48,7 +48,7 @@ if 1==1{;
 ** Step 2: Prepare regressions and calibration  **;
 ***************************************************;
 ************;
-if 1==2{;
+if 1==1{;
 	cd model_inputs;
 	do data_prep.do;
 	do post_prep_label_units.do;
@@ -84,7 +84,7 @@ if 1==2{;
 ***************************************;
 ** Step 2: Calibrate economic model  **;
 ***************************************;
-****Lint's code goes here
+****Lint's code goes here;
 
 if 1==2{;
 	cd Lints_code_dir;
