@@ -109,3 +109,21 @@ save "..\\..\\..\\data\\dtas\\country\\regression_inputs_flux`year'.dta", replac
 	
 };
 };
+
+	use "..\\..\\..\\data\\dtas\analyze_me_land_mod5.dta", clear;
+	*Generate country year averages of pixel level variables, to be used in regressions;
+	collapse (mean) density_ctryyr=density urban_wb_ctryyr=urban_wb
+	rgdpe Oil Coal Gas IEA_Coal IEA_Oil IEA_Other urbanshare countryGDPpc
+	gpwpop
+	water_ctryyr=water trees_ctryyr=trees pasture_ctryyr=pasture 
+	barren_ctryyr=barren crops_ctryyr=crops 
+	other_ctryyr=other
+	Fire_ctryyr=Fire construction_ctryyr=construction5yr
+	(sum)
+	area_urban_ctryyr=area_urban
+	area_ctryyr=area
+	
+	, by(country year);
+	
+	gen share_area_urban=area_urban_ctryyr/area_ctryyr;
+	save "..\\..\\..\\data\\dtas\\country_year\\pixel_data_country_avgs.dta", replace;

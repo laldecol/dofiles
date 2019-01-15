@@ -147,4 +147,34 @@ merge 1:1 uber_code using `uber_code_country_region', nogen;
 recode net_flow_into* (.=-9999);
 save "../../../data/dta2raster/dtas/country_region_flows.dta", replace;
 
+***Moved from data_prep
+		*Create dta to map urban region, high quality GPW countries, and model sample;
+		use "..\\..\\..\\data\\projections\\generated\\settings.dta", clear;
 
+		*Define C,R as column and row totals in current ubergrid.;
+		local C=COLUMNCOUNT[1];
+		local R=ROWCOUNT[1];
+		dis "Number of Columns: " `C';
+		dis "Number of Rows: " `R';
+
+		use `analyze_me_land', clear;
+
+		gen modelsample=.;
+		replace modelsample=1 if `samplepixels';
+		keep uber_code urban_wb* highqualGPW modelsample;
+		
+		tempfile merge_me;
+		save `merge_me', replace;
+		
+		clear;
+
+		local Nobs=`C'*`R';
+
+		set obs `Nobs';
+		gen uber_code=_n;
+		merge 1:1 uber_code using `merge_me', nogen;
+		recode highqualGPW urban_wb* modelsample (.=-9999);
+		save "..\\..\\..\\data\\dta2raster\\dtas\\urban_dummy_maps.dta", replace;
+
+		*End map dta;
+		
