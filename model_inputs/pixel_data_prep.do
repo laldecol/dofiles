@@ -264,10 +264,12 @@ save `analyze_me_land', replace;
 		merge 1:1 uber_code using "..\\..\\..\\data\\World_Bank\\generated\\urban_pixels.dta", nogen;
 
 		compress;
+		
+		*Create country label for nonland;
+		replace gpw_v4_national_identifier_gri=-9999 if gpw_v4_national_identifier_gri==.;
+		replace country="Sea, Inland Water, other Uninhabitable" if gpw_v4_national_identifier_gri==-9999;
 
 		save "..\\..\\..\\data\\dtas\\analyze_me_land.dta", replace;
-
-
 
 	};
 	*END 5.;
