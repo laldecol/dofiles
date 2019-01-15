@@ -2,6 +2,7 @@
 set trace on;
 set more off;
 pause on;
+capture log close;
 /*;
 This .do file computes the country_region level variables we use in the models,
 and reshapes into country level.
@@ -19,7 +20,10 @@ Last modified: January 15, 2019, by Lorenzo
 
 local years 2000 2005 2010 2015;
 
+log using macro_inputs.log;
+
 foreach year of local years{;
+	***Change to analyze_me_land_std units?;
 	use "..\\..\\..\\data\\dtas\\analyze_me_land.dta", clear;
 
 	*Use urbanization dummies to generate a region variable for each year;
@@ -53,6 +57,7 @@ foreach year of local years{;
 		rgdpe`year' rgdpo`year' Oil`year' Coal`year' Gas`year' 
 		urbanshare`year' countrypop`year';
 
+	*Label output variables;
 		label var country "Country name";
 		label var gpw_v4_national_identifier_gri "Country id";
 		label var rgdpe`year' "Real `year' GDP, 2011 USD, Expenditure Side";
@@ -73,3 +78,4 @@ foreach year of local years{;
 	save "..\\..\\..\\data\\dtas\\country\\macro_model_inputs_`year'.dta", replace;
 
 };
+log close;
