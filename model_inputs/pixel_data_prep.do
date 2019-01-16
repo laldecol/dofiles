@@ -59,7 +59,6 @@ local samplepixels "Terra2000!=. & Terra2005!=. & Terra2010!=. & Terra2015!=.
 log using dataprep.log, text replace;
 
 *I. Generate and relabel variables, and define sample;
-if 1==1{;
 	use "..\\..\\..\\data\dtas\analyze_me.dta", clear;
 
 	*0. Generate country-level total population before dropping any pixels;
@@ -70,7 +69,6 @@ if 1==1{;
 	
 	*1. Drop pixels missing population, country, or AOD data, and save result as analyze_me_land.dta;
 	*How is this different from sample in samplepixels;
-	if 1==1{;
 		keep if projected_aggregated_gpw_2000<. &
 		projected_aggregated_gpw_2000!=0 &
 		projected_aggregated_gpw_2005!=0 &
@@ -78,12 +76,10 @@ if 1==1{;
 		projected_aggregated_gpw_2015!=0 &
 		Terra2000!=. & Terra2010!=. &
 		Terra2005!=. & Terra2014!=.;
-	};
 	*1. END;
 
 	*2. Generate population weighted GPW data quality, by country. 
 	*Tag high quality countries and calibration sample;
-	if 1==1{;
 		sort country;
 		egen CTprojected_aggregated_gpw=total(projected_aggregated_gpw_2000), by(country);
 		gen pwquality=projected_aggregated_gpw_2000*gpw_v4_data_quality_indicators/CTprojected_aggregated_gpw;
@@ -103,14 +99,12 @@ if 1==1{;
 
 		merge m:1 country using "..\\..\\..\\data\\dtas\\country\\gpw_quality\\country_data_quality.dta", nogen;
 		merge m:1 gpw_v4_national_identifier_gri using "..\\..\\..\\..\\calibration_v1\\data\\country_regions\country_lvl2005_calib1.dta", keepusing(calibration_sample_05) nogen;	
-	};
 	*2. END;
 
 	*3.	Rename population, land use, and climate variables. 
 	*Relabel 2104 vars as 2015, and 2001 as 2000;
 	*Generate construction variables from urban land use;
 
-	if 1==1{;
 		*Rename variables to fit stata's constraints;
 		rename (projected_aggregated_gpw_2000 projected_aggregated_gpw_2005 
 		projected_aggregated_gpw_2010 projected_aggregated_gpw_2015)
@@ -185,11 +179,9 @@ if 1==1{;
 		(water2015 trees2015 pasture2015 barren2015 crops2015 urban2015 other2015 construction1yr2015);
 		
 		
-	};
 	*END 3.;
 	
 	*4. Generate exposure, GDP per capita, country pixel counts, and 5yr construction variables;
-	if 1==1{;
 		foreach year in 2000 2005 2010 2015{;
 			capture drop exposure`year';
 			gen exposure`year'=Terra`year'*gpwpop`year';
@@ -208,16 +200,14 @@ if 1==1{;
 		bysort gpw_v4_national_identifier_gri: egen countrypixels=count(uber_code);
 
 
-	};
 	*END 4.;
 
 compress;
-tempfile `analyze_me_land';
+tempfile analyze_me_land;
 save `analyze_me_land', replace;
 
 	*5. Generate urban dummies, using GPW-WB data.;
-	if 1==1{;
-		use "..\\..\\..\\data\\dtas\analyze_me.dta";
+		use `analyze_me_land';
 		levelsof country, local(countries);
 
 		* 5.1 Interpolate pixel population for intermediate years;
@@ -230,7 +220,7 @@ save `analyze_me_land', replace;
 				forvalues t=1/4{;
 				
 					local tyear=`year'+`t';
-					gen projected_aggregated_gpw_`tyear'=projected_aggregated_gpw_`year'+`t'*(projected_aggregated_gpw_`end_year'-projected_aggregated_gpw_`year')/(5);
+					gen gpwpop`tyear'=gpwpop`year'+`t'*(gpwpop`end_year'-gpwpop`year')/(5);
 					
 				};
 			};
@@ -242,9 +232,9 @@ save `analyze_me_land', replace;
 
 			dis "`country'" `year';
 			*First, must generate the cutoff (either in proportions or total population);
-			gsort country -projected_aggregated_gpw_`year';
-			by country: egen totalpop`year'=total(projected_aggregated_gpw_`year');
-			by country: gen runsum`year'=sum(projected_aggregated_gpw_`year'); 
+			gsort country -gpwpop`year';
+			by country: egen totalpop`year'=total(gpwpop`year');
+			by country: gen runsum`year'=sum(gpwpop`year'); 
 			
 			gen urban_wb`year'=(runsum`year'*100/totalpop`year'<=urbanshare`year' & country!="");
 			
@@ -271,10 +261,9 @@ save `analyze_me_land', replace;
 
 		save "..\\..\\..\\data\\dtas\\analyze_me_land.dta", replace;
 
-	};
 	*END 5.;
 
-};
+
 *END I.;
 	
 *II. Choose samples, save separate .dtas for each, and calculate country year and country level means and totals;
@@ -285,7 +274,6 @@ save `analyze_me_land', replace;
 *Keep defined sample and save two reshaped files:;
 *all_pooled contains all years, and mod5 contains only mod5 years;
 
-if 1==1{;
 	use `analyze_me_land', clear;
 
 	keep if `samplepixels';
@@ -327,7 +315,6 @@ if 1==1{;
 	gen area_urban=urban_wb*area;
 	save "..\\..\\..\\data\\dtas\analyze_me_land_mod5.dta", replace;
 
-};
 
 
 

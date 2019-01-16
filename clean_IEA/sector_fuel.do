@@ -13,7 +13,7 @@ Last modified: Lorenzo, Oct 28 2018;
 
 #delimit;
 pause on; 
-set trace on;
+set trace off;
 set tracedepth 1;
 
 *1. Imports standard conversion factor file, fuel group file, and IEA fuel use;

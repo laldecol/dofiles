@@ -147,7 +147,7 @@ if 1==2{;
 ***********************************;
 *Merges all ubergrid .dta files from the specified directories together and saves them.;
 
-if 1==1{;
+if 1==2{;
 	cd mergedtas;
 	do mergedtas.do 8 
 	"MODIS_AOD\generated\yearly\ubergrid\dtas"
@@ -200,13 +200,13 @@ if 1==1{;
 
 if 1==1{;
 	cd model_inputs;
-	do data_prep.do;
+	do pixel_data_prep.do;
 	do post_prep_label_units.do;
 	cd ..;
 };
 
 *Compute flux between regions using a pixel-level box model;
-if 1==2{;
+if 1==1{;
 	cd flux;
 	do flux.do;
 	cd ..;

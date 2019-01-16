@@ -8,7 +8,7 @@
 5. Merges fuels and conversion factors at country-year-fuel level, with flows as variables, and saves output;
 
 Created: Lorenzo, Oct 22 2018;
-Last modified: Lorenzo, Oct 28 2018;
+Last modified: Lorenzo, Jan 15 2019;
 */;
 
 
@@ -87,14 +87,16 @@ set tracedepth 1;
 	
 *2. Append all fuel files together;
 	
-	use temp1, clear;
+	use `temp1', clear;
 	local removelist temp1;
 	*Keep list of using files to append;
 	local usings: list tempfs-removelist;
 	dis "`usings'";
 	clear;
-
-	append using `tempfs';
+	
+	foreach usingfile of local usings{;
+		append using ``usingfile'';
+	};
 	
 	foreach file of local tempfs{;
 	capture rm `file';
@@ -125,16 +127,13 @@ set tracedepth 1;
 	local convfiles: dir "../../../data/IEA/source/conversion_factors" files "*.csv", respectcase;
 	local filecount=0;
 	local tempcfs;
-	local master temp1;
 
 	foreach convfile of local convfiles{;
 		
 		import delimited "../../../data/IEA/source/conversion_factors/`convfile'", varnames(2) rowrange(2) clear ;
 		
 		*Name and create temporary files for merge;
-		tempfile tempcf`filecount';
 		local ++filecount;
-		local tempcfs `tempcfs' tempcf`filecount';
 		capture drop v*;
 		*Keep list of sources variables;
 		ds country time flow unit, not;
@@ -173,15 +172,20 @@ set tracedepth 1;
 
 		
 		sort country time;
-		save tempcf`filecount', replace;
+		tempfile tempcf`filecount';
+		local tempcfs `tempcfs' tempcf`filecount';
+
+		save `tempcf`filecount'', replace;
 	};
 
 	*Append all conversion files together;
 	clear;
-	append using `tempcfs';
 	
 	foreach file of local tempcfs{;
-	capture rm `file';
+		
+		append using ``file'';
+		capture rm `file';
+		
 	};
 	
 	*Reshape to country-time-fuel level;
