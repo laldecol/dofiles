@@ -5,7 +5,9 @@ pause on;
 capture log close;
 /*;
 This .do file computes the country_region level variables we use in the models,
-and reshapes into country level.
+and reshapes into country level. Its output is used by Lint's code and by the box
+model files.
+
 Output variables are country-region level unless otherwise stated.
 
 1. Area

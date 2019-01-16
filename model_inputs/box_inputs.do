@@ -61,6 +61,7 @@ local k;
 
 
 *Again, load flux dtas. These have country neighbor pair as unit of observation;
+*1-5. Compute World AOD, border length, mean AOD, and wind, for each country region;
 
 foreach year of local years{;
 	use "..\\..\\..\\data\\dtas\\country_regions\\flux\\flux`year'.dta", clear;
@@ -232,6 +233,7 @@ foreach year of local years{;
 
 	save "..\\..\\..\\data\\dtas\\country\\emission_factor_inputs_`year'.dta", replace;
 	
+	*For mod5 years, write country level file with urban and rural variables;
 	if `year'==2000 | `year'==2005 | `year'==2010 | `year'==2015{;
 		merge 1:1 gpw_v4_national_identifier_gri using "..\\..\\..\\data\\dtas\\country\\macro_model_inputs_`year'.dta", nogen;
 		drop Terra`year'rural pop_rural`year' arearural Terra`year'urban pop_urban`year' areaurban
