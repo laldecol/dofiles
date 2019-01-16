@@ -17,6 +17,9 @@ cls;
 set more off;
 pause off;
 
+capture log close;
+log using BPclean.log;
+
 *Define products, satellites, and years to process;
 local products Oil Coal Gas;
 local satellites "Terra";
@@ -150,3 +153,4 @@ format %30s country;
 save "..\\..\\..\\data\\dtas\\analyze_me.dta",replace;
 rm "..\\..\\..\\data\\dtas\\temp\\analyze_me.dta";
 rmdir "..\\..\\..\\data\\dtas\\temp";
+log close;

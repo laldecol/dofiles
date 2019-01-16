@@ -15,7 +15,8 @@ Last modified: Lorenzo, Jan 15 2019;
 pause on; 
 set trace on;
 set tracedepth 1;
-
+capture log close;
+log using IEAclean.log;
 
 *1. Import source files;
 
@@ -205,3 +206,4 @@ set tracedepth 1;
 	drop units*;
 
 	save "../../../data/IEA/generated/sources_conv_factors.dta", replace;
+	log close;

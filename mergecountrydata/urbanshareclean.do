@@ -13,6 +13,9 @@ clear all;
 cls;
 set more off;
 pause off;
+capture log close;
+
+log using urbanshareclean.log;
 
 import excel "..\\..\\..\\data\World_Bank\source\urbanshare.xls",
 sheet("Data") cellrange(A4:BI268) firstrow;
@@ -257,3 +260,4 @@ drop _merge;
 
 *New merged data replaces old data, but keeps name;
 save "..\\..\\..\\data\dtas\temp\analyze_me.dta", replace;
+log close;

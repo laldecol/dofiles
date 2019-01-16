@@ -14,6 +14,8 @@ cls;
 set more off;
 pause off;
 
+capture log close;
+log using PWTClean.log;
 *Import and keep only the years and variables we work with;
 import excel "..\\..\\..\\data\PWT\source\pwt90.xlsx",
  sheet("Data") firstrow clear;
@@ -49,4 +51,4 @@ drop _merge;
 *New merged data replaces old data, but keeps name;
 capture mkdir "..\\..\\..\\data\dtas\temp";
 save "..\\..\\..\\data\dtas\temp\analyze_me.dta", replace;
-
+log close;
