@@ -70,6 +70,9 @@ log using dataprep.log, text replace;
 	*1. Drop pixels missing population, country, or AOD data, and save result as analyze_me_land.dta;
 	*How is this different from sample in samplepixels;
 		keep if projected_aggregated_gpw_2000<. &
+		projected_aggregated_gpw_2005<. &
+		projected_aggregated_gpw_2010<. &
+		projected_aggregated_gpw_2015<. &
 		projected_aggregated_gpw_2000!=0 &
 		projected_aggregated_gpw_2005!=0 &
 		projected_aggregated_gpw_2010!=0 &
@@ -223,7 +226,7 @@ log using dataprep.log, text replace;
 		
 		*5.2 Generate urban dummy from GPW-WB;
 		*foreach year in 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2015{;
-		foreach year in 2000 2005 2010 2015{;
+		foreach year in 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2015{;
 
 			dis "`country'" `year';
 			*First, must generate the cutoff (either in proportions or total population);
@@ -232,10 +235,13 @@ log using dataprep.log, text replace;
 			by country: gen runsum`year'=sum(gpwpop`year'); 
 			
 			gen urban_wb`year'=(runsum`year'*100/totalpop`year'<=urbanshare`year' & country!="");
+
 			
 		};
 			
 		gen urban_wb_constant=urban_wb2010;
+	
+		egen countryXregion_const=group(country urban_wb2010), label;
 		
 		*END foreach;
 		compress;
@@ -249,7 +255,6 @@ log using dataprep.log, text replace;
 		compress;
 
 		save "..\\..\\..\\data\\World_Bank\\generated\\urban_pixels.dta", replace;
-		pause;
 		use `analyze_me_land', clear;
 		merge 1:1 uber_code using "..\\..\\..\\data\\World_Bank\\generated\\urban_pixels.dta", nogen;
 
@@ -257,6 +262,8 @@ log using dataprep.log, text replace;
 		*Create country label for nonland;
 		replace gpw_v4_national_identifier_gri=-9999 if gpw_v4_national_identifier_gri==.;
 		replace country="Sea, Inland Water, other Uninhabitable" if gpw_v4_national_identifier_gri==-9999;
+		
+		***Notice countryXregion`year' is actually fixed over time;
 
 		save "..\\..\\..\\data\\dtas\\analyze_me_land.dta", replace;
 
