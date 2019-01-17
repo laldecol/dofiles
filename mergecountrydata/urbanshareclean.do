@@ -28,7 +28,8 @@ foreach v of varlist E-BH {;
 };
 
 *Keep years for which we also have population data;
-keep CountryName urbanshare2000 urbanshare2005 urbanshare2010 urbanshare2015;
+keep CountryName urbanshare2000 - urbanshare2015;
+
 rename CountryName country;
 
 *Clean country names so that they match the GPW ones and can therefore merge;
