@@ -202,12 +202,7 @@ log using dataprep.log, text replace;
 
 	*END 4.;
 
-compress;
-tempfile analyze_me_land;
-save `analyze_me_land', replace;
 
-	*5. Generate urban dummies, using GPW-WB data.;
-		use `analyze_me_land';
 		levelsof country, local(countries);
 
 		* 5.1 Interpolate pixel population for intermediate years;
@@ -243,17 +238,21 @@ save `analyze_me_land', replace;
 		gen urban_wb_constant=urban_wb2010;
 		
 		*END foreach;
-	
+		compress;
+		tempfile analyze_me_land;
+		save `analyze_me_land', replace;
+
+	*5. Generate urban dummies, using GPW-WB data.;
+		use `analyze_me_land', clear;
 		keep uber_code urban_wb*;
 		recode urban_wb* (.=-9999);
-		
+		compress;
+
 		save "..\\..\\..\\data\\World_Bank\\generated\\urban_pixels.dta", replace;
-
+		pause;
 		use `analyze_me_land', clear;
-
 		merge 1:1 uber_code using "..\\..\\..\\data\\World_Bank\\generated\\urban_pixels.dta", nogen;
 
-		compress;
 		
 		*Create country label for nonland;
 		replace gpw_v4_national_identifier_gri=-9999 if gpw_v4_national_identifier_gri==.;
