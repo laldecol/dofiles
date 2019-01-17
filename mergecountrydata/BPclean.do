@@ -18,7 +18,7 @@ set more off;
 pause off;
 
 capture log close;
-log using BPclean.log;
+log using BPclean.log, replace;
 
 *Define products, satellites, and years to process;
 local products Oil Coal Gas;
@@ -101,8 +101,9 @@ use "..\\..\\..\\data\\dtas\\temp\\analyze_me.dta", clear;
 
 sort country;
 
-merge m:1 country using "..\\..\\..\\data\\BP\\generated/`product'Consumption.dta";
+merge m:1 country using "..\\..\\..\\data\\BP\\generated/`product'Consumption.dta", keep(match master);
 rename _merge merge`product';
+assert missing(uber_code)==0;
 
 *Saves version of dta with all country level variables and all pixels;
 save "..\\..\\..\\data\\dtas\\temp\\analyze_me.dta",replace;

@@ -16,7 +16,7 @@ pause on;
 set trace on;
 set tracedepth 1;
 capture log close;
-log using IEAclean.log;
+log using IEAclean.log, replace;
 
 *1. Import source files;
 

@@ -15,7 +15,7 @@ set more off;
 pause off;
 
 capture log close;
-log using PWTClean.log;
+log using PWTClean.log, replace;
 *Import and keep only the years and variables we work with;
 import excel "..\\..\\..\\data\PWT\source\pwt90.xlsx",
  sheet("Data") firstrow clear;
@@ -44,9 +44,8 @@ clear;
 
 use "..\\..\\..\\data\dtas\analyze_me_pixel.dta", clear;
 
-merge m:1 country  using "..\\..\\..\\data\PWT\generated\pwt90.dta";
-
-drop _merge;
+merge m:1 country  using "..\\..\\..\\data\PWT\generated\pwt90.dta", keep(match master) nogen;
+assert missing(uber_code)==0;
 
 *New merged data replaces old data, but keeps name;
 capture mkdir "..\\..\\..\\data\dtas\temp";

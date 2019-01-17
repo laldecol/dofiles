@@ -87,7 +87,6 @@ end;
 
 log using flux.log, replace;
 
-
 *For each uber_code, generate four variables: uber_code of northern, southern, western, and eastern neighbor.;
 *Calculations:;
 use "..\\..\\..\\data\projections\generated\settings.dta", clear;
@@ -106,11 +105,8 @@ foreach year of local years{;
 use "..\\..\\..\\data\\dtas\\analyze_me_land_std_units.dta", clear;
 
 *Check we're using correct ubergrid settings;
-assert _N==`R'*`C';
+*assert _N==`R'*`C';
 
-*Create country label for nonland;
-replace gpw_v4_national_identifier_gri=-9999 if gpw_v4_national_identifier_gri==.;
-replace country="Sea, Inland Water, other Uninhabitable" if gpw_v4_national_identifier_gri==-9999;
 
 egen countryXregion`year'=group(country urban_wb2010), label;
 
@@ -170,7 +166,6 @@ collapse (count) isborder_ vwnd_pixels=vwnd_ uwnd_pixels=uwnd_ (sum) length tran
 label variable isborder_ "Number of border pixels used in computations";
 label variable length "Approximate length of border (km)";
 label variable transfer_ "Flux from countryXregion to interior or world (depends on interior_border), in AOD units per hr";
-inter
 merge m:1 countryXregion`year' using "..\\..\\..\\data\\dtas\\country\\country_codes_names`year'.dta", nogen;
 rename Terra`year'_mean sender_Terra`year'_mean;
 rename Terra`year'_count sender_Terra`year'_count;

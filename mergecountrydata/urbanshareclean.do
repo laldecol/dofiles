@@ -15,7 +15,7 @@ set more off;
 pause off;
 capture log close;
 
-log using urbanshareclean.log;
+log using urbanshareclean.log, replace;
 
 import excel "..\\..\\..\\data\World_Bank\source\urbanshare.xls",
 sheet("Data") cellrange(A4:BI268) firstrow;
@@ -252,9 +252,7 @@ save "..\\..\\..\\data\World_Bank\generated\urbanshare.dta", replace;
 
 use "..\\..\\..\\data\dtas\temp\analyze_me.dta", clear;
 
-merge m:1 country using "..\\..\\..\\data\World_Bank\generated\urbanshare.dta";
-
-drop if _merge==2;
+merge m:1 country using "..\\..\\..\\data\World_Bank\generated\urbanshare.dta", keep(match master);
 
 drop _merge;
 
