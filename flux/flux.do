@@ -3,7 +3,8 @@
 *It also takes as given a settings file that describes the dimensions of the reference rasters.;
 *Output dtas can be converted to ubergrid rasters using raster2dta
 
-*Created by: Lorenzo 
+*Created by: Lorenzo, October 2017;
+*Last modified: Lorenzo, October 2017
 *
 
 #delimit;
@@ -56,12 +57,32 @@ gen `ubercodevar'_west=cond(mod(`ubercodevar',`C')==1, `ubercodevar'+`C'-1 , `ub
 end; 
 
 program define isborder;
+/*;
+This program takes:
+	bordervar: categorical variable with region ids, the borders pixels of which we want to
+	identify;
+	ubercodevar: integer variable with pixel identifier. Assumed to be numbered from 0 on,
+	from left to right and top to bottom as in ubergrid files;
+	C: number of columns in ubergrid
+	R: number of rows in ubergrid
+	
+Returns:
+	Four dummy isborder_X variables, which identify pixels that border a region in cardinal
+	direction X=N,S,E,W.
+	Four categorical neighbor_X variables, which hold the id of the pixel's neighbor in cardinal
+	direction X=N,S,E,W.
+*/;
+
 args bordervar ubercodevar C R ignorevals;
 
 sort `ubercodevar';
 
 neighborvar `ubercodevar' `C' `R';
 
+/*;
+isborder_X is equal to 1 if the pixel is at the border between two nonmissing regions,
+in direction X, and 0 otherwise;
+*/;
 gen isborder_N=(`bordervar'!=`bordervar'[`ubercodevar'_north] & `bordervar'!=. & `bordervar'!=`ignorevals' & 
 `bordervar'[`ubercodevar'_north]!=`ignorevals' & `bordervar'[`ubercodevar'_north]!=. );
 
@@ -108,22 +129,20 @@ use "..\\..\\..\\data\\dtas\\analyze_me_land_std_units.dta", clear;
 *assert _N==`R'*`C';
 
 
-egen countryXregion`year'=group(country urban_wb2010), label;
-
 preserve;
 
 collapse (count) uber_code Terra`year'_count=Terra`year' (firstnm) gpw_v4_national_identifier_gri
-(mean) Terra`year'_mean=Terra`year' (sum) area, by(countryXregion`year' country urban_wb2010);
+(mean) Terra`year'_mean=Terra`year' (sum) area, by(countryXregion_const country urban_wb2010);
 
 *Generate copy of id variable, for future merge;
-gen neighbor_=countryXregion`year';
+gen neighbor_=countryXregion_const;
 
 rename gpw_v4_national_identifier_gri neighbor_ctry_;
 rename country neighbor_country_name_;
 rename urban_wb2010 neighbor_rgn_;
 
 *Order identical id vars first;
-order countryXregion`year' neighbor_;
+order countryXregion_const neighbor_;
 
 save "..\\..\\..\\data\\dtas\\country\\country_codes_names`year'.dta", replace;
 
@@ -132,7 +151,7 @@ restore;
 ***Generate Mean winds;
 
 sort uber_code;
-isborder countryXregion`year' uber_code `C' `R' .;
+isborder countryXregion_const uber_code `C' `R' .;
 
 gen Nt`year'=max(vwnd_`year',0)*Terra`year';
 gen St`year'=max(-vwnd_`year',0)*Terra`year';
@@ -144,7 +163,7 @@ gen Sw`year'=max(-vwnd_`year',0);
 gen Ew`year'=max(uwnd_`year',0);
 gen Ww`year'=max(-uwnd_`year',0);
 
-keep uber_code isborder_* country gpw_v4_national_identifier_gri countryXregion`year'
+keep uber_code isborder_* country gpw_v4_national_identifier_gri countryXregion_const
 neighbor_* Nt* St* Et* Wt* Nw* Sw* Ew* Ww*
 area Terra`year' vwnd_`year' uwnd_`year';
 
@@ -161,32 +180,32 @@ gen length=sqrt(area);
 *merge m:1 neighbor_ using "S:\particulates\data_processing\data\dtas\country_codes_names`year'.dta";
 *;
 
-collapse (count) isborder_ vwnd_pixels=vwnd_ uwnd_pixels=uwnd_ (sum) length transfer_ (mean) vwnd_mean=vwnd_ uwnd_mean=uwnd_ if isborder_, by( countryXregion`year' neighbor_);
+collapse (count) isborder_ vwnd_pixels=vwnd_ uwnd_pixels=uwnd_ (sum) length transfer_ (mean) vwnd_mean=vwnd_ uwnd_mean=uwnd_ if isborder_, by( countryXregion_const neighbor_);
 
 label variable isborder_ "Number of border pixels used in computations";
 label variable length "Approximate length of border (km)";
 label variable transfer_ "Flux from countryXregion to interior or world (depends on interior_border), in AOD units per hr";
-merge m:1 countryXregion`year' using "..\\..\\..\\data\\dtas\\country\\country_codes_names`year'.dta", nogen;
+merge m:1 countryXregion_const using "..\\..\\..\\data\\dtas\\country\\country_codes_names`year'.dta", nogen;
 rename Terra`year'_mean sender_Terra`year'_mean;
 rename Terra`year'_count sender_Terra`year'_count;
 
 rename neighbor_country_name_ sender_country_name;
 rename neighbor_ctry_ sender_country;
 rename neighbor_rgn_ sender_region;
-rename countryXregion`year' sending_countryXregion`year';
+rename countryXregion_const sending_countryXregion_const;
 
 ***Check Terra variables: count and average. Rename them to keep track of them after
 * later merge;
 
 merge m:1 neighbor_ using "..\\..\\..\\data\\dtas\country\\country_codes_names`year'.dta", nogen;
-drop countryXregion`year';
+drop countryXregion_const;
 
 rename Terra`year'_mean receiver_Terra`year'_mean;
 rename Terra`year'_count receiver_Terra`year'_count;
 
 *Now have all pairs of sender and receiver regions, with their countries and ruban status ;
 
-label variable sending_countryXregion`year' "Sender Region";
+label variable sending_countryXregion_const "Sender Region";
 label variable neighbor_ "Receiver Region";
 
 *Now must define sending & receiving, netting both interior transfers;
