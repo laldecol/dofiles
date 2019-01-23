@@ -223,7 +223,7 @@ if __name__ == '__main__':
     ###############################Please Imform Function Inputs#######################################
 
     # Define input file (ouput automatically stored within it)
-    inputfile = "S:\\particulates\\data_processing\\data\\dta2raster\\dtas\\country_region_flows_all.dta"
+    inputfile = "S:\\particulates\\data_processing\\data\\dta2raster\\dtas\\countryXregion_const.dta"
     # Define type of data ("FLOAT" or "INTEGER")
     datatype = "INTEGER"
     outputfolder = "S:\\particulates\\data_processing\\data\\dta2raster\\maps"

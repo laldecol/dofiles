@@ -78,12 +78,12 @@ foreach year of local years{;
 	collapse (sum) total_neighbor_AOD receiver_Terra`year'_count 
 	total_neighbor_uwnd uwnd_pixels total_neighbor_vwnd vwnd_pixels
 	length transfer_
-	, by (sending_countryXregion`year' interior_border);
+	, by (sending_countryXregion_const interior_border);
 
 	gen bordtype_str="";
 	replace bordtype_str="interior" if interior_border==1;
 	replace bordtype_str="world" if interior_border==0; 
-	rename sending_countryXregion`year' countryXregion`year';
+	rename sending_countryXregion_const countryXregion`year';
 	
 	*We will recover urban and rural AOD from neighbor's AOD & urban/rural status;
 	*Terra_avg_ is interior neighbor's AOD in the next line's definition. obsolete as of Oct 31;
