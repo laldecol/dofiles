@@ -20,7 +20,7 @@ log using PWTClean.log, replace;
 import excel "..\\..\\..\\data\PWT\source\pwt90.xlsx",
  sheet("Data") firstrow clear;
 keep country rgdpe rgdpo year;
-keep if year == 2000 | year == 2005 | year == 2010 | year ==2014;
+keep if year >= 2000 & year<=2015;
 
 *Change unit of observation from countryXyear to country, for merging purposes;
 reshape wide rgdpe rgdpo, i (country) j(year);

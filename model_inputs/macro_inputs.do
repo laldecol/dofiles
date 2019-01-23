@@ -20,22 +20,26 @@ Created: October 19, 2017, by Lorenzo
 Last modified: January 15, 2019, by Lorenzo
 */;
 
-local years 2000 2005 2010 2015;
+local years 2000 2001 2002 2003 2004 2005 
+			2006 2007 2008 2009 2010 2011
+			2012 2013 2015;
 
-log using macro_inputs.log;
+log using macro_inputs.log, replace;
 
 foreach year of local years{;
 	***Change to analyze_me_land_std units?;
 	use "..\\..\\..\\data\\dtas\\analyze_me_land.dta", clear;
 
 	*Use urbanization dummies to generate a region variable for each year;
+		***countryXregion`year' is now generated in pixel_data_prep;
+		
 		egen countryXregion`year'=group(country urban_wb`year'), label;
 		gen region_str="";
 		replace region_str="urban" if urban_wb`year'==1;
 		replace region_str="rural" if urban_wb`year'==0;
 		drop urban_wb`year';
 
-	*Compute 1-5 above by collapsing into country X region level
+	*Compute 1-5 above by collapsing into country X region level;
 		collapse (count) uber_code (firstnm) gpw_v4_national_identifier_gri 
 		rgdpe`year' rgdpo`year' Oil`year' Coal`year' Gas`year' 
 		urbanshare`year' countrypop`year'

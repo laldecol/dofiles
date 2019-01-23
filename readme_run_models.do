@@ -15,7 +15,7 @@ set more off;
 local python "C:\Python27\ArcGIS10.2\python.exe";
 
 *Calculate variables to feed the models;
-if 1==2{;
+if 1==1{;
 	cd model_inputs;
 	do macro_inputs.do;
 	do box_inputs.do;

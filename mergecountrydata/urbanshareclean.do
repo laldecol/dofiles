@@ -28,7 +28,10 @@ foreach v of varlist E-BH {;
 };
 
 *Keep years for which we also have population data;
-keep CountryName urbanshare2000 - urbanshare2015;
+keep CountryName 
+urbanshare2000 urbanshare2001 urbanshare2002 urbanshare2003 urbanshare2004 urbanshare2005
+urbanshare2006 urbanshare2007 urbanshare2008 urbanshare2009 urbanshare2010
+urbanshare2011 urbanshare2012 urbanshare2013 urbanshare2014 urbanshare2015;
 
 rename CountryName country;
 

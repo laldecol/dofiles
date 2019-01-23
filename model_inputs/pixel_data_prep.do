@@ -67,6 +67,23 @@ log using dataprep.log, text replace;
 	};
 	*0. END;
 	
+	*0.1 Interpolate linearly  to get population between years.;
+	
+	foreach year in 2000 2005 2010 2015{;
+	
+		if `year'!=2015{;
+		
+			local end_year=`year'+5;
+			
+			forvalues t=1/4{;
+			
+				local tyear=`year'+`t';
+				gen countrypop`tyear'=countrypop`year'+`t'*(countrypop`end_year'-countrypop`year')/(5);
+				
+			};
+		};
+	};
+	
 	*1. Drop pixels missing population, country, or AOD data, and save result as analyze_me_land.dta;
 	*How is this different from sample in samplepixels;
 		keep if projected_aggregated_gpw_2000<. &
@@ -280,7 +297,7 @@ log using dataprep.log, text replace;
 *Keep defined sample and save two reshaped files:;
 *all_pooled contains all years, and mod5 contains only mod5 years;
 
-	use `analyze_me_land', clear;
+	use "..\\..\\..\\data\\dtas\\analyze_me_land.dta", clear;
 
 	keep if `samplepixels';
 
