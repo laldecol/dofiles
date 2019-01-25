@@ -10,9 +10,11 @@ last modified: Jan 9, 2019, by la
 #delimit;
 clear all;
 cls;
+set trace on;
+set tracedepth 2;
 set more off;
-
-local python "C:\Python27\ArcGIS10.2\python.exe";
+pause on;
+local python "C:\Python27\ArcGIS10.5\python.exe";
 
 **********************************************************;
 **   Step 1: Aggregate source GPW to use as ubergrid    **;
@@ -51,9 +53,10 @@ if 1==2{;
 *Averages all daily AOD files from the years set in daily2yearly.py into 
 *yearly ones, by satellite. ;
 
-if 1==2{;
+if 1==1{;
 	cd daily2yearlyAOD;
 	shell `python' daily2yearlyAOD.py;
+	pause;
 	cd ..;
 	*Successfully ran daily2yearlyAOD.py;
 	};
@@ -169,7 +172,7 @@ if 1==2{;
 *Cleans and merges sources of country level data, preserving all pixels;
 *BPclean defines a EU country and must be run last;
 
-if 1==1{;
+if 1==2{;
 
 	cd mergecountrydata;
 	
@@ -198,7 +201,7 @@ if 1==1{;
 ********************************************************;
 ************;
 
-if 1==1{;
+if 1==2{;
 	cd model_inputs;
 	do pixel_data_prep.do;
 	do post_prep_label_units.do;
@@ -206,7 +209,7 @@ if 1==1{;
 };
 
 *Compute flux between regions using a pixel-level box model;
-if 1==1{;
+if 1==2{;
 	cd flux;
 	do flux.do;
 	cd ..;

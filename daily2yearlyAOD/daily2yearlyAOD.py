@@ -1,12 +1,15 @@
 # ---------------------------------------------------------------------------
-# daily2monthly.py
+# daily2monthlyAOD.py
 # -------- #
-# Run time: ~1 hour per year
+# Run time: ~5 mins per year with 15 workers
 #
 # 
-# Description: Create a global raster for each year.
+# Description: Create a global AOD raster for each year from daily AOD files
 # created: August 10 2016 by la
+# modified: January 25 2019 by la
+
 # ---------------------------------------------------------------------------
+
 # Import system modules
 import arcpy, glob, logging, os, shutil, subprocess, sys, time, traceback
 from arcpy import env
@@ -93,15 +96,16 @@ if __name__=='__main__':
     #Set up directories for output:
     shutil.rmtree("..\\..\\..\\data\\MODIS_AOD\\generated\\yearly", ignore_errors=True)
     os.mkdir("..\\..\\..\\data\\MODIS_AOD\\generated\\yearly")
+    logging.info('Cleaned and set up output folders')
     
     #Declare start and end year:
     startyear=2000
-    endyear=2014
+    endyear=2018
     
     #Define satellite prefix list and year list:
     #sats=["A", "T"]
 
-    sats=["T"]
+    sats=["T", "A"]
     
     years=[str(year) for year in range(startyear,endyear+1)]
     
@@ -109,7 +113,11 @@ if __name__=='__main__':
     nw=15
     print years
     
-    #Create list of satellite years to process:            
+    #Create list of satellite years to process:
+    
+    logging.info('Processing satellites %s', " ".join(sats))
+    logging.info('Start year is %s', str(startyear))
+    logging.info('End year is %s', str(endyear))
     satyears=[sat+year for sat in sats for year in years]
     print satyears
     
@@ -127,5 +135,5 @@ if __name__=='__main__':
     pool.join
     
     print "All year x satellite took " + str((t1-t0)/60) + " minutes." 
+    logging.info('Done with daily2yearlyAOD.py.')    
     logging.info('Program took %s minutes for %s satelliteXyears.', str((t1-t0)/60) , str(len(satyears)))
-    logging.info('Done with daily2yearlyAOD.py.')
