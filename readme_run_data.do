@@ -78,6 +78,9 @@ if 1==2{;
 ************************************************************************;
 *Downloads ;
 
+*Warning! The next file downloads and processes a large amount of data;
+*Avoid running it if you don't want to use disk space for intermediate data;
+
 if 1==2{;
 	cd ftp2rasterLULC;
 	shell `python' ftp2rasterLULC.py;
@@ -118,17 +121,17 @@ if 1==2{;
 *6.1 Takes all ubergrid rasters specified in raster2list.py and exports their
 * data into .txt files. ;
 
-if 1==1{;
+if 1==2{;
 	cd raster2list;
 	shell `python' raster2list.py;
 	cd ..;
 	*Successfully ran raster2list.py;
 	};
 
-*6.2 Cleans gpw .txt filenames so they can be processed by stata.;
-if 1==1{;
-	cd gpwclean;
-	shell `python' gpwclean.py;
+*6.2 Cleans GPW and LULC .txt filenames so they can be processed by stata.;
+if 1==2{;
+	cd clean_txt_names;
+	shell `python' clean_txt_names.py;
 	cd ..;
 	*Successfully ran gpwclean.py;
 	};
