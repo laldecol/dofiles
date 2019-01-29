@@ -53,14 +53,12 @@ if 1==2{;
 *Averages all daily AOD files from the years set in daily2yearly.py into 
 *yearly ones, by satellite. ;
 
-if 1==1{;
+if 1==2{;
 	cd daily2yearlyAOD;
 	shell `python' daily2yearlyAOD.py;
-	pause;
 	cd ..;
 	*Successfully ran daily2yearlyAOD.py;
 	};
-
 
 ***************************************************************;
 **    Step 4: Average monthly fire rasters into yearly ones     **;
@@ -75,6 +73,18 @@ if 1==2{;
 	*Successfully ran monthly2yearlyFIRE.py;
 	};
 
+************************************************************************;
+**    Step 5: Download and aggregate LULC tiles into world raster     **;
+************************************************************************;
+*Downloads ;
+
+if 1==2{;
+	cd ftp2rasterLULC;
+	shell `python' ftp2rasterLULC.py;
+	cd ..;
+	*Successfully ran monthly2yearlyFIRE.py;
+	};
+	
 *************************************************;
 **    Step 5: Transform rasters into ubergrid  **;
 *************************************************;
@@ -108,15 +118,15 @@ if 1==2{;
 *6.1 Takes all ubergrid rasters specified in raster2list.py and exports their
 * data into .txt files. ;
 
-if 1==2{;
+if 1==1{;
 	cd raster2list;
 	shell `python' raster2list.py;
 	cd ..;
 	*Successfully ran raster2list.py;
 	};
-	
+
 *6.2 Cleans gpw .txt filenames so they can be processed by stata.;
-if 1==2{;
+if 1==1{;
 	cd gpwclean;
 	shell `python' gpwclean.py;
 	cd ..;
@@ -129,7 +139,7 @@ if 1==2{;
 *Takes directory and filename pattern pairs,  imports corresponding .txt files
 *into stata, and saves them as .dta;
 
-if 1==2{;
+if 1==1{;
 	cd table2dta;
 
 	do table2dta.do "..\..\..\data\MODIS_AOD\generated\yearly\ubergrid\table" "*avg.txt";
@@ -150,7 +160,7 @@ if 1==2{;
 ***********************************;
 *Merges all ubergrid .dta files from the specified directories together and saves them.;
 
-if 1==2{;
+if 1==1{;
 	cd mergedtas;
 	do mergedtas.do 8 
 	"MODIS_AOD\generated\yearly\ubergrid\dtas"
@@ -172,7 +182,7 @@ if 1==2{;
 *Cleans and merges sources of country level data, preserving all pixels;
 *BPclean defines a EU country and must be run last;
 
-if 1==2{;
+if 1==1{;
 
 	cd mergecountrydata;
 	

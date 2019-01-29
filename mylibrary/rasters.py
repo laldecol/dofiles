@@ -129,8 +129,12 @@ def raster2ubergrid(input_raster, outpath, extent, outprojection):
     #Project raster using target projection, cell size, and reference point. 
     cell_size=settingsdict['CELLSIZEX']+" "+settingsdict['CELLSIZEY']
     regist_point=settingsdict['LEFT']+" "+settingsdict['TOP']
-    arcpy.ProjectRaster_management(input_raster,raster_proj,outprojection,"NEAREST",cell_size,"",regist_point,in_coor_system=None)
-
+    arcpy.ProjectRaster_management(in_raster=input_raster, out_raster=raster_proj, 
+                                  out_coor_system=outprojection, 
+                                  resampling_type="NEAREST",
+                                  cell_size=cell_size, 
+                                  geographic_transform="",
+                                  Registration_Point=regist_point)
     #Clip raster to ubergrid extent
     arcpy.Clip_management(raster_proj, "", raster_clip, extent, "-9999", "NONE", "MAINTAIN_EXTENT")
     

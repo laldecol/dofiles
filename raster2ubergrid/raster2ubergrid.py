@@ -45,7 +45,7 @@ def raster2ubergrid(input_raster,extent,outprojection):
     regist_point=settingsdict['LEFT']+" "+settingsdict['TOP']
     
     arcpy.ProjectRaster_management(input_raster,raster_proj,outprojection,"NEAREST",cell_size,"",regist_point,in_coor_system=None)
-
+    
     #Clip raster to ubergrid extent
     arcpy.Clip_management(raster_proj, "", raster_clip, extent, "-9999", "NONE", "MAINTAIN_EXTENT")
     
@@ -71,13 +71,13 @@ if __name__=='__main__':
     deletebin=[]    
     
     #List of input folders
-
-    #folders.append("..\\..\\..\\data\\MODIS_AOD\\generated\\yearly")
-    #folders.append("..\\..\\..\\data\\GPW4\\source\\gpw-v4-national-identifier-grid")
-    #folders.append("..\\..\\..\\data\\GPW4\\source\gpw-v4-data-quality-indicators-mean-administrative-unit-area")
-    #folders.append("..\\..\\..\\data\\MODIS_FIRE\\generated\\yearly")
-    #folders.append("..\\..\\..\\data\\CRU\\generated\\yearly")
-    #folders.append("..\\..\\..\\data\\MODIS_LULC\\generated\\yearly\\dummy")
+    
+    folders.append("..\\..\\..\\data\\MODIS_AOD\\generated\\yearly")
+    folders.append("..\\..\\..\\data\\GPW4\\source\\gpw-v4-national-identifier-grid")
+    folders.append("..\\..\\..\\data\\GPW4\\source\gpw-v4-data-quality-indicators-mean-administrative-unit-area")
+    folders.append("..\\..\\..\\data\\MODIS_FIRE\\generated\\yearly")
+    folders.append("..\\..\\..\\data\\CRU\\generated\\yearly")
+    folders.append("..\\..\\..\\data\\MODIS_LULC\\generated\\yearly\\dummy")
     folders.append("..\\..\\..\\data\CCMP\\generated\\yearly")
     
     #Logging info
@@ -87,7 +87,7 @@ if __name__=='__main__':
     for input_folder in folders:
         
         #Set output directory
-
+        
         #If the folder that's provided is in a source subdirectory, we don't want to create folders and write generated data within them.
         #Therefore, whenever this happens, we must move the output to a corresponding directory within data\\folder\\generated\\.
         #To keep the source folder as potentially read only, we copy the file to be processed into a twin directory and then delete it when we're done.       

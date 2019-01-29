@@ -75,7 +75,7 @@ def aggregate(satyear, prod):
         
         #Aggregate rasters in catalog to mean raster
         arcpy.RasterCatalogToRasterDataset_management(temp_year+"\\" +year + ".gdb\\catalog", output_raster, "", "MEAN", "FIRST", "", "NONE", "16_BIT_SIGNED", "NONE", "NONE", "", "") 
-        
+        arcpy.DefineProjection_management (output_raster, sr)
         #Remove temporary directories
         shutil.rmtree(temp_year,ignore_errors=True)
         
