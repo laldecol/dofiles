@@ -56,7 +56,7 @@ local samplepixels "Terra2000!=. & Terra2005!=. & Terra2010!=. & Terra2015!=.
 & Gas2000!=. & Gas2005!=. & Gas2010!=. & Gas2015!=.";
 */;
 
-log using dataprep.log, text replace;
+log using pixel_data_prep.log, text replace;
 
 *I. Generate and relabel variables, and define sample;
 	use "..\\..\\..\\data\dtas\analyze_me.dta", clear;
@@ -95,7 +95,7 @@ log using dataprep.log, text replace;
 		projected_aggregated_gpw_2010!=0 &
 		projected_aggregated_gpw_2015!=0 &
 		Terra2000!=. & Terra2010!=. &
-		Terra2005!=. & Terra2014!=.;
+		Terra2005!=. & Terra2015!=.;
 	*1. END;
 
 	*2. Generate population weighted GPW data quality, by country. 
@@ -130,9 +130,8 @@ log using dataprep.log, text replace;
 		projected_aggregated_gpw_2010 projected_aggregated_gpw_2015)
 		(gpwpop2000 gpwpop2005 gpwpop2010 gpwpop2015);
 
-		*Use AOD & climate from 2014 with population from 2015;
-		rename Terra2014avg Terra2015avg;
-
+		*Use climate & GDP from 2014 with population from 2015;
+		
 		rename (rgdpe2014 rgdpo2014) (rgdpe2015 rgdpo2015); 
 
 		rename (cld2014 wet2014 tmp2014 frs2014 vap2014) (cld2015 wet2015 tmp2015 frs2015 vap2015);

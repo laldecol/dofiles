@@ -79,7 +79,8 @@ if 1==2{;
 *Downloads ;
 
 *Warning! The next file downloads and processes a large amount of data;
-*Avoid running it if you don't want to use disk space for intermediate data;
+*Avoid running it if you don't want to use disk space for intermediate data
+*while it runs;
 
 if 1==2{;
 	cd ftp2rasterLULC;
@@ -121,15 +122,15 @@ if 1==2{;
 *6.1 Takes all ubergrid rasters specified in raster2list.py and exports their
 * data into .txt files. ;
 
-if 1==2{;
+if 1==1{;
 	cd raster2list;
 	shell `python' raster2list.py;
 	cd ..;
 	*Successfully ran raster2list.py;
 	};
 
-*6.2 Cleans GPW and LULC .txt filenames so they can be processed by stata.;
-if 1==2{;
+*6.2 Cleans GPW and LULC .txt filenames so they can be processed by stata;
+if 1==1{;
 	cd clean_txt_names;
 	shell `python' clean_txt_names.py;
 	cd ..;
@@ -139,8 +140,7 @@ if 1==2{;
 ********************************************;
 ** Step 7: Import ascii tables to dta     **;
 ********************************************;
-*Takes directory and filename pattern pairs,  imports corresponding .txt files
-*into stata, and saves them as .dta;
+*Converts ubergrid .txt files to .dta;
 
 if 1==1{;
 	cd table2dta;
@@ -214,7 +214,7 @@ if 1==1{;
 ********************************************************;
 ************;
 
-if 1==2{;
+if 1==1{;
 	cd model_inputs;
 	do pixel_data_prep.do;
 	do post_prep_label_units.do;
@@ -222,7 +222,7 @@ if 1==2{;
 };
 
 *Compute flux between regions using a pixel-level box model;
-if 1==2{;
+if 1==1{;
 	cd flux;
 	do flux.do;
 	cd ..;
