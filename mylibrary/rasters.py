@@ -129,6 +129,7 @@ def raster2ubergrid(input_raster, outpath, extent, outprojection):
     #Project raster using target projection, cell size, and reference point. 
     cell_size=settingsdict['CELLSIZEX']+" "+settingsdict['CELLSIZEY']
     regist_point=settingsdict['LEFT']+" "+settingsdict['TOP']
+    
     arcpy.ProjectRaster_management(in_raster=input_raster, out_raster=raster_proj, 
                                   out_coor_system=outprojection, 
                                   resampling_type="NEAREST",
@@ -211,7 +212,6 @@ def dta2raster(inputfile,datatype, outputfolder):
     subprocess.call(cmd, shell = 'true')     
     logging.info('Done creating dta spawns.')
         
-    
     # Provide the folder that contains the dtas
     storefolder = outputfolder+"\\ubergrid_"+os.path.splitext(os.path.basename(inputfile))[0]+"\\"
     
@@ -220,7 +220,6 @@ def dta2raster(inputfile,datatype, outputfolder):
     os.mkdir(storefolder)
     # Generate ascii folder
     os.mkdir(storefolder+"ascii")
-    
     
     ## (1) Generate tables - using stata transfer
     
@@ -249,7 +248,6 @@ def dta2raster(inputfile,datatype, outputfolder):
     arcpy.env.overwriteOutput = True
     arcpy.env.projectCompare = "Full"
     arcpy.CheckOutExtension("spatial")
-    
     
     print "Starting conversion to rasters"
     
@@ -359,8 +357,6 @@ def dta2raster(inputfile,datatype, outputfolder):
             # Restore directory:
             os.chdir(storefolder)            
             
-        
-        
     logging.info("%d dta files (variables) were converted to raster" %number_dtas) 
     logging.info("Failed to convert %d dta files (variables) to raster" %number_fails)   
     
