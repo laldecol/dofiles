@@ -122,7 +122,7 @@ if 1==2{;
 *6.1 Takes all ubergrid rasters specified in raster2list.py and exports their
 * data into .txt files. ;
 
-if 1==1{;
+if 1==2{;
 	cd raster2list;
 	shell `python' raster2list.py;
 	cd ..;
@@ -130,7 +130,7 @@ if 1==1{;
 	};
 
 *6.2 Cleans GPW and LULC .txt filenames so they can be processed by stata;
-if 1==1{;
+if 1==2{;
 	cd clean_txt_names;
 	shell `python' clean_txt_names.py;
 	cd ..;
@@ -142,17 +142,17 @@ if 1==1{;
 ********************************************;
 *Converts ubergrid .txt files to .dta;
 
-if 1==1{;
+if 1==2{;
 	cd table2dta;
 
-	*do table2dta.do "..\..\..\data\MODIS_AOD\generated\yearly\ubergrid\table" "*avg.txt";
-	*do table2dta.do "..\..\..\data\GPW4\generated\projected\table" "*.txt";
-	*do table2dta.do "..\..\..\data\GPW4\generated\gpw-v4-national-identifier-grid\ubergrid\table" "*.txt";
-	*do table2dta.do "..\..\..\data\GPW4\generated\gpw-v4-data-quality-indicators-mean-administrative-unit-area\ubergrid\table" "*.txt";
-	*do table2dta.do "..\..\..\data\MODIS_FIRE\generated\yearly\ubergrid\table" "*.txt";
-	*do table2dta.do "..\..\..\data\CRU\generated\yearly\ubergrid\table" "*.txt";
-	*do table2dta.do "..\..\..\data\CCMP\generated\yearly\ubergrid\table" "*.txt";
-	*do table2dta.do "..\..\..\data\MODIS_LULC\generated\yearly\dummy\ubergrid\table" "*.txt";
+	do table2dta.do "..\..\..\data\MODIS_AOD\generated\yearly\ubergrid\table" "*avg.txt";
+	do table2dta.do "..\..\..\data\GPW4\generated\projected\table" "*.txt";
+	do table2dta.do "..\..\..\data\GPW4\generated\gpw-v4-national-identifier-grid\ubergrid\table" "*.txt";
+	do table2dta.do "..\..\..\data\GPW4\generated\gpw-v4-data-quality-indicators-mean-administrative-unit-area\ubergrid\table" "*.txt";
+	do table2dta.do "..\..\..\data\MODIS_FIRE\generated\yearly\ubergrid\table" "*.txt";
+	do table2dta.do "..\..\..\data\CRU\generated\yearly\ubergrid\table" "*.txt";
+	do table2dta.do "..\..\..\data\CCMP\generated\yearly\ubergrid\table" "*.txt";
+	do table2dta.do "..\..\..\data\MODIS_LULC\generated\yearly\dummy\ubergrid\table" "*.txt";
 	do table2dta.do "..\..\..\data\boundaries\generated\ubergrid\table" "*.txt";
 	
 	cd ..;
@@ -164,7 +164,7 @@ if 1==1{;
 ***********************************;
 *Merges all ubergrid .dta files from the specified directories together and saves them.;
 
-if 1==1{;
+if 1==2{;
 	cd mergedtas;
 	do mergedtas.do 9
 	"MODIS_AOD\generated\yearly\ubergrid\dtas"

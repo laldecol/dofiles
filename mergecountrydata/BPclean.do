@@ -30,6 +30,7 @@ foreach product of local products{;
 pause;
 if "`product'"=="Oil"{;
 
+*Sheet name is misleading. Source is in mtoe;
 local sheetname "Oil Consumption – Tonnes";
 local endrange "BC112";
 local lastvar "BC";
@@ -44,6 +45,7 @@ local removerows=11;
 };
 
 else if "`product'"=="Gas"{;
+*Sheet name is misleading. Source is in mtoe;
 local sheetname "Gas Consumption – tonnes";
 local endrange "BD114";
 local lastvar "BD";
