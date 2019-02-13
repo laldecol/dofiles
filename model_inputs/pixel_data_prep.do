@@ -95,7 +95,7 @@ log using pixel_data_prep.log, text replace;
 		projected_aggregated_gpw_2010!=0 &
 		projected_aggregated_gpw_2015!=0 &
 		Terra2000!=. & Terra2010!=. &
-		Terra2005!=. & Terra2015!=.;
+		Terra2005!=. & Terra2015!=. &;
 	*1. END;
 
 	*2. Generate population weighted GPW data quality, by country. 
@@ -221,7 +221,8 @@ log using pixel_data_prep.log, text replace;
 
 	*END 4.;
 
-
+	*5. Generate urban dummies, using GPW-WB data, and WB city disks;
+	
 		levelsof country, local(countries);
 
 		* 5.1 Interpolate pixel population for intermediate years;
@@ -264,7 +265,6 @@ log using pixel_data_prep.log, text replace;
 		tempfile analyze_me_land;
 		save `analyze_me_land', replace;
 
-	*5. Generate urban dummies, using GPW-WB data.;
 		use `analyze_me_land', clear;
 		keep uber_code urban_wb*;
 		recode urban_wb* (.=-9999);
@@ -274,10 +274,13 @@ log using pixel_data_prep.log, text replace;
 		use `analyze_me_land', clear;
 		merge 1:1 uber_code using "..\\..\\..\\data\\World_Bank\\generated\\urban_pixels.dta", nogen;
 
+		*%.3 Clean city disk variable;
+		replace city
+		*CLEAN city disk*********;
 		
 		*Create country label for nonland;
 		replace gpw_v4_national_identifier_gri=-9999 if gpw_v4_national_identifier_gri==.;
-		replace country="Sea, Inland Water, other Uninhabitable" if gpw_v4_national_identifier_gri==-9999;
+		replace country="Sea, Inland Water, other Uninhabitable" if gpw_v4_national_identifier_gri==-9999 | country=="";
 		
 		***Notice countryXregion`year' is actually fixed over time;
 
@@ -324,6 +327,8 @@ log using pixel_data_prep.log, text replace;
 	
 	use `analyze_me_land';
 	collapse (mean) Terra* (sum) Fire* gpwpop* area (firstnm) Oil* Coal* Gas* IEA* highqualGPW, by(gpw_v4_national_identifier_gri country);
+	isid country;
+	isid gpw_v4_national_identifier_gri;
 	save "../../../data/dtas/country/country_aggregates/country_aggregates.dta", replace;
 	
 	*Using mod5 years, save country year level averages of pixel level data;

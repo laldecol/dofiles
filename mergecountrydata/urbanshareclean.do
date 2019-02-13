@@ -261,5 +261,6 @@ merge m:1 country using "..\\..\\..\\data\World_Bank\generated\urbanshare.dta", 
 drop _merge;
 
 *New merged data replaces old data, but keeps name;
+assert missing(uber_code)==0;
 save "..\\..\\..\\data\dtas\temp\analyze_me.dta", replace;
 log close;

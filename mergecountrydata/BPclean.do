@@ -105,6 +105,7 @@ sort country;
 
 merge m:1 country using "..\\..\\..\\data\\BP\\generated/`product'Consumption.dta", keep(match master);
 rename _merge merge`product';
+pause;
 assert missing(uber_code)==0;
 
 *Saves version of dta with all country level variables and all pixels;

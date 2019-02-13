@@ -195,15 +195,12 @@ if 1==1{;
 	
 	*Penn World Tables GDP data;
 	do PWTclean.do;
-	
 	*World bank urban shares;
 	do urbanshareclean.do;
-	
 	*IEA energy consumption, including breakdown by fuel and sector;
 	do IEAclean.do;
 	cd "../clean_IEA";
 	do sector_fuel.do;
-	
 	*BP energy consumption data;
 	cd "../mergecountrydata";
 	do BPclean.do;

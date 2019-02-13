@@ -1,5 +1,5 @@
 #delimit;
-set trace on;
+set trace off;
 set more off;
 pause on;
 capture log close;
@@ -24,6 +24,7 @@ local years 2000 2001 2002 2003 2004 2005
 			2006 2007 2008 2009 2010 2011
 			2012 2013 2015;
 
+			
 log using macro_inputs.log, replace;
 
 foreach year of local years{;

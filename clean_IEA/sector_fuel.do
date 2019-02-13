@@ -11,8 +11,9 @@ Created: Lorenzo, Oct 22 2018;
 Last modified: Lorenzo, Oct 28 2018;
 */;
 
-#delimit;
-pause on; 
+capture log close;
+log using sector_fuel.log, replace;
+pause off; 
 set trace off;
 set tracedepth 1;
 
@@ -145,10 +146,10 @@ set tracedepth 1;
 	drop energy_consumption*;
 	
 	reshape wide IEA_*, i(country) j(time);
-
+	
 	*using is GPW, master is IEA;
 	*replace country=using if country==master;
-	merge 1:1 country using "../../../data/dtas/country/country_aggregates/country_aggregates.dta", keepusing(gpw_v4_national_identifier_gri) nogen keep(match master);
+	merge 1:1 country using "..\..\..\data\GPW4\source\gpw-v4-national-identifier-grid\idnames.dta", keepusing(gpw_v4_national_identifier_gri) nogen keep(match master);
 	
 	replace gpw_v4_national_identifier_gri=826 if country=="United Kingdom";
 	replace gpw_v4_national_identifier_gri=840 if country=="United States";
@@ -171,7 +172,9 @@ set tracedepth 1;
 	use "..\\..\\..\\data\dtas\temp\analyze_me.dta", clear;
 
 	merge m:1 gpw_v4_national_identifier_gri using "../../../data/IEA/generated/energy_use/country_level.dta", nogen;
-
+	
+	drop if uber_code==.;
+	
 	*New merged data replaces old data, but keeps name;
 	*This is bad practice, because user cannot know what the file is good for from name only;
 	save "..\\..\\..\\data\dtas\temp\analyze_me.dta", replace;
@@ -188,3 +191,4 @@ Final Consumtpion
 	Non-Specified
 */;
 
+log close;
