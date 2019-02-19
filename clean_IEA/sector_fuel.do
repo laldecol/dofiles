@@ -84,6 +84,7 @@ set tracedepth 1;
 	replace cf=`toe_per_TJ' 					if units=="TJ";
 	replace cf_units="toe/TJ"					if units=="TJ";
 	
+	*Convert to MTOE;
 	gen fuel_use_mtoe=source_*cf/1000000;
 		
 	*Merge fuel group variable;
@@ -157,6 +158,17 @@ set tracedepth 1;
 	
 	reshape wide IEA_*, i(country) j(time);
 	
+	*Label reshaped variables to keep track of units;
+	#delimit;
+	local fuel_types Coal Oil Other;
+	set trace on;
+	set tracedepth 2;
+	foreach fuel_type of local fuel_types{;
+		foreach energy_var of varlist IEA_`fuel_type'*{;
+			label variable `energy_var' "`fuel_type' consumption in Mtoe from IEA";
+		};
+	};
+	
 	*using is GPW, master is IEA;
 	*replace country=using if country==master;
 	merge 1:1 country using "..\..\..\data\GPW4\source\gpw-v4-national-identifier-grid\idnames.dta", keepusing(gpw_v4_national_identifier_gri) nogen keep(match master);
@@ -176,6 +188,8 @@ set tracedepth 1;
 	replace gpw_v4_national_identifier_gri=178 if country=="Republic of the Congo";
 	
 	drop if gpw_v4_national_identifier_gri==.;
+	
+	
 	
 	save "../../../data/IEA/generated/energy_use/country_level.dta", replace;
 		
