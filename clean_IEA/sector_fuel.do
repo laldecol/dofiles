@@ -13,7 +13,7 @@ Last modified: Lorenzo, Oct 28 2018;
 
 capture log close;
 log using sector_fuel.log, replace;
-pause off; 
+pause on; 
 set trace off;
 set tracedepth 1;
 
@@ -55,8 +55,19 @@ set tracedepth 1;
 	local toe_per_GWh 85.9845227859;
 	local MJkg_per_TJkt 1;
 
-*2. Converts IEA data to ktoe and aggregates by fuel group;
-
+*2. Converts IEA data to Mtoe and aggregates by fuel group;
+	
+	
+	keep if 	sector_=="Industry" |
+				sector_=="Transport" |
+				sector_=="Residential" | 
+				sector_=="Commercial" |
+				sector_=="Agricultureforestry" |
+				sector_=="Fishing" |
+				sector_=="Non-Specified" |
+				sector_=="Energy" |
+				sector_=="Transformation";
+	
 	*Merge conversion factors and convert consumption to ktoe;
 	merge m:1 fuel_units using `cf', keepusing(cf cf_units) nogen;
 	
@@ -73,20 +84,19 @@ set tracedepth 1;
 	replace cf=`toe_per_TJ' 					if units=="TJ";
 	replace cf_units="toe/TJ"					if units=="TJ";
 	
-	gen fuel_use_ktoe=source_*cf/1000;
+	gen fuel_use_mtoe=source_*cf/1000000;
 		
 	*Merge fuel group variable;
 	drop _merge;
 	merge m:1 fuel_units using `groups';
 	drop if country=="";
-	
 	*Collapse into year, country, sector, group variable in ktoe;
-	collapse (sum) fuel_use_ktoe, by(country time sector_ fuel_group);
+	collapse (sum) fuel_use_mtoe, by(country time sector_ fuel_group);
 	tab sector_;
 
 *3. Clean, label, and save at country-time-sector-fuel group level, for use in Lint's model;
 
-	keep if 	sector_=="Industry" |
+	*keep if 	sector_=="Industry" |
 				sector_=="Transport" |
 				sector_=="Residential" | 
 				sector_=="Commercial" |
@@ -107,7 +117,8 @@ set tracedepth 1;
 				sector_=="Tr_Main_CHP" |
 				sector_=="Tr_Main_Elec" |
 				sector_=="Tr_Main_Heat";
-     
+    
+	
 	replace sector_="Energy industry own use" if sector_=="Energy";
 	replace sector_="Commercial and public services" if sector_=="Commercial";
 	replace sector_="Electricity Output, Autoproducer CHP Plants" if sector_=="Electr_Auto_CHP";
@@ -123,13 +134,12 @@ set tracedepth 1;
 	replace sector_="Transformation Inputs, Electricity Plants" if sector_=="Tr_Main_Elec";
 	replace sector_="Transformation Inputs, Heat Plants" if sector_=="Tr_Main_Heat";
 
-	rename fuel_use_ktoe energy_consumption;
+	rename fuel_use_mtoe energy_consumption;
 
-	label variable energy_consumption "Energy consumption by country, year, economic sector, and fuel group in ktoe";
+	label variable energy_consumption "Energy consumption by country, year, economic sector, and fuel group in mtoe";
 	fillin country time sector_ fuel_group;
 	replace energy_consumption=0 if _fillin;
 	drop _fillin;
-
 	save "../../../data/IEA/generated/energy_use/energy_use.dta", replace;
 
 *4. Reshape to country year and merge into analyze_me;
