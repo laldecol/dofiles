@@ -6,7 +6,7 @@ pause on;
 set emptycells drop;
 capture log close;
 clear;
-set trace off;
+set trace on;
 set tracedepth 1;
 /*;
 
@@ -95,7 +95,7 @@ log using pixel_data_prep.log, text replace;
 		projected_aggregated_gpw_2010!=0 &
 		projected_aggregated_gpw_2015!=0 &
 		Terra2000!=. & Terra2010!=. &
-		Terra2005!=. & Terra2015!=. &;
+		Terra2005!=. & Terra2015!=.;
 	*1. END;
 
 	*2. Generate population weighted GPW data quality, by country. 
@@ -118,7 +118,7 @@ log using pixel_data_prep.log, text replace;
 		restore;
 
 		merge m:1 country using "..\\..\\..\\data\\dtas\\country\\gpw_quality\\country_data_quality.dta", nogen;
-		merge m:1 gpw_v4_national_identifier_gri using "..\\..\\..\\..\\calibration_v1\\data\\country_regions\country_lvl2005_calib1.dta", keepusing(calibration_sample_05) nogen;	
+		merge m:1 gpw_v4_national_identifier_gri using "..\\..\\..\\data\\dtas\\country_regions\\calibration_sample\\country_lvl2005_calib1.dta", keepusing(calibration_sample_05) nogen;	
 	*2. END;
 
 	*3.	Rename population, land use, and climate variables. 
@@ -266,17 +266,24 @@ log using pixel_data_prep.log, text replace;
 		save `analyze_me_land', replace;
 
 		use `analyze_me_land', clear;
-		keep uber_code urban_wb*;
+		keep uber_code urban_wb* city*disk country countryXregion_const;
 		recode urban_wb* (.=-9999);
+		
+		*5.3 Clean city disk variable and generate dummy;	
+		
+		foreach diskvar of varlist city*disk{;
+			replace `diskvar'=. if `diskvar'==0;
+			gen dummy_`diskvar'=1 if `diskvar'>0 & !missing(`diskvar');
+			replace dummy_`diskvar'=0 if `diskvar'==.;
+			
+		};
+		
 		compress;
 
 		save "..\\..\\..\\data\\World_Bank\\generated\\urban_pixels.dta", replace;
 		use `analyze_me_land', clear;
-		merge 1:1 uber_code using "..\\..\\..\\data\\World_Bank\\generated\\urban_pixels.dta", nogen;
+		merge 1:1 uber_code using "..\\..\\..\\data\\World_Bank\\generated\\urban_pixels.dta", nogen keepusing(urban_wb*);
 
-		*%.3 Clean city disk variable;
-		replace city
-		*CLEAN city disk*********;
 		
 		*Create country label for nonland;
 		replace gpw_v4_national_identifier_gri=-9999 if gpw_v4_national_identifier_gri==.;
@@ -342,8 +349,11 @@ log using pixel_data_prep.log, text replace;
 	gen area_urban=urban_wb*area;
 	save "..\\..\\..\\data\\dtas\analyze_me_land_mod5.dta", replace;
 
-
-
-
+	*Flux sample;
+	use "..\\..\\..\\data\\dtas\\analyze_me.dta", clear;
+	keep uber_code Terra* gpw_v4_national_identifier_gri area vwnd* uwnd*;
+	merge 1:1 uber_code using "..\\..\\..\\data\\World_Bank\\generated\\urban_pixels.dta", nogen;
+	replace country="Sea, Inland Water, other Uninhabitable" if gpw_v4_national_identifier_gri==-9999 | country=="";
+	save "..\\..\\..\\data\\dtas\\analyze_me_flux.dta", replace;
 *END II.;
 log close;
