@@ -123,7 +123,7 @@ local years 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 201
 
 *Use urbanization dummies to generate a region variable for each year;
 foreach year of local years{;
-use "..\\..\\..\\data\\dtas\\analyze_me_land_std_units.dta", clear;
+use "..\\..\\..\\data\\dtas\\analyze_me_flux_std_units.dta", clear;
 
 *Check we're using correct ubergrid settings;
 *assert _N==`R'*`C';

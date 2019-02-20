@@ -69,20 +69,23 @@ label var IEA_Other`year' "IEA Other energy consumption, toe/yr";
 
 save "..\\..\\..\\data\\dtas\analyze_me_land_std_units.dta", replace;
 
-use "..\\..\\..\\data\dtas\analyze_me_flux.dta", clear;
+use "..\\..\\..\\data\\dtas\\analyze_me_flux.dta", clear;
 
 *Wind variables: change units and label variables;
 foreach windvar in uwnd_ vwnd_{;
 forvalues year = 2000/2015{;
 if "`windvar'"=="uwnd_"{;
+
 *Change wind units from m/s to km/yr;
 local direction "eastward";
 };
 
 if "`windvar'"=="vwnd_"{;
+
 *Change wind units from m/s to km/yr;
 local direction "northward";
 };
+
 *31536000 seconds in a year, 1000m in a km;
 replace `windvar'`year' = `windvar'`year'*31536; 
 label var `windvar'`year' "Average `direction' wind speed, km/yr";
@@ -90,5 +93,6 @@ label var `windvar'`year' "Average `direction' wind speed, km/yr";
 };
 
 save "..\\..\\..\\data\\dtas\analyze_me_flux_std_units.dta", replace;
+
 
 log close;
