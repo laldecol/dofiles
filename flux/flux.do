@@ -128,7 +128,6 @@ use "..\\..\\..\\data\\dtas\\analyze_me_flux_std_units.dta", clear;
 *Check we're using correct ubergrid settings;
 *assert _N==`R'*`C';
 
-
 preserve;
 
 collapse (count) uber_code Terra`year'_count=Terra`year' (firstnm) gpw_v4_national_identifier_gri
@@ -184,7 +183,7 @@ collapse (count) isborder_ vwnd_pixels=vwnd_ uwnd_pixels=uwnd_ (sum) length tran
 
 label variable isborder_ "Number of border pixels used in computations";
 label variable length "Approximate length of border (km)";
-label variable transfer_ "Flux from countryXregion to interior or world (depends on interior_border), in AOD units per hr";
+label variable transfer_ "Flux from countryXregion to interior or world (depends on interior_border), in AOD units per yr";
 merge m:1 countryXregion_const using "..\\..\\..\\data\\dtas\\country\\country_codes_names`year'.dta", nogen;
 rename Terra`year'_mean sender_Terra`year'_mean;
 rename Terra`year'_count sender_Terra`year'_count;
@@ -211,8 +210,8 @@ label variable neighbor_ "Receiver Region";
 *Now must define sending & receiving, netting both interior transfers;
 gen interior_border=(sender_country_name==neighbor_country_name);
 
-label var vwnd_mean "Average Northward Wind Speed (km/h)";
-label var uwnd_mean "Average Eastward Wind Speed (km/h)";
+label var vwnd_mean "Average Northward Wind Speed (km/yr)";
+label var uwnd_mean "Average Eastward Wind Speed (km/yr)";
 label var sender_Terra`year'_mean "Average AOD in sender region, AOD units";
 label var receiver_Terra`year'_mean "Average AOD in receiver region, AOD units";
 
