@@ -1,6 +1,6 @@
 #delimit;
 set tracedepth 1;
-set trace on;
+set trace off;
 set more off;
 capture log close;
 log using post_prep_label_units.log, replace;
