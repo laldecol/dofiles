@@ -94,6 +94,10 @@ if __name__=='__main__':
     outdir_list.append("..\\..\\..\\data\\boundaries\\generated")
     field_list.append("URBANCODE")
     
+    input_list.append("..\\..\\..\\data\\boundaries\\source\\city_25km_disk.shp")
+    outdir_list.append("..\\..\\..\\data\\boundaries\\generated")
+    field_list.append("URBANCODE")
+    
     #inprojection="GEOGCS['GCS_WGS_1984',DATUM['D_WGS_1984',SPHEROID['WGS_1984',6378137.0,298.257223563]],PRIMEM['Greenwich',0.0],UNIT['Degree',0.0174532925199433]]"
     
     extent = "..\\..\\..\\data\\GPW4\\generated\\extent\\extent.shp"
