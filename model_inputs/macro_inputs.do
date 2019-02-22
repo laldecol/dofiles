@@ -23,9 +23,82 @@ Last modified: January 15, 2019, by Lorenzo
 local years 2000 2001 2002 2003 2004 2005 
 			2006 2007 2008 2009 2010 2011
 			2012 2013 2015;
-
 			
 log using macro_inputs.log, replace;
+
+*Import oil price data;
+	import excel "..\\..\\..\\data\BP\\source\\bp-statistical-review-of-world-energy-2016-workbook.xlsx", 
+	sheet("Oil – Spot crude prices") clear;
+
+	drop if _n<=6 | _n>=50;
+
+	destring A, gen(year) ignore("-");
+	destring B , gen(oilpr_dubai) ignore("-");
+	destring C, gen(oilpr_brent) ignore("-");
+	destring D, gen(oilpr_nigerian) ignore("-");
+	destring E, gen(oilpr_wti) ignore("-");
+
+	keep year oilpr*;
+
+	label variable oilpr_dubai "Dubai oil spot price, dls/barrel";
+	label variable oilpr_brent "Brent oil spot price, dls/barrel";
+	label variable oilpr_nigerian "Nigerian Forcados oil spot price, dls/barrel";
+	label variable oilpr_wti "West Texas Intermediate oil spot price, dls/barrel";
+
+	keep year oilpr*;
+
+	tempfile oil_price;
+	save `oil_price';
+
+*Import coal price data;
+	import excel "..\\..\\..\\data\BP\\source\\bp-statistical-review-of-world-energy-2016-workbook.xlsx", 
+	sheet("Coal - Prices") clear;
+
+	drop if _n<=3 | _n>=33;
+
+	destring A , gen(year);
+	destring B , gen(coalpr_nweuro) ignore("-");
+	destring C , gen(coalpr_usca) ignore("-");
+	destring D , gen(coalpr_japc) ignore("-");
+	destring E , gen(coalpr_japs) ignore("-");
+	destring F , gen(coalpr_asia) ignore("-");
+
+	keep year coalpr*;
+
+	label variable coalpr_nweuro "Northwestern Europe coal marker price, dls/tonne" ;
+	label variable coalpr_usca "US Central Appalachian coal spot price, dls/tonne" ;
+	label variable coalpr_japc "Japan coking coal spot price, dls/tonne" ;
+	label variable coalpr_japs "Japan steam coal spot price, dls/tonne" ;
+	label variable coalpr_asia "Asian coal marker price, dls/tonne" ;
+
+
+	tempfile coal_price;
+	save `coal_price';
+
+*Import gas price data;
+	import excel "..\\..\\..\\data\BP\\source\\bp-statistical-review-of-world-energy-2016-workbook.xlsx", 
+	sheet("Gas - Prices ") clear;
+
+	drop if _n<=5 | _n>=38;
+
+	destring A, gen(year);
+	destring B, gen(lng_jpn) ignore("-");
+	destring C, gen(lng_ger) ignore("-");
+	destring D, gen(ng_her) ignore("-");
+	destring E, gen(ng_ushh) ignore("-");
+	destring F, gen(ng_can) ignore("-");
+
+	keep year ng* lng*;
+
+	label variable lng_jpn "Liquefied natural gas Japan cif price, dls/Mbtu";
+	label variable lng_ger "Liquefied natural gas average German import cif price, dls/Mbtu";
+	label variable ng_her "Natural gas UK Heren NBP index, dls/Mbtu";
+	label variable ng_ushh "Natural gas US Henry Hub, dls/Mbtu";
+	label variable ng_ca "Natural gas Canada price, dls/Mbtu";
+
+	tempfile gas_price;
+	save `gas_price';
+
 
 foreach year of local years{;
 	***Change to analyze_me_land_std units?;
@@ -64,6 +137,12 @@ foreach year of local years{;
 		rgdpe`year' rgdpo`year' Oil`year' Coal`year' Gas`year' 
 		urbanshare`year' countrypop`year';
 
+	*Merge energy data;
+		gen int year=`year';
+		merge m:1 year using `oil_price', nogen keep(match);
+		merge m:1 year using `coal_price', nogen keep(match);
+		merge m:1 year using `gas_price', nogen keep(match);
+			
 	*Label output variables;
 		label var country "Country name";
 		label var gpw_v4_national_identifier_gri "Country id";
@@ -85,4 +164,5 @@ foreach year of local years{;
 	save "..\\..\\..\\data\\dtas\\country\\macro_model_inputs_`year'.dta", replace;
 
 };
+
 log close;
