@@ -66,7 +66,8 @@ local samplepixels "Terra2000!=. & Terra2005!=. & Terra2010!=. & Terra2015!=.
 	
 	use "..\\..\\..\\data\\dtas\\analyze_me_land.dta";
 	collapse (mean) Terra* (sum) Fire* gpwpop* area (firstnm) Oil* Coal* Gas* IEA* highqualGPW, by(gpw_v4_national_identifier_gri country);
-	drop if country=="" | gpw_v4_national_identifier_grid==.;
+	drop if country=="" | gpw_v4_national_identifier_gri==.;
+	drop if gpw_national_identifier_gri==-9999;
 	isid country;
 	isid gpw_v4_national_identifier_gri;
 	save "../../../data/dtas/country/country_aggregates/country_aggregates.dta", replace;
