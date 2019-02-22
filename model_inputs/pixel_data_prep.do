@@ -242,7 +242,7 @@ log using pixel_data_prep.log, text replace;
 		
 		*5.2 Generate urban dummy from GPW-WB;
 		*foreach year in 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2015{;
-		foreach year in 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2015{;
+		foreach year in 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015{;
 
 			dis "`country'" `year';
 			*First, must generate the cutoff (either in proportions or total population);
