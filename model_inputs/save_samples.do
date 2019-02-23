@@ -85,10 +85,13 @@ local samplepixels "Terra2000!=. & Terra2005!=. & Terra2010!=. & Terra2015!=.
 	save "..\\..\\..\\data\\dtas\analyze_me_land_mod5.dta", replace;
 
 	*Flux sample;
+	#delimit;
 	use "..\\..\\..\\data\\dtas\\analyze_me.dta", clear;
 	keep uber_code Terra* gpw_v4_national_identifier_gri area vwnd* uwnd*;
 	merge 1:1 uber_code using "..\\..\\..\\data\\World_Bank\\generated\\urban_pixels.dta", nogen;
 	replace country="Sea, Inland Water, other Uninhabitable" if gpw_v4_national_identifier_gri==-9999 | country=="";
+	recode gpw_v4_national_identifier_gri (-9999=446);
+
 	save "..\\..\\..\\data\\dtas\\analyze_me_flux.dta", replace;
 *END II.;
 log close;

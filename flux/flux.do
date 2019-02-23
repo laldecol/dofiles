@@ -27,7 +27,7 @@ replace col`stub'=`C' if col`stub'==0;
 gen row`stub'=(`ubercode'-col`stub')/`C'+1;
 end;
 
-*rc2ubercode generates ubercode variable into row and column coordinates in an
+*rc2ubercode generates an ubercode variable from row and column coordinates in an
 *ubergrid.
 *Inputs:
 *row: The row coordinate of a cell in an ubergrid
@@ -49,6 +49,7 @@ return scalar west=cond(mod(`ubercode',`C')==1, `ubercode'+`C'-1 , `ubercode'- 1
 end; 
 
 program define neighborvar;
+*This program generates the ubercode for each cell's four neighbors;
 args ubercodevar C R;
 gen `ubercodevar'_north=cond(`ubercodevar'>`C', `ubercodevar'-`C' , . );
 gen `ubercodevar'_south=cond(`ubercodevar'<=`C'*`R'-`C', `ubercodevar'+`C' , . );
@@ -147,43 +148,42 @@ save "..\\..\\..\\data\\dtas\\country\\country_codes_names`year'.dta", replace;
 
 restore;
 
-***Generate Mean winds;
-
 sort uber_code;
 isborder countryXregion_const uber_code `C' `R' .;
-
-gen Nt`year'=max(vwnd_`year',0)*Terra`year';
-gen St`year'=max(-vwnd_`year',0)*Terra`year';
-gen Et`year'=max(uwnd_`year',0)*Terra`year';
-gen Wt`year'=max(-uwnd_`year',0)*Terra`year';
-
-gen Nw`year'=max(vwnd_`year',0);
-gen Sw`year'=max(-vwnd_`year',0);
-gen Ew`year'=max(uwnd_`year',0);
-gen Ww`year'=max(-uwnd_`year',0);
-
-keep uber_code isborder_* country gpw_v4_national_identifier_gri countryXregion_const
-neighbor_* Nt* St* Et* Wt* Nw* Sw* Ew* Ww*
-area Terra`year' vwnd_`year' uwnd_`year';
-
 keep if isborder_N | isborder_S | isborder_E | isborder_W;
-
-rename (Nt`year' St`year' Et`year' Wt`year') (transfer_N transfer_S transfer_E transfer_W);
-rename (Nw`year' Sw`year' Ew`year' Ww`year') (wind_N wind_S wind_E wind_W);
-
-reshape long isborder_ neighbor_ transfer_ wind_, i(uber_code) j(dir) string;
 
 *Generate length of pixel as sqrt(area);
 gen length=sqrt(area);
 
-*merge m:1 neighbor_ using "S:\particulates\data_processing\data\dtas\country_codes_names`year'.dta";
-*;
+*transfer_X are the flow from each cell to each of its neighbors;
+*Notice only one of Nt & St are nonzero - same for Et & Wt;
+gen transfer_N=max(vwnd_`year',0)*Terra`year';
+gen transfer_S=max(-vwnd_`year',0)*Terra`year';
+gen transfer_E=max(uwnd_`year',0)*Terra`year';
+gen transfer_W=max(-uwnd_`year',0)*Terra`year';
 
-collapse (count) isborder_ vwnd_pixels=vwnd_ uwnd_pixels=uwnd_ (sum) length transfer_ (mean) vwnd_mean=vwnd_ uwnd_mean=uwnd_ if isborder_, by( countryXregion_const neighbor_);
+
+*windborder_X are wind border lengths: they measure the borders over which transfers happen;
+*If AOD is transferred north from a given pixel, Nwb equals the pixel length - zero otherwise;
+gen windborder_N=cond(vwnd_`year'>=0,1,0,.)*length;
+gen windborder_S=cond(vwnd_`year'<0,1,0,.)*length;
+gen windborder_E=cond(uwnd_`year'>=0,1,0,.)*length;
+gen windborder_W=cond(uwnd_`year'<0,1,0,.)*length;
+
+keep uber_code isborder_* country gpw_v4_national_identifier_gri countryXregion_const
+neighbor_* transfer_* windborder_*
+length area
+Terra`year';
+
+reshape long isborder_ neighbor_ transfer_ windborder_, i(uber_code) j(dir) string;
+
+collapse (count) isborder_ (sum) windborder_ length transfer_ if isborder_, by( countryXregion_const neighbor_);
 
 label variable isborder_ "Number of border pixels used in computations";
-label variable length "Approximate length of border (km)";
+label variable length 	"Approximate length of border (km)";
 label variable transfer_ "Flux from countryXregion to interior or world (depends on interior_border), in AOD units per yr";
+label variable windborder_ "Length of border over which sender AOD flows into receiver";
+
 merge m:1 countryXregion_const using "..\\..\\..\\data\\dtas\\country\\country_codes_names`year'.dta", nogen;
 rename Terra`year'_mean sender_Terra`year'_mean;
 rename Terra`year'_count sender_Terra`year'_count;
@@ -210,15 +210,12 @@ label variable neighbor_ "Receiver Region";
 *Now must define sending & receiving, netting both interior transfers;
 gen interior_border=(sender_country_name==neighbor_country_name);
 
-label var vwnd_mean "Average Northward Wind Speed (km/yr)";
-label var uwnd_mean "Average Eastward Wind Speed (km/yr)";
 label var sender_Terra`year'_mean "Average AOD in sender region, AOD units";
 label var receiver_Terra`year'_mean "Average AOD in receiver region, AOD units";
 
 label data "AOD transfer between sender and receiver country-regions, year `year'";
 
 save "..\\..\\..\\data\\dtas\\country_regions\\flux\\flux`year'.dta", replace;
-
 
 };
 log close;

@@ -256,7 +256,9 @@ log using pixel_data_prep.log, text replace;
 		};
 			
 		gen urban_wb_constant=urban_wb2010;
-	
+		replace country="Sea, Inland Water, other Uninhabitable" if gpw_v4_national_identifier_gri==-9999 | country=="";
+		recode gpw_v4_national_identifier_gri (-9999=446);
+
 		egen countryXregion_const=group(country urban_wb2010), label;
 		
 		*END foreach;
