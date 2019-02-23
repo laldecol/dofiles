@@ -1,7 +1,7 @@
 #delimit;
 set trace on;
 set tracedepth 1;
-pause off;
+pause on;
 capture program drop _all;
 /*;
 This .do:
@@ -130,7 +130,7 @@ foreach year of local years{;
  merge 1:1 country gpw_v4_national_identifier_gri region using `flows_merge`merge_year'', nogen;
  };
  
- save "../../../data/dtas/country_regions/flux/net_flows_into.dta";
+ save "../../../data/dtas/country_regions/flux/net_flows_into.dta", replace;
  
 local products Oil Coal;
 foreach product of local products{;
@@ -155,6 +155,7 @@ gen constant_rural_sender= ((sender_freq==15 & region=="rural") | (sender_freq==
 
 save "../../../data/dtas/country_year/emission_factor_inputs.dta", replace;
 
+pause;
 preserve;
 collapse (firstnm) constant_urban_sender constant_rural_sender if constant_sender==1, by(country gpw_v4_national_identifier_gri);
 tempfile constant_senders;
