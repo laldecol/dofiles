@@ -39,7 +39,6 @@ I. Generate and relabel variables, and define sample;
 
 5. 	Generate urban dummy, using WB urbanization rate and GPW population;
 
-*II. Choose samples, and save separate .dtas for each;
 
 */;
 
@@ -95,7 +94,7 @@ log using pixel_data_prep.log, text replace;
 		projected_aggregated_gpw_2010!=0 &
 		projected_aggregated_gpw_2015!=0 &
 		Terra2000!=. & Terra2010!=. &
-		Terra2005!=. & Terra2015!=. &;
+		Terra2005!=. & Terra2015!=.;
 	*1. END;
 
 	*2. Generate population weighted GPW data quality, by country. 
@@ -118,7 +117,7 @@ log using pixel_data_prep.log, text replace;
 		restore;
 
 		merge m:1 country using "..\\..\\..\\data\\dtas\\country\\gpw_quality\\country_data_quality.dta", nogen;
-		merge m:1 gpw_v4_national_identifier_gri using "..\\..\\..\\..\\calibration_v1\\data\\country_regions\country_lvl2005_calib1.dta", keepusing(calibration_sample_05) nogen;	
+		merge m:1 gpw_v4_national_identifier_gri using "..\\..\\..\\data\\dtas\\country_regions\\calibration_sample\\country_lvl2005_calib1.dta", keepusing(calibration_sample_05) nogen;	
 	*2. END;
 
 	*3.	Rename population, land use, and climate variables. 
@@ -243,7 +242,7 @@ log using pixel_data_prep.log, text replace;
 		
 		*5.2 Generate urban dummy from GPW-WB;
 		*foreach year in 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2015{;
-		foreach year in 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2015{;
+		foreach year in 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015{;
 
 			dis "`country'" `year';
 			*First, must generate the cutoff (either in proportions or total population);
@@ -257,7 +256,9 @@ log using pixel_data_prep.log, text replace;
 		};
 			
 		gen urban_wb_constant=urban_wb2010;
-	
+		replace country="Sea, Inland Water, other Uninhabitable" if gpw_v4_national_identifier_gri==-9999 | country=="";
+		recode gpw_v4_national_identifier_gri (-9999=446);
+
 		egen countryXregion_const=group(country urban_wb2010), label;
 		
 		*END foreach;
@@ -266,17 +267,24 @@ log using pixel_data_prep.log, text replace;
 		save `analyze_me_land', replace;
 
 		use `analyze_me_land', clear;
-		keep uber_code urban_wb*;
+		keep uber_code urban_wb* city*disk country countryXregion_const;
 		recode urban_wb* (.=-9999);
+		
+		*5.3 Clean city disk variable and generate dummy;	
+		
+		foreach diskvar of varlist city*disk{;
+			replace `diskvar'=. if `diskvar'==0;
+			gen dummy_`diskvar'=1 if `diskvar'>0 & !missing(`diskvar');
+			replace dummy_`diskvar'=0 if `diskvar'==.;
+			
+		};
+		
 		compress;
 
 		save "..\\..\\..\\data\\World_Bank\\generated\\urban_pixels.dta", replace;
 		use `analyze_me_land', clear;
-		merge 1:1 uber_code using "..\\..\\..\\data\\World_Bank\\generated\\urban_pixels.dta", nogen;
+		merge 1:1 uber_code using "..\\..\\..\\data\\World_Bank\\generated\\urban_pixels.dta", nogen keepusing(urban_wb*);
 
-		*%.3 Clean city disk variable;
-		replace city
-		*CLEAN city disk*********;
 		
 		*Create country label for nonland;
 		replace gpw_v4_national_identifier_gri=-9999 if gpw_v4_national_identifier_gri==.;
@@ -289,61 +297,4 @@ log using pixel_data_prep.log, text replace;
 	*END 5.;
 
 
-*END I.;
-	
-*II. Choose samples, save separate .dtas for each, and calculate country year and country level means and totals;
-
-**Reshape to create two .dtas: one for all years and one for mod5years, for the 
-*sample specified in local samplepixels;
-
-*Keep defined sample and save two reshaped files:;
-*all_pooled contains all years, and mod5 contains only mod5 years;
-
-	use "..\\..\\..\\data\\dtas\\analyze_me_land.dta", clear;
-
-	keep if `samplepixels';
-
-	save "..\\..\\..\\data\\dtas\pixel_sample.dta", replace;
-
-	*All countries pooled;
-	reshape long Terra Fire Data gpwpop water trees pasture barren crops urban other urban_wb 
-	cld wet vap tmp frs Oil Coal Gas
-	IEA_Coal IEA_Oil IEA_Other
-	urbanshare 
-	construction1yr construction5yr
-	rgdpe rgdpo countrypop countryGDPpc vwnd_ uwnd_,
-	 i(uber_code country area) j(year);
-	
-	*generate interval variables;
-	gen fiveyearint=.;
-	replace fiveyearint=1 if year>=2000 & year<=2005;
-	replace fiveyearint=2 if year>2005 & year<=2010;
-	replace fiveyearint=3 if year>2010 & year<=2015;
-
-	compress;
-	save "..\\..\\..\\data\\dtas\analyze_me_land_allpooled.dta", replace;
-
-	*Collapse to country level to keep country means and totals;
-	
-	use `analyze_me_land';
-	collapse (mean) Terra* (sum) Fire* gpwpop* area (firstnm) Oil* Coal* Gas* IEA* highqualGPW, by(gpw_v4_national_identifier_gri country);
-	isid country;
-	isid gpw_v4_national_identifier_gri;
-	save "../../../data/dtas/country/country_aggregates/country_aggregates.dta", replace;
-	
-	*Using mod5 years, save country year level averages of pixel level data;
-	use "..\\..\\..\\data\\dtas\analyze_me_land_allpooled.dta", clear;
-	***Keep modulo 5 years;
-	keep if year==2000 | year==2005 | year==2010 | year==2015;
-
-	*gen landshare to adjust density;
-	gen landshare=(400-water)/400;
-	gen density=gpwpop/(area*landshare);
-	gen area_urban=urban_wb*area;
-	save "..\\..\\..\\data\\dtas\analyze_me_land_mod5.dta", replace;
-
-
-
-
-*END II.;
 log close;
