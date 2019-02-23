@@ -3,6 +3,7 @@ set trace on;
 set tracedepth 1;
 set more off;
 pause on;
+capture log close;
 /*;
 This .do file computes, for each country:
 
@@ -19,9 +20,10 @@ Last modified: Feb 23, 2017, by Lorenzo
 
 *Define set of years we want to process;
 local years 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2015;
-local rho 100;
-local h 1000;
+local rho 10;
+local h 3;
 local k; 
+
 
 *1.Compute flows from world for each country-region, looping over years;	
 	foreach year of local years{;
