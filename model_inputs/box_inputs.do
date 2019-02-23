@@ -1,5 +1,5 @@
 #delimit;
-set trace on;
+set trace off;
 set tracedepth 1;
 set more off;
 pause on;
@@ -24,6 +24,7 @@ local rho 10;
 local h 3;
 local k; 
 
+log using box_inputs.log, replace;
 
 *1.Compute flows from world for each country-region, looping over years;	
 	foreach year of local years{;
@@ -211,4 +212,4 @@ foreach year of local years{;
 		save "..\\..\\..\\data\\dtas\\country\\box_model_inputs`year'.dta", replace;
 	};
 };
-	
+log close;
