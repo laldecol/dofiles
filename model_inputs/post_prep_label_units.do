@@ -1,6 +1,6 @@
 #delimit;
 set tracedepth 1;
-set trace on;
+set trace off;
 set more off;
 capture log close;
 log using post_prep_label_units.log, replace;
@@ -64,8 +64,30 @@ label var IEA_Other`year' "IEA Other energy consumption, Mtoe/yr";
 
 save "..\\..\\..\\data\\dtas\analyze_me_land_std_units.dta", replace;
 
-/*;
-Can keep Fire vars the same by reinterpreting the \psi^b;
-Fire2000 Fire2001 Fire2002 Fire2003 Fire2004 Fire2005 Fire2006 Fire2007 Fire2008 Fire2009 Fire2010 Fire2011 Fire2012 Fire2013 Fire2014 Fire2015 ;
-*/;
+use "..\\..\\..\\data\\dtas\\analyze_me_flux.dta", clear;
+
+*Wind variables: change units and label variables;
+foreach windvar in uwnd_ vwnd_{;
+forvalues year = 2000/2015{;
+if "`windvar'"=="uwnd_"{;
+
+*Change wind units from m/s to km/yr;
+local direction "eastward";
+};
+
+if "`windvar'"=="vwnd_"{;
+
+*Change wind units from m/s to km/yr;
+local direction "northward";
+};
+
+*31536000 seconds in a year, 1000m in a km;
+replace `windvar'`year' = `windvar'`year'*31536; 
+label var `windvar'`year' "Average `direction' wind speed, km/yr";
+};
+};
+
+save "..\\..\\..\\data\\dtas\analyze_me_flux_std_units.dta", replace;
+
+
 log close;

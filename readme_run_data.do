@@ -189,7 +189,7 @@ if 1==2{;
 *Cleans and merges sources of country level data, preserving all pixels;
 *BPclean defines a EU country and must be run last;
 
-if 1==1{;
+if 1==2{;
 
 	cd mergecountrydata;
 	
@@ -218,6 +218,7 @@ if 1==1{;
 if 1==1{;
 	cd model_inputs;
 	do pixel_data_prep.do;
+	do save_samples.do;
 	do post_prep_label_units.do;
 	cd ..;
 };
