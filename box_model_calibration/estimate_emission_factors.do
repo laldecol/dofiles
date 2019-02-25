@@ -1,8 +1,9 @@
 #delimit;
-set trace on;
+set trace off;
 set tracedepth 1;
 pause on;
 capture program drop _all;
+set more on;
 /*;
 This .do:
 
@@ -14,21 +15,34 @@ This .do:
 **1.1. Reshape each emission_factor_inputs`year'.dta into country-region level;
 **1.2. Append all country-region files together;
 **1.3. Merge in country-year level energy consumption data;
-
+capture log close;
+log using estimate_emission_factors.log, replace;
 local rho 10;
 local h 3;
 local years 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2015;
 
+*Get country code id from Lint's file;
+	use "..\..\..\..\data_processing_calibration\data\world_bank\generated\WB1clean.dta", clear;
+	collapse (firstnm) country, by(code);
+	tempfile code_id;
+	save `code_id';
+	
+*Insheet Lint's regional energy consumption shares;
+	use "..\..\..\..\data_processing_calibration\data\to_main\generated\energy_outputs_PANEL.dta", clear;
+	drop res*;
+	
+	merge m:1 code using `code_id', nogen;
+	
+	rename (Ecu Epu Egu) (Ec_urban Ep_urban Eg_urban);
+	rename (Ecr Epr Egr) (Ec_rural Ep_rural Eg_rural);
+	
+	reshape long Ec_ Ep_ Eg_, i(code country year) j(region) string;
+	
+	tempfile energy_cons;
+	save `energy_cons';
+	
 foreach year of local years{;
 	use "..\\..\\..\\data\\dtas\\country\\emission_factor_inputs_`year'.dta", clear;
-	
-	keep 
-	country gpw_v4_national_identifier_gri 
-	flux_to_interior_rural flux_to_world_rural flux_from_world_rural
-	flux_to_interior_urban flux_to_world_urban flux_from_world_urban
-	Terra_avg_interior_rural sending_area_rural  
-	Terra_avg_interior_urban sending_area_urban  
-	urban_sender_pixel_model;
 	
 	drop if gpw_v4_national_identifier_gri==-9999;
 
@@ -37,29 +51,26 @@ foreach year of local years{;
 	gen sender_dummy_urban=urban_sender_pixel_model;
 	drop urban_sender_pixel_model;
 
-	*Suppose urban_sender_pixel_model==1.;
-	*Recall gen urban_sender_pixel_model=(flux_to_interior_rural<flux_to_interior_urban);
-	*Then net flows are calculated as:;
-	
-	*Flows are in AOD units per hour. Want to convert into kg of PM10/ year;
+	*Flows are in AOD units per hour. Want to convert into Mt of PM10/ year;
 	gen net_flow_into_urban=`rho'*
-	(flux_from_world_urban-flux_to_world_urban-flux_to_interior_urban+flux_to_interior_rural);
-	label var net_flow_into_urban "Flow into urban region, in kg of PM10 per year ";
+	(flux_from_world_urban-flux_to_world_urban-flux_to_interior_urban+flux_to_interior_rural)/1000000000;
+	label var net_flow_into_urban "Flow into urban region, in Mt of PM10 per year ";
 	
 	gen net_flow_into_rural=`rho'*
-	(flux_from_world_rural-flux_to_world_rural-flux_to_interior_rural+flux_to_interior_urban);
-	label var net_flow_into_rural "Flow into rural region, in kg of PM10 per year";
-
-	drop
-	flux_from_world_urban flux_to_world_urban 
-	flux_from_world_rural flux_to_world_rural 
-	flux_to_interior_rural flux_to_interior_urban;
+	(flux_from_world_rural-flux_to_world_rural-flux_to_interior_rural+flux_to_interior_urban)/1000000000;
+	label var net_flow_into_rural "Flow into rural region, in Mt of PM10 per year";
 
 	rename Terra_avg_interior_rural Terra_rural;
 	rename Terra_avg_interior_urban Terra_urban;
 	rename sending_area_rural area_rural;
 	rename sending_area_urban area_urban;
 
+	keep country gpw_v4
+	net_flow_into_urban net_flow_into_rural
+	Terra_urban Terra_rural
+	area_urban area_rural 
+	sender_dummy_urban sender_dummy_rural;
+	
 	reshape long net_flow_into_ Terra_ area_ sender_dummy_,
 	 i(country gpw_v4_national_identifier_gri ) j(region) string;
 
@@ -68,7 +79,7 @@ foreach year of local years{;
 	rename area_ area_`year';
 	rename sender_dummy_ sender_dummy_`year';
 	 
-	gen Xk`year'=-area_*Terra_*`rho';
+	gen Xk`year'=area_*Terra_*`rho';
 
 	tempfile flows_merge`year';
 	save `flows_merge`year'', replace;
@@ -80,73 +91,17 @@ foreach year of local years{;
  merge 1:1 country gpw_v4_national_identifier_gri region using `flows_merge`merge_year'', nogen;
  };
  
- save "../../../data/dtas/country_regions/flux/net_flows_into.dta", replace;
+reshape long net_flow_into Xk sender_dummy_, i(country gpw_v4_national_identifier_gri region) j(year);
 
- 
 *Notice sending region switches from rural to urban in some years for some countries;
-bysort country : tab sender_dummy region;
 bysort country region: egen sender_freq=total(sender_dummy_) if !missing(sender_dummy_);
 
-gen constant_sender=(sender_freq==15 | sender_freq==0) if !missing(sender_dummy_);
-gen constant_urban_sender= ((sender_freq==15 & region=="urban") | (sender_freq==0 & region=="rural")) if !missing(sender_dummy_);
-gen constant_rural_sender= ((sender_freq==15 & region=="rural") | (sender_freq==0 & region=="urban")) if !missing(sender_dummy_);
+*Reshape to country year region level;
 
+*Merge in energy consumption;
+merge 1:1 country region year using `energy_cons', nogen;
+keep if CalibrationError==0;
 save "../../../data/dtas/country_year/emission_factor_inputs.dta", replace;
+bysort country region: reg net_flow_into Xk Ec_ Ep_ Eg_;
 
-************;
-*Merge in Lint's estimated regional energy consumption here;
-************;
-
- merge m:1 country using "../../../data/dtas/country/country_aggregates/country_aggregates.dta", nogen keepusing(Fire*) keep(match);
-
-reshape long Oil Coal Fire net_flow_into Terra_ area_ sender_dummy_ Xk, i(country gpw_v4_national_identifier_gri region) j(year);
-drop if year==2014;
-
-preserve;
-collapse (firstnm) constant_urban_sender constant_rural_sender if constant_sender==1, by(country gpw_v4_national_identifier_gri);
-tempfile constant_senders;
-save `constant_senders';
-restore;
-
-************;
-*Run regressions here;
-************;
-
-levelsof gpw_v4_national_identifier_gri if constant_sender==1, local(countries);
-local ncountries : word count `countries';
-
-local parms_urban Xk Oil Coal Fire;
-local parms_rural Xk Oil Coal Fire;
-
-local nparms_urban: word count `parms_urban';
-local nparms_rural: word count `parms_rural';
-
-matrix Urban = J(1,`nparms_urban'+2,.);
-matrix Rural = J(1,`nparms_rural'+2,.);
-
-matrix colname Urban =  gpw_v4_national_identifier_gri `parms_urban' constant;
-matrix colname Rural =  gpw_v4_national_identifier_gri `parms_rural' constant;
-local rownames_urban first;
-local rownames_rural first;
-
-capture rm "../../../data/dtas/country_regions/emission_factors/all_emission_factors.dta";
-touch "../../../data/dtas/country_regions/emission_factors/all_emission_factors.dta";
-*Plot coefficients as estimated;
-/*;
-foreach region of local regions {;
-	foreach parm of local parms_`region'{;
-		use "../../../data/dtas/country_regions/emission_factors/`region'_emission_factors.dta", clear;
-		sort var coef;
-		by var (coef): gen order=_n;
-		twoway line ci_lower coef ci_upper order if var=="`parm'" & order>3 & order<55, ti("`parm' emission coefficients in `region'");
-		graph export "../../../analysis/emission_factors/figures/`region'_emission_estimates_`parm'.png", replace;
-	};
-};
-*/;
-
-*Clean regression output;
-
-use "../../../data/dtas/country_regions/emission_factors/all_emission_factors.dta", clear;
-merge m:1 gpw_v4_national_identifier_gri using "../../../data/dtas/country/emission_factor_inputs_2000.dta", nogen keepusing(country);
-merge m:1 gpw_v4_national_identifier_gri using `constant_senders', nogen keep(match);
-save "../../../data/dtas/country_regions/emission_factors/all_emission_factors.dta", replace;
+log close;
