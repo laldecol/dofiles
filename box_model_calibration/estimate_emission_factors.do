@@ -105,7 +105,7 @@ local years 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 201
 	 };
 	 
 	merge m:1 country using `country_agg', nogen;
-	reshape long net_flow_into Xk sender_dummy_ Fire, i(country gpw_v4_national_identifier_gri region) j(year);
+	reshape long net_flow_into Xk sender_dummy_ Fire Terra_, i(country gpw_v4_national_identifier_gri region) j(year);
 
 *Count years each region is a sender - our model assumes no switching;
 	bysort country region: egen sender_freq=total(sender_dummy_) if !missing(sender_dummy_);
@@ -117,9 +117,48 @@ local years 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 201
 	gen region_sender=cond(sender_freq>=12,1,0,.);
 *Define country sample: correct calibration and no swiching;
 	levelsof country , local(regcountries);
-
+	
+	gen urban_dummy=cond(region=="urban",1,0,.);
+	gen rural_dummy=cond(region=="rural",1,0,.);
+	gen Xu=Xk*urban_dummy;
+	gen Xa=Xk*rural_dummy;
+	
+	gen Ecu=Ec_*urban_dummy;
+	gen Eca=Ec_*rural_dummy;
+	
+	gen Epu=Ep_*urban_dummy;
+	gen Epa=Ep_*rural_dummy;
+	
+	gen Fra=Fire*rural_dummy;
+	
+	encode country, generate(country_code);
+	encode region, generate(region_code);
+	reg net_flow_into Xu Xa Ecu Eca Epu Epa Fra i.country_code#i.region_code ;
+	
+	local cfile_pooled "../../../data/dtas/country_regions/emission_factors/pooled_reg_emission_factors.dta";
+	
+	regsave _cons using `cfile_pooled', replace ci pval
+			addvar(						
+					v_ud,	_b[Xu],			_se[Xu],
+					v_ad,	_b[Xa],			_se[Xa],
+					
+					psi_uc, -1*_b[Ecu],		_se[Ecu],
+					psi_up, -1*_b[Epu],		_se[Epu],
+					
+					psi_ac, -1*_b[Eca],		_se[Eca],
+					psi_ap, -1*_b[Epa],		_se[Epa],
+					psi_af, -1*_b[Fra],		_se[Fra],
+					
+					);
+					
+	
+	predict nu_ij, resid;
+	
+	use `cfile_pooled', clear;
+	
+	
 *Prepare files to output coefficients;
-
+/*;
 	local cfile_sender "../../../data/dtas/country_regions/emission_factors/sender_emission_factors.dta";
 	local cfile_receiver "../../../data/dtas/country_regions/emission_factors/receiver_emission_factors.dta";
 	
@@ -247,4 +286,5 @@ foreach file of local outfiles{;
 	save ``file'', replace;
 	label var 
 };
+*/;
 log close;
