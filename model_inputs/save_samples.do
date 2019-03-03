@@ -65,10 +65,14 @@ local samplepixels "Terra2000!=. & Terra2005!=. & Terra2010!=. & Terra2015!=.
 	*Collapse to country level to keep country means and totals;
 	
 	use "..\\..\\..\\data\\dtas\\analyze_me_land.dta";
-	collapse (mean) Terra* (sum) Fire* gpwpop* area (firstnm) Oil* Coal* Gas* IEA* highqualGPW, by(gpw_v4_national_identifier_gri country);
+	collapse (mean) Terra* (sum) Fire* gpwpop* area (firstnm) Oil* Coal* Gas* IEA* highqualGPW rgdpo2010
+	rgdpe2010, by(gpw_v4_national_identifier_gri country);
 	drop if country=="" | gpw_v4_national_identifier_gri==.;
 	drop if gpw_v4_national_identifier_gri==-9999;
-
+	
+	sum rgdpe2010, detail;
+	gen hic=cond(rgdpe2010>=`r(p50)', 1, 0, .) if rgdpe2010!=.;
+		
 	isid country;
 	isid gpw_v4_national_identifier_gri;
 	save "../../../data/dtas/country/country_aggregates/country_aggregates.dta", replace;

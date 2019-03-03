@@ -46,7 +46,7 @@ local years 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 201
 	
 *Insheet fires;
 	use "../../../data/dtas/country/country_aggregates/country_aggregates.dta", clear;
-	keep country Fire*;
+	keep country Fire* hic;
 	tempfile country_agg;
 	save `country_agg';
 	
@@ -133,11 +133,11 @@ local years 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 201
 	
 	encode country, generate(country_code);
 	encode region, generate(region_code);
-	reg net_flow_into Xu Xa Ecu Eca Epu Epa Fra i.country_code#i.region_code ;
+	reg net_flow_into Xu Xa Ecu#i.hic Eca#i.hic Epu#i.hic Epa#i.hic Fra#i.hic i.country_code#i.region_code ;
 	
 	local cfile_pooled "../../../data/dtas/country_regions/emission_factors/pooled_reg_emission_factors.dta";
 	
-	regsave _cons using `cfile_pooled', replace ci pval
+	regsave  using `cfile_pooled', replace ci pval;*
 			addvar(						
 					v_ud,	_b[Xu],			_se[Xu],
 					v_ad,	_b[Xa],			_se[Xa],
