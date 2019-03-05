@@ -38,15 +38,16 @@ local years 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 201
 	
 	rename (Ecu Epu Egu) (Ec_urban Ep_urban Eg_urban);
 	rename (Eca Epa Ega) (Ec_rural Ep_rural Eg_rural);
+	*reshape long Ec_ Ep_ Eg_, i(code country year) j(region) string;
 	
-	reshape long Ec_ Ep_ Eg_, i(code country year) j(region) string;
-	
+	*This is at the country year level, with regions in separate variables suffixed _urban and _rural;
 	tempfile energy_cons;
 	save `energy_cons';
 	
 *Insheet fires;
 	use "../../../data/dtas/country/country_aggregates/country_aggregates.dta", clear;
 	keep country Fire* hic;
+	reshape long Fire, i(country) j(year);
 	tempfile country_agg;
 	save `country_agg';
 	
@@ -74,22 +75,24 @@ local years 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 201
 		rename Terra_avg_interior_urban Terra_urban;
 		rename sending_area_rural area_rural;
 		rename sending_area_urban area_urban;
-
-		keep country gpw_v4
-		net_flow_into_urban net_flow_into_rural
+		
+		
+		local ts_vars net_flow_into_urban net_flow_into_rural
 		Terra_urban Terra_rural
+		Terra_avg_world_rural Terra_avg_world_urban
 		area_urban area_rural 
 		sender_dummy_urban sender_dummy_rural;
 		
-		reshape long net_flow_into_ Terra_ area_ sender_dummy_,
-		 i(country gpw_v4_national_identifier_gri ) j(region) string;
-
-		rename net_flow_into net_flow_into`year';
-		rename Terra_ Terra_`year';
-		rename area_ area_`year';
-		rename sender_dummy_ sender_dummy_`year';
-		 
-		gen Xk`year'=area_*Terra_*`rho';
+		keep country gpw_v4
+		`ts_vars';
+		
+		foreach ts_var of local ts_vars{;
+			rename `ts_var' `ts_var'`year';
+		};	
+		
+		*Correct shape but need to keep world AOD too. ;
+		reshape long `ts_vars',
+		 i(country gpw_v4_national_identifier_gri ) j(year);
 
 		tempfile flows_merge`year';
 		save `flows_merge`year'', replace;
@@ -101,37 +104,24 @@ local years 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 201
 	 local merge_years 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2015;
 	 
 	 foreach merge_year of local merge_years{;
-		merge 1:1 country gpw_v4_national_identifier_gri region using `flows_merge`merge_year'', nogen;
+		append using `flows_merge`merge_year'';
 	 };
-	 
-	merge m:1 country using `country_agg', nogen;
-	reshape long net_flow_into Xk sender_dummy_ Fire Terra_, i(country gpw_v4_national_identifier_gri region) j(year);
 
-*Count years each region is a sender - our model assumes no switching;
-	bysort country region: egen sender_freq=total(sender_dummy_) if !missing(sender_dummy_);
+	 *Count years each region is a sender - our model assumes no switching;
+	bysort country : egen sender_freq_urban=total(sender_dummy_urban) if !missing(sender_dummy_urban);
+
+	 ***This is now at the country year level, with regions as separate variables;
+	merge m:1 country year using `country_agg', nogen;
 
 *Merge in energy consumption;
-	merge 1:1 country region year using `energy_cons', nogen;
-	keep if CalibrationError==0 & (sender_freq>=12 | sender_freq==0);
-	gen region_sender=cond(sender_freq>=12,1,0,.);
+	merge 1:1 country year using `energy_cons', nogen;
+	keep if CalibrationError==0 & (sender_freq_urban>=12 | sender_freq_urban<=2);
+
 *Define country sample: correct calibration and no swiching;
 	levelsof country , local(regcountries);
 	
-	gen urban_dummy=cond(region=="urban",1,0,.);
-	gen rural_dummy=cond(region=="rural",1,0,.);
-	gen Xu=Xk*urban_dummy;
-	gen Xa=Xk*rural_dummy;
-	
-	gen Ecu=Ec_*urban_dummy;
-	gen Eca=Ec_*rural_dummy;
-	
-	gen Epu=Ep_*urban_dummy;
-	gen Epa=Ep_*rural_dummy;
-	
-	gen Fra=Fire*rural_dummy;
-	
 	encode country, generate(country_code);
-	encode region, generate(region_code);
+	pause;
 	reg net_flow_into Xu Xa Ecu Eca Epu Epa Fra i.country_code#i.region_code ,  nocons;
 	
 	local cfile_pooled "../../../data/dtas/country_regions/emission_factors/pooled_reg_ef.dta";
