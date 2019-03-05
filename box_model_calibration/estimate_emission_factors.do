@@ -37,7 +37,7 @@ local years 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 201
 	merge m:1 code using `code_id', nogen;
 	
 	rename (Ecu Epu Egu) (Ec_urban Ep_urban Eg_urban);
-	rename (Ecr Epr Egr) (Ec_rural Ep_rural Eg_rural);
+	rename (Eca Epa Ega) (Ec_rural Ep_rural Eg_rural);
 	
 	reshape long Ec_ Ep_ Eg_, i(code country year) j(region) string;
 	
@@ -110,7 +110,6 @@ local years 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 201
 *Count years each region is a sender - our model assumes no switching;
 	bysort country region: egen sender_freq=total(sender_dummy_) if !missing(sender_dummy_);
 
-
 *Merge in energy consumption;
 	merge 1:1 country region year using `energy_cons', nogen;
 	keep if CalibrationError==0 & (sender_freq>=12 | sender_freq==0);
@@ -133,11 +132,10 @@ local years 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 201
 	
 	encode country, generate(country_code);
 	encode region, generate(region_code);
-	reg net_flow_into Xu Xa Ecu#i.hic Eca#i.hic Epu#i.hic Epa#i.hic Fra#i.hic i.country_code#i.region_code ;
+	reg net_flow_into Xu Xa Ecu Eca Epu Epa Fra i.country_code#i.region_code ,  nocons;
 	
-	local cfile_pooled "../../../data/dtas/country_regions/emission_factors/pooled_reg_emission_factors.dta";
-	
-	regsave  using `cfile_pooled', replace ci pval;*
+	local cfile_pooled "../../../data/dtas/country_regions/emission_factors/pooled_reg_ef.dta";
+	regsave Xu using `cfile_pooled', replace ci pval
 			addvar(						
 					v_ud,	_b[Xu],			_se[Xu],
 					v_ad,	_b[Xa],			_se[Xa],
@@ -154,10 +152,34 @@ local years 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 201
 	
 	predict nu_ij, resid;
 	
-	use `cfile_pooled', clear;
+	reg net_flow_into Xu Xa c.Ecu#i.hic c.Eca#i.hic c.Epu#i.hic c.Epa#i.hic c.Fra#i.hic i.country_code#i.region_code ,  nocons ;
 	
+	local cfile_pooled_bi "../../../data/dtas/country_regions/emission_factors/pooled_reg_ef_by_income.dta";
+	regsave Xu using `cfile_pooled_bi', replace ci pval
+			addvar(						
+					v_ud,	_b[Xu],			_se[Xu],
+					v_ad,	_b[Xa],			_se[Xa],
+					
+					psi_uc_l, -1*_b[0b.hic#c.Ecu],		_se[0b.hic#c.Ecu],
+					psi_up_l, -1*_b[0b.hic#c.Epu],		_se[0b.hic#c.Epu],
+					
+					psi_ac_l, -1*_b[0b.hic#c.Eca],		_se[0b.hic#c.Eca],
+					psi_ap_l, -1*_b[0b.hic#c.Epa],		_se[0b.hic#c.Epa],
+					psi_af_l, -1*_b[0b.hic#c.Fra],		_se[0b.hic#c.Fra],
+
+					psi_uc_h, -1*_b[1.hic#c.Ecu],		_se[1.hic#c.Ecu],
+					psi_up_h, -1*_b[1.hic#c.Epu],		_se[1.hic#c.Epu],
+					
+					psi_ac_h, -1*_b[1.hic#c.Eca],		_se[1.hic#c.Eca],
+					psi_ap_h, -1*_b[1.hic#c.Epa],		_se[1.hic#c.Epa],
+					psi_af_h, -1*_b[1.hic#c.Fra],		_se[1.hic#c.Fra],
+					
+					);
+					
+	predict nu_ij_bi, resid;
+	save "../../../data/dtas/country_regions/emission_factors/residuals.dta", replace;
 	
-*Prepare files to output coefficients;
+	*Prepare files to output coefficients;
 /*;
 	local cfile_sender "../../../data/dtas/country_regions/emission_factors/sender_emission_factors.dta";
 	local cfile_receiver "../../../data/dtas/country_regions/emission_factors/receiver_emission_factors.dta";
