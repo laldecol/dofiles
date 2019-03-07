@@ -46,7 +46,7 @@ local years 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 201
 	
 *Insheet fires;
 	use "../../../data/dtas/country/country_aggregates/country_aggregates.dta", clear;
-	keep country Fire* hic;
+	keep country Fire* rgdpe2010;
 	reshape long Fire, i(country) j(year);
 	tempfile country_agg;
 	save `country_agg';
@@ -112,6 +112,8 @@ local years 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 201
 
 	 ***This is now at the country year level, with regions as separate variables;
 	merge m:1 country year using `country_agg', nogen;
+	sum rgdpe2010, detail;
+	gen hic=cond(rgdp>=`r(p50)',1,0,.) if rgdp!=.;
 
 *Merge in energy consumption;
 	merge 1:1 country year using `energy_cons', nogen;
@@ -121,9 +123,49 @@ local years 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 201
 	levelsof country , local(regcountries);
 	
 	encode country, generate(country_code);
-	pause;
-	reg net_flow_into Xu Xa Ecu Eca Epu Epa Fra i.country_code#i.region_code ,  nocons;
 	
+	gen 	AOD_sender=			Terra_urban 			if sender_dummy_urban==1;
+	replace AOD_sender=			Terra_rural 			if sender_dummy_urban==0;
+	
+	gen 	AOD_world_sender=	Terra_avg_world_urban 	if sender_dummy_urban==1;
+	replace AOD_world_sender= 	Terra_avg_world_rural 	if sender_dummy_urban==0;
+	
+	gen 	Ec_sender=			Ec_urban				if sender_dummy_urban==1;
+	replace	Ec_sender=			Ec_rural				if sender_dummy_urban==0;
+	
+	gen 	Ep_sender=			Ep_urban				if sender_dummy_urban==1;
+	replace	Ep_sender=			Ep_rural				if sender_dummy_urban==0;
+	
+	gen 	Fr_sender=			0						if sender_dummy_urban==1;
+	replace	Fr_sender=			Fire					if sender_dummy_urban==0;
+	
+	gen 	AOD_receiver=		Terra_urban 			if sender_dummy_urban==0;
+	replace AOD_receiver=		Terra_rural 			if sender_dummy_urban==1;
+	
+	gen 	AOD_world_receiver=	Terra_avg_world_urban 	if sender_dummy_urban==0;
+	replace AOD_world_receiver=	Terra_avg_world_rural 	if sender_dummy_urban==1;
+	
+	gen 	Ec_receiver=		Ec_urban				if sender_dummy_urban==0;
+	replace	Ec_receiver=		Ec_rural				if sender_dummy_urban==1;
+	
+	gen 	Ep_receiver=		Ep_urban				if sender_dummy_urban==0;
+	replace	Ep_receiver=		Ep_rural				if sender_dummy_urban==1;
+	
+	gen 	Fr_receiver=		0						if sender_dummy_urban==0;
+	replace	Fr_receiver=		Fire					if sender_dummy_urban==1;
+	
+	
+	
+	*Sender and receiver regression, by country;
+
+	forvalues i=0/1{;
+	
+		reg AOD_sender 		c.AOD_world_sender#i.sender_dummy_urban 	c.Ec_sender#i.sender_dummy_urban 	c.Ep_sender#i.sender_dummy_urban 	Fr_sender		i.country_code	if hic==`i';
+		reg AOD_receiver	c.AOD_world_receiver#i.sender_dummy_urban 	c.Ec_receiver#i.sender_dummy_urban c.Ep_receiver#i.sender_dummy_urban Fr_receiver AOD_sender 	i.country_code if hic==`i';
+	
+	};
+	*Receiver regression;
+	/*;
 	local cfile_pooled "../../../data/dtas/country_regions/emission_factors/pooled_reg_ef.dta";
 	regsave Xu using `cfile_pooled', replace ci pval
 			addvar(						
@@ -298,5 +340,6 @@ foreach file of local outfiles{;
 	save ``file'', replace;
 	label var 
 };
+*/;
 */;
 log close;
