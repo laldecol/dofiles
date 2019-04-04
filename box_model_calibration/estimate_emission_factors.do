@@ -30,6 +30,12 @@ local years 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 201
 	tempfile code_id;
 	save `code_id';
 	
+*Get region codes from Lint;
+	use "..\..\..\..\data_processing\data\regions\source\rice_regions.dta", clear;
+	rename countrycode code;
+	tempfile regions;
+	save `regions';
+	
 *Insheet Lint's regional energy consumption shares;
 	use "..\..\..\..\data_processing_calibration\data\to_main\generated\energy_outputs_PANEL.dta", clear;
 	drop res*;
@@ -117,7 +123,11 @@ local years 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 201
 
 *Merge in energy consumption;
 	merge 1:1 country year using `energy_cons', nogen;
-	keep if CalibrationError==0 & (sender_freq_urban>=12 | sender_freq_urban<=2);
+	*keep if CalibrationError==0 & (sender_freq_urban>=12 | sender_freq_urban<=2);
+
+*Merge in region ids;	
+	merge m:1 code using `regions', nogen;
+	
 
 *Define country sample: correct calibration and no swiching;
 	levelsof country , local(regcountries);
