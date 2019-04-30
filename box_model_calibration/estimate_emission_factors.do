@@ -53,6 +53,8 @@ local years 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 201
 	
 *Insheet fires;
 	use "../../../data/dtas/country/country_aggregates/country_aggregates.dta", clear;
+	keep country Fire* rgdpe2010;
+	reshape long Fire, i(country) j(year);
 	
 	keep country Fire* IEA_Coal* IEA_Oil* cld* vap* wet* rgdpe2010;
 	reshape long Fire IEA_Coal IEA_Oil cld vap wet
@@ -127,6 +129,9 @@ local years 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 201
 
 *Merge in energy consumption;
 	merge 1:1 country year using `energy_cons', nogen;
+	keep if CalibrationError==0 & (sender_freq_urban>=12 | sender_freq_urban<=2);
+
+*Define country sample: correct calibration and no swiching;
 	*keep if CalibrationError==0 & (sender_freq_urban>=12 | sender_freq_urban<=2);
 
 *Merge in region ids;	
@@ -137,6 +142,7 @@ local years 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 201
 	
 	encode country, generate(country_code);
 	
+
 	
 	gen 	AOD_sender=			Terra_urban 			if sender_dummy_urban==1;
 	replace AOD_sender=			Terra_rural 			if sender_dummy_urban==0;
@@ -175,25 +181,16 @@ local years 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 201
 	
 	gen area_country=area_rural + area_urban;
 	gen AOD_country=(	Terra_rural*area_rural	+	Terra_urban*area_urban)/area_country;
-<<<<<<< Updated upstream
 	
 	gen flux_to_world_country	=	flux_to_world_rural		+	flux_to_world_urban;
 	gen flux_from_world_country	= 	flux_from_world_urban	+ 	flux_from_world_rural;
 	gen net_flow_into_country	=	flux_from_world_country	-	flux_to_world_country;
 	gen X_c						=	AOD_country * `rho' * area_country;
-=======
-	
-	gen flux_to_world_country	=	flux_to_world_rural		+	flux_to_world_urban;
-	gen flux_from_world_country	= 	flux_from_world_urban	+ 	flux_from_world_rural;
-	gen net_flow_into_country	=	flux_from_world_country	-	flux_to_world_country;
-	gen X_c						=	AOD_country * `rho' * area_country;
-	
 	drop 	flux_to_world_rural 	flux_to_world_urban
 			flux_from_world_urban	flux_from_world_rural
 			flux_from_world_country	flux_to_world_country;
 	
 	
->>>>>>> Stashed changes
 	
 	pause;
 	save "../../../data/dtas/country_year/one_box_model_inputs.dta"
@@ -207,24 +204,15 @@ local years 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 201
 	
 	local controls X_c cld vap wet
 	Fire IEA_Coal IEA_Oil;
-<<<<<<< Updated upstream
-	
 	capture log close regs;
 	log using ef_regs.log, replace name(regs);
 	
-=======
-	
-	capture log close regs;
-	log using ef_regs.log, replace name(regs);
-	
->>>>>>> Stashed changes
 	dis "Pooled country years";
 	reg net_flow_into_country `controls';
 	
 	foreach country of local countries{;
 		dis "Sample: `country'";
 		reg net_flow_into_country `controls'	if country=="`country'";	
-<<<<<<< Updated upstream
 	};
 	
 	levelsof riceregion, local(riceregions);
@@ -236,19 +224,6 @@ local years 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 201
 			reg net_flow_into_country `controls' i.gpw_v4_national_id if riceregion=="`region'" & riceregion!="";	
 	};
 	
-=======
-	};
-	
-	levelsof riceregion, local(riceregions);
-	foreach region of local riceregions{;
-		dis "Pooled and FE regressions: `region' countries";
-		dis "Pooled regression, `region' countries";
-			reg net_flow_into_country `controls' if riceregion=="`region'" & riceregion!="";	
-		dis "Fixed Effect regression, `region' countries";
-			reg net_flow_into_country `controls' i.gpw_v4_national_id if riceregion=="`region'" & riceregion!="";	
-	};
-	
->>>>>>> Stashed changes
 	log close regs;
 	*Receiver regression;
 	/*;
