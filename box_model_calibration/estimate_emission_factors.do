@@ -53,6 +53,8 @@ local years 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 201
 	
 *Insheet fires;
 	use "../../../data/dtas/country/country_aggregates/country_aggregates.dta", clear;
+	keep country Fire* rgdpe2010;
+	reshape long Fire, i(country) j(year);
 	
 	keep country Fire* IEA_Coal* IEA_Oil* cld* vap* wet* rgdpe2010;
 	reshape long Fire IEA_Coal IEA_Oil cld vap wet
@@ -128,6 +130,9 @@ local years 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 201
 
 *Merge in energy consumption;
 	merge 1:1 country year using `energy_cons', nogen;
+	keep if CalibrationError==0 & (sender_freq_urban>=12 | sender_freq_urban<=2);
+
+*Define country sample: correct calibration and no swiching;
 	*keep if CalibrationError==0 & (sender_freq_urban>=12 | sender_freq_urban<=2);
 
 *Merge in region ids;	
@@ -138,6 +143,7 @@ local years 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 201
 	
 	encode country, generate(country_code);
 	
+
 	
 	gen 	AOD_sender=			Terra_urban 			if sender_dummy_urban==1;
 	replace AOD_sender=			Terra_rural 			if sender_dummy_urban==0;
@@ -231,7 +237,7 @@ local years 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 201
 	
 	local controls X_c cld vap wet
 	Fire IEA_Coal IEA_Oil;
-	
+
 	capture log close regs;
 	log using ef_regs.log, replace name(regs);
 	
