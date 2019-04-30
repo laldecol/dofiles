@@ -147,17 +147,17 @@ foreach year of local years{;
 	label var Terra_avg_interior_urban "Average AOD concentration in urban area, 2010 boundaries";
 	label var Terra_avg_interior_rural "Average AOD concentration in rural area, 2010 boundaries";
 	
-	label var flux_to_interior_urban "Flow from urban to rural, computed using pixel-flow model, AOD units per hour";
-	label var flux_to_interior_rural "Flow from rural to urban, computed using pixel-flow model, AOD units per hour";
+	label var flux_to_interior_urban "Flow from urban to rural, computed using pixel-flow model, AOD units per year";
+	label var flux_to_interior_rural "Flow from rural to urban, computed using pixel-flow model, AOD units per year";
 
-	label var flux_from_interior_rural "Flow from world to rural, computed using pixel-flow model, AOD units per hour";
-	label var flux_from_interior_urban "Flow from world to urban, computed using pixel-flow model, AOD units per hour";
+	label var flux_from_interior_rural "Flow from world to rural, computed using pixel-flow model, AOD units per year";
+	label var flux_from_interior_urban "Flow from world to urban, computed using pixel-flow model, AOD units per year";
 
-	label var flux_from_world_rural "Flow from world to rural, computed using pixel-flow model, AOD units per hour";
-	label var flux_from_world_urban "Flow from world to urban, computed using pixel-flow model, AOD units per hour";
+	label var flux_from_world_rural "Flow from world to rural, computed using pixel-flow model, AOD units per year";
+	label var flux_from_world_urban "Flow from world to urban, computed using pixel-flow model, AOD units per year";
 
-	label var flux_to_world_urban "Flow from urban to world, computed using pixel-flow model, AOD units per hour";
-	label var flux_to_world_rural "Flow from rural to world, computed using pixel-flow model, AOD units per hour";
+	label var flux_to_world_urban "Flow from urban to world, computed using pixel-flow model, AOD units per year";
+	label var flux_to_world_rural "Flow from rural to world, computed using pixel-flow model, AOD units per year";
 
 	label var length_interior_border "Length of rural-urban border (km)";
 	label var length_rural_world_border "Length of rural-world border (km)";
