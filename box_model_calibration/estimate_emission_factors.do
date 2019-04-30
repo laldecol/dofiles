@@ -32,6 +32,7 @@ local years 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 201
 	
 *Get region codes from Lint;
 	use "..\..\..\..\data_processing\data\regions\source\rice_regions.dta", clear;
+	
 	rename countrycode code;
 	tempfile regions;
 	save `regions';
@@ -53,8 +54,9 @@ local years 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 201
 *Insheet fires;
 	use "../../../data/dtas/country/country_aggregates/country_aggregates.dta", clear;
 	
-	keep country Fire* IEA_Coal* IEA_Oil* rgdpe2010;
-	reshape long Fire IEA_Coal IEA_Oil, i(country) j(year);
+	keep country Fire* IEA_Coal* IEA_Oil* cld* vap* wet* rgdpe2010;
+	reshape long Fire IEA_Coal IEA_Oil cld vap wet
+	, i(country) j(year);
 	tempfile country_agg;
 	save `country_agg';
 	
@@ -178,7 +180,9 @@ local years 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 201
 	gen flux_from_world_country	= 	flux_from_world_urban	+ 	flux_from_world_rural;
 	gen net_flow_into_country	=	flux_from_world_country	-	flux_to_world_country;
 	gen X_c						=	AOD_country * `rho' * area_country;
-		
+	
+	pause;
+	save "../../../data/dtas/country_year/one_box_model_inputs.dta"
 	*Sender and receiver regression, by country;
 	
 	local countries 
@@ -186,22 +190,29 @@ local years 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 201
 	"Bangladesh" "Brazil" "China" "Germany"  
 	"Indonesia" "Russian Federation" "United States of America"
 	"';
+	
+	local controls X_c cld vap wet
+	Fire IEA_Coal IEA_Oil;
+	
 	capture log close regs;
 	log using ef_regs.log, replace name(regs);
 	
 	dis "Pooled country years";
-	reg net_flow_into_country X_c Fire IEA_Coal IEA_Oil;
+	reg net_flow_into_country `controls';
 	
 	foreach country of local countries{;
 		dis "Sample: `country'";
-		reg net_flow_into_country X_c Fire IEA_Coal IEA_Oil	if country=="`country'";	
+		reg net_flow_into_country `controls'	if country=="`country'";	
 	};
 	
-	dis "Fixed Effect regression, high income countries";
-	reg net_flow_into_country X_c Fire IEA_Coal IEA_Oil	i.gpw_v4_national_id if hic;	
-	
-	dis "Fixed Effect regression, low income countries";
-	reg net_flow_into_country X_c Fire IEA_Coal IEA_Oil	i.gpw_v4_national_id if !hic;	
+	levelsof riceregion, local(riceregions);
+	foreach region of local riceregions{;
+		dis "Pooled and FE regressions: `region' countries";
+		dis "Pooled regression, `region' countries";
+			reg net_flow_into_country `controls' if riceregion=="`region'" & riceregion!="";	
+		dis "Fixed Effect regression, `region' countries";
+			reg net_flow_into_country `controls' i.gpw_v4_national_id if riceregion=="`region'" & riceregion!="";	
+	};
 	
 	log close regs;
 	*Receiver regression;

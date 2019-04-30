@@ -1,0 +1,79 @@
+
+*****COUNTRY CODES*******
+
+*Rice regions supplement:
+sort countrycode
+rename shortname rice_region
+*Sub-Step 2: Fillin missing RICE Regions
+*br if mi(rice_region)
+replace rice_region = "Africa" if countrycode=="COD"
+replace rice_region = "LatAm" if countrycode=="AIA" /*Nordhaus sets Caribbean as LatAm*/
+replace rice_region = "EU" if countrycode=="AND"
+replace rice_region = "EU" if countrycode=="CHI"
+replace rice_region = "EU" if countrycode=="GIB"
+replace rice_region = "EU" if countrycode=="IMN"
+replace rice_region = "EU" if countrycode=="LIE"
+replace rice_region = "EU" if countrycode=="MCO"
+replace rice_region = "EU" if countrycode=="SMR"
+replace rice_region = "OthAs" if countrycode=="COK"	/*Pacific Islands*/
+replace rice_region = "LatAm" if countrycode=="CUW" /*Nordhaus sets Caribbean as LatAm*/
+replace rice_region = "OthAs" if countrycode=="FSM"	/*Pacific Islands*/
+replace rice_region = "LatAm" if countrycode=="GLP" /*Nordhaus sets Caribbean as LatAm*/
+replace rice_region = "LatAm" if countrycode=="MAF" /*Nordhaus sets Caribbean as LatAm*/
+replace rice_region = "OthAs" if countrycode=="MHL"	/*Pacific Islands*/
+replace rice_region = "OthAs" if countrycode=="MNP"	/*Pacific Islands*/
+replace rice_region = "LatAm" if countrycode=="MSR" /*Nordhaus sets Caribbean as LatAm*/
+replace rice_region = "LatAm" if countrycode=="MTQ" /*Nordhaus sets Caribbean as LatAm*/
+replace rice_region = "LatAm" if countrycode=="SXM" /*Nordhaus sets Caribbean as LatAm*/
+replace rice_region = "LatAm" if countrycode=="TCA" /*Nordhaus sets Caribbean as LatAm*/
+replace rice_region = "LatAm" if countrycode=="VGB" /*Nordhaus sets Caribbean as LatAm*/
+replace rice_region = "OthAs" if countrycode=="MYT"	/*Pacific Islands*/
+replace rice_region = "OthAs" if countrycode=="NIU"	/*Pacific Islands*/
+replace rice_region = "OthAs" if countrycode=="NRU"	/*Pacific Islands*/
+replace rice_region = "OthAs" if countrycode=="PLW"	/*Pacific Islands*/
+replace rice_region = "OthAs" if countrycode=="TLS"	/*Pacific Islands*/
+replace rice_region = "OthAs" if countrycode=="TUV"	/*Pacific Islands*/
+replace rice_region = "OthAs" if countrycode=="WLF"	/*Pacific Islands*/
+replace rice_region = "MidEast" if countrycode=="PSE"	
+replace rice_region = "Africa" if countrycode=="REU"	
+replace rice_region = "Africa" if countrycode=="SSD"	
+replace rice_region = "Eurasia" if countrycode=="ROU"	
+replace rice_region = "Eurasia" if countrycode=="XKX"	
+replace rice_region = "OHI" if countrycode=="SPM"	
+replace rice_region = "OHI" if countrycode=="TWN"	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+***Richard Tol's FUND Model regions:
+***Step 2.1: Match countries to FUND regions
+gen region = ""
+replace region = "USA" if country=="United States"
+replace region = "CAN" if country=="Canada"
+replace region = "WEU" if (country=="Andorra"|country=="Austria"|country=="Belgium"|country=="Cyprus"|country=="Denmark"|country=="Finland"|country=="France"|country=="Germany"|country=="Greece"|country=="Iceland"|country=="Ireland"|country=="Italy"|country=="Liechtenstein"|country=="Luxembourg"|country=="Malta"|country=="Monaco"|country=="Netherlands"|country=="Norway"|country=="Portugal"|country=="San Marino"|country=="Spain"|country=="Sweden"|country=="Switzerland"|country=="United Kingdom")
+replace region = "JPK" if (country=="Japan"|country=="Korea, Rep.")
+replace region = "ANZ" if (country=="Australia"|country=="New Zealand")
+replace region = "CEE" if (country=="Albania"|country=="Bosnia and Herzegovina"|country=="Bulgaria"|country=="Croatia"|country=="Czech Republic"|country=="Hungary"|country=="Macedonia, FYR"|country=="Poland"|country=="Romania"|country=="Slovak Republic"|country=="Slovenia"|country=="Kosovo"|country=="Montenegro"|countr=="Serbia")
+replace region = "FSU" if (country=="Armenia"|country=="Azerbaijan"|country=="Belarus"|country=="Estonia"|country=="Georgia"|country=="Kazakhstan"|country=="Latvia"|country=="Lithuania"|country=="Moldova"|country=="Russian Federation"|country=="Tajikistan"|country=="Turkmenistan"|country=="Ukraine"|country=="Uzbekistan"|country=="Kyrgyz Republic")
+replace region = "MDE" if (country=="Bahrain"|country=="Iran, Islamic Rep."|countr=="Iraq"|country=="Israel"|country=="Jordan"|country=="Kuwait"|country=="Lebanon"|countr=="Oman"|country=="Qatar"|country=="Saudi Arabia"|country=="Syrian Arab Republic"|countr=="Turkey"|country=="United Arab Emirates"|country=="West Bank and Gaza"|country=="Yemen, Rep.")
+replace region = "CAM" if (countr=="Belize"|country=="Costa Rica"|countr=="El Salvador"|country=="Guatemala"|country=="Honduras"|country=="Mexico"|countr=="Nicaragua"|countr=="Panama")
+replace region = "SAM" if (country=="Argentina"|country=="Bolivia"|country=="Brazil"|country=="Chile"|country=="French Guiana"|country=="Guyana"|country=="Paraguay"|country=="Peru"|country=="Suriname"|country=="Uruguay"|country=="Venezuela, RB"|country=="Colombia"|country=="Ecuador")
+replace region = "SAS" if (country=="Afghanistan"|country=="Bangladesh"|country=="Bhutan"|country=="India"|country=="Nepal"|countr=="Pakistan"|country=="Sri Lanka")
+replace region = "SEA" if (countr=="Brunei Darussalam"|countr=="Cambodia"|countr=="Timor-Leste"|country=="Indonesia"|country=="Lao PDR"|country=="Malaysia"|country=="Myanmar"|country=="Papua New Guinea"|country=="Philippines"|country=="Singapore"|countr=="Taiwan"|country=="Thailand"|country=="Vietnam")
+replace region = "CHI" if (country=="China"|country=="Hong Kong SAR, China"|country=="Korea, Dem. Rep."|country=="Macao SAR, China"|country=="Mongolia")
+replace region = "NAF" if (country=="Algeria"|country=="Egypt, Arab Rep."|country=="Libya"|country=="Morocco"|country=="Tunisia"|country=="Western Sahara")
+replace region = "SSA" if (country=="Angola"|country=="Benin"|country=="Botswana"|country=="Burkina Faso"|country=="Burundi"|country=="Cameroon"|country=="Cape Verde"|country=="Central African Republic"|country=="Chad"|country=="Congo, Dem. Rep."|country=="Congo, Rep."|country=="Cote d'Ivoire"|country=="Djibouti"|country=="Equatorial Guinea"|country=="Eritrea"|country=="Ethiopia"|country=="Gabon"|country=="Gambia, The"|country=="Ghana"|country=="Guinea"|country=="Guinea-Bissau"|country=="Kenya"|country=="Lesotho"|country=="Liberia"|country=="Madagascar"|country=="Malawi"|country=="Mauritania"|country=="Mozambique"|countr=="Namibia"|country=="Niger"|countr=="Nigeria"|country=="Rwanda"|country=="Senegal"|country=="Sierra Leone"|country=="Somalia"|country=="South Africa"|country=="Sudan"|countr=="Swaziland"|country=="Tanzania"|countr=="Togo"|countr=="Uganda"|country=="Zambia"|country=="Zimbabwe"|country=="Mali"|country=="South Sudan")
+replace region = "SIS" if missing(region)
+*check:
+tab country if region=="SIS" /*should be small island states only; looks good*/
