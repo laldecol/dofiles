@@ -2,7 +2,8 @@
 R E A D M E _ R U N. D O
 
 This program serves as a driver and documentation 
-for all the code in \\particulates;
+for the data preparation in \\particulates.
+It is more or less independent of the models.
 
 last modified: Jan 9, 2019, by la
 **********************************************/
