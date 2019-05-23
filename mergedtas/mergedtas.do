@@ -110,6 +110,7 @@ foreach AODvar of varlist Terra* Aqua*{;
 *Generate exposure for available years;
 forvalues year=2000(5)2015{;
 gen exposure`year' = Terra`year' * projected_aggregated_gpw_`year';
+label var exposure`year' "Terra AOD times population, `year'";
 };
 
 **generate latitude and longitude of cell's top left corner;
