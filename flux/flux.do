@@ -12,7 +12,7 @@ program drop _all;
 capture log close;
 pause on;
 set more off;
-set trace on;
+set trace off;
 
 *ubercode2rc generates variables with row and column coordinates for all cells in
 *an ubergrid.

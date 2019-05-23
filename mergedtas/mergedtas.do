@@ -98,10 +98,18 @@ foreach var of varlist `r(varlist)' {;
 ****************************;
 **Generate basic variables**;
 ****************************;
+*Rename and rescale AOD variables;
+foreach AODvar of varlist Terra* Aqua*{;
+	local newname=subinstr("`AODvar'", "avg","",.);
+	dis `newname';
+	gen `newname'=`AODvar'/1000 ;
+	drop `AODvar';
+};
+*END foreach Terravar;
 
 *Generate exposure for available years;
-forvalues year=2000(5)2010{;
-gen exposure`year' = Terra`year'avg * projected_aggregated_gpw_`year';
+forvalues year=2000(5)2015{;
+gen exposure`year' = Terra`year' * projected_aggregated_gpw_`year';
 };
 
 **generate latitude and longitude of cell's top left corner;

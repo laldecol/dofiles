@@ -13,7 +13,7 @@ Last modified: Lorenzo, Jan 15 2019;
 
 
 pause on; 
-set trace on;
+set trace off;
 set tracedepth 1;
 capture log close;
 log using IEAclean.log, replace;

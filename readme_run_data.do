@@ -10,7 +10,7 @@ last modified: Jan 9, 2019, by la
 #delimit;
 clear all;
 cls;
-set trace on;
+set trace off;
 set tracedepth 2;
 set more off;
 pause on;
@@ -164,7 +164,7 @@ if 1==2{;
 ***********************************;
 *Merges all ubergrid .dta files from the specified directories together and saves them.;
 
-if 1==2{;
+if 1==1{;
 	cd mergedtas;
 	do mergedtas.do 9
 	"MODIS_AOD\generated\yearly\ubergrid\dtas"
@@ -189,7 +189,7 @@ if 1==2{;
 *Cleans and merges sources of country level data, preserving all pixels;
 *BPclean defines a EU country and must be run last;
 
-if 1==2{;
+if 1==1{;
 
 	cd mergecountrydata;
 	

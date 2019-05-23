@@ -138,14 +138,6 @@ log using pixel_data_prep.log, text replace;
 		*Drop unused climate variables;
 		drop dtr* pet* tmn* tmx*;
 
-		*Rename and rescale AOD variables;
-		foreach Terravar of varlist Terra*{;
-			local newname=substr("`Terravar'", 1,9);
-			dis `newname';
-			gen `newname'=`Terravar'/1000 ;
-			drop `Terravar';
-		};
-		*END foreach Terravar;
 
 		*Relabel 2001 data as 2000;
 		foreach LUvar of varlist LU*{;
