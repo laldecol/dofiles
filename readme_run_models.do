@@ -51,6 +51,7 @@ if 1==2{;
 	cd prepare_mapping;
 	do country_map_prep.do;
 	do country_region_map_prep.do;
+	shell $python country_region_map_join.py;
 	cd ..;
 };
 
