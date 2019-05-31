@@ -24,7 +24,7 @@ if 1==1{;
 };
 
 **********************************;
-** Step 2: Calibrate box model  **;
+** Step 1: Calibrate box model  **;
 **********************************;
 
 if 1==2{;
@@ -42,3 +42,16 @@ if 1==2{;
 	cd Lints_code_dir;
 	do Lints_code.do;
 };
+
+***************************************;
+** Step 3: Mapping  **;
+***************************************;
+
+if 1==2{;
+	cd prepare_mapping;
+	do country_map_prep.do;
+	do country_region_map_prep.do;
+	cd ..;
+};
+
+

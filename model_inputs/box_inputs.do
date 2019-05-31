@@ -42,17 +42,16 @@ log using box_inputs.log, replace;
 		replace bordtype_str="interior" if interior_border==1;
 		replace bordtype_str="world" if interior_border==0; 
 		drop interior_border;
-
+		
 		rename transfer_ flux_from_;
 		rename windborder_ windborder_from_;
-
+		
 		reshape wide flux_from windborder_from, i(neighbor_) j(bordtype_str) string;
-
+		
 		rename neighbor_ countryXregion_const;
-
+		
 		tempfile from_world`year';
 		save `from_world`year'';
-
 	};
 
 *Again, load flux dtas. These have country neighbor pair as unit of observation;
@@ -63,7 +62,7 @@ foreach year of local years{;
 
 	*Keep total AOD for each neighbor country X region;
 	*Receiver_Terra`year' is receiver's AOD;
-	gen total_neighbor_AOD=receiver_Terra`year'_mean * receiver_Terra`year'_count;
+	gen total_neighbor_AOD=	receiver_Terra`year'_mean * receiver_Terra`year'_count;
 
 	*transfer_ here is total transfer from own to world and interior;
 	*We have kept neighbor region AOD;

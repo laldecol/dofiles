@@ -11,7 +11,6 @@ Last modified: Lorenzo, Oct 28 2018;
 
 */;
 
-
 set more off; 
 pause on;
 clear;
@@ -49,7 +48,7 @@ end;
 *1. Writes an ubergrid .dta with country-region level data, to be used in dta2raster;
 
 	local country_region_dta 	"../../../data/dtas/country_regions/flux/net_flows_into2010.dta";
-	local mapping_vars			net_flows_into_by_area net_flow_into;
+	local mapping_vars			net_flows_into_by_area net_flow_into area;
 	
 	*Prepare country region level file to merge with ubergrid;
 	use `country_region_dta', clear ;
@@ -66,9 +65,7 @@ end;
 			`mapping_vars';
 
 	save "../../../data/mapping/country_region_lvl_vars/country_reg_join.dta", replace;	
-	export delimited 	country	gpw_v4_national_identifier_gri	region ctry_reg 
-						`mapping_vars'
-						using "../../../data/mapping/country_region_lvl_vars/country_reg_join.csv", replace;
+	export delimited using "../../../data/mapping/country_region_lvl_vars/country_reg_join.csv", replace;
 	
 	*Merge country region with land pixel file;
 	use "../../../data/dtas/analyze_me_land.dta", clear;
@@ -78,8 +75,6 @@ end;
 	
 	tempfile uber_code_country_region;
 	save `uber_code_country_region', replace;
-
-
 
 	*Generate full ubergrid file to feed into dta2raster;
 

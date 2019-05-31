@@ -4,8 +4,7 @@
 *Output dtas can be converted to ubergrid rasters using raster2dta
 
 *Created by: Lorenzo, October 2017;
-*Last modified: Lorenzo, October 2017
-*
+*Last modified: Lorenzo, October 2017;
 
 #delimit;
 program drop _all;
@@ -179,10 +178,10 @@ reshape long isborder_ neighbor_ transfer_ windborder_, i(uber_code) j(dir) stri
 
 collapse (count) isborder_ (sum) windborder_ length transfer_ if isborder_, by( countryXregion_const neighbor_);
 
-label variable isborder_ "Number of border pixels used in computations";
-label variable length 	"Approximate length of border (km)";
-label variable transfer_ "Flux from countryXregion to interior or world (depends on interior_border), in AOD units per yr";
-label variable windborder_ "Length of border over which sender AOD flows into receiver";
+label variable isborder_ 	"Number of border pixels used in computations";
+label variable length 		"Approximate length of border (km)";
+label variable transfer_ 	"Flux from countryXregion to interior or world (depends on interior_border), in AOD units per yr";
+label variable windborder_ 	"Length of border over which sender AOD flows into receiver";
 
 merge m:1 countryXregion_const using "..\\..\\..\\data\\dtas\\country\\country_codes_names`year'.dta", nogen;
 rename Terra`year'_mean sender_Terra`year'_mean;
@@ -193,8 +192,8 @@ rename neighbor_ctry_ sender_country;
 rename neighbor_rgn_ sender_region;
 rename countryXregion_const sending_countryXregion_const;
 
-***Check Terra variables: count and average. Rename them to keep track of them after
-* later merge;
+*Check Terra variables: count and average. Rename them to keep track of them after
+*later merge;
 
 merge m:1 neighbor_ using "..\\..\\..\\data\\dtas\country\\country_codes_names`year'.dta", nogen;
 drop countryXregion_const;
@@ -202,17 +201,15 @@ drop countryXregion_const;
 rename Terra`year'_mean receiver_Terra`year'_mean;
 rename Terra`year'_count receiver_Terra`year'_count;
 
-*Now have all pairs of sender and receiver regions, with their countries and ruban status ;
-
+*Now have all pairs of sender and receiver regions, with their countries and urban status;
 label variable sending_countryXregion_const "Sender Region";
-label variable neighbor_ "Receiver Region";
+label variable neighbor_ 					"Receiver Region";
 
 *Now must define sending & receiving, netting both interior transfers;
 gen interior_border=(sender_country_name==neighbor_country_name);
 
 label var sender_Terra`year'_mean "Average AOD in sender region, AOD units";
 label var receiver_Terra`year'_mean "Average AOD in receiver region, AOD units";
-
 label data "AOD transfer between sender and receiver country-regions, year `year'";
 
 save "..\\..\\..\\data\\dtas\\country_regions\\flux\\flux`year'.dta", replace;

@@ -105,8 +105,8 @@ local years 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 201
 		replace region="urban" if region=="_urban";
 		replace region="rural" if region=="_rural";
 		
-		gen net_flows_into_by_area=net_flow_into/area;
-		label var net_flows_into_by_area "Flow into rural region, in Mt of PM10 per year per sq km";
+		gen net_flows_into_by_area=1000000*net_flow_into/area;
+		label var net_flows_into_by_area "Flow into rural region, in t of PM10 per year per sq km";
 		
 		save "..\\..\\..\\data\\dtas\\country_regions\\flux\\net_flows_into`year'.dta", replace;
 		restore;
