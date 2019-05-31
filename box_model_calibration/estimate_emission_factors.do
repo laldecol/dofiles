@@ -8,8 +8,7 @@ capture program drop _all;
 This .do:
 
 1. Constructs the database needed to estimate emission factors.
-2. Estimates the emisson factors.
-3. Saves emission factors to disk for analysis and further manipulation;
+
 */;
 
 **1.1. Reshape each emission_factor_inputs`year'.dta into country-region level;
@@ -53,8 +52,6 @@ local years 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 201
 	
 *Insheet fires;
 	use "../../../data/dtas/country/country_aggregates/country_aggregates.dta", clear;
-	keep country Fire* rgdpe2010;
-	reshape long Fire, i(country) j(year);
 	
 	keep country Fire* IEA_Coal* IEA_Oil* cld* vap* wet* rgdpe2010;
 	reshape long Fire IEA_Coal IEA_Oil cld vap wet
@@ -99,10 +96,23 @@ local years 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 201
 		keep country gpw_v4
 		`ts_vars';
 		
+		preserve;
+		
+		reshape long 
+		net_flow_into Terra Terra_avg_world area sender_dummy flux_to_world flux_from_world,
+		i (country gpw_v4_national_identifier_gri ) j(region) string;
+		
+		replace region="urban" if region=="_urban";
+		replace region="rural" if region=="_rural";
+		
+		gen net_flows_into_by_area=net_flow_into/area;
+		label var net_flows_into_by_area "Flow into rural region, in Mt of PM10 per year per sq km";
+		
+		save "..\\..\\..\\data\\dtas\\country_regions\\flux\\net_flows_into`year'.dta", replace;
+		restore;
 		foreach ts_var of local ts_vars{;
 			rename `ts_var' `ts_var'`year';
 		};	
-		
 		*Correct shape but need to keep world AOD too. ;
 		reshape long `ts_vars',
 		 i(country gpw_v4_national_identifier_gri ) j(year);
@@ -176,9 +186,9 @@ local years 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 201
 	replace	Fr_receiver=		Fire					if sender_dummy_urban==1;
 	
 	
-	*Generate country level variables for one box model estimatio
-	*This section follows Matt's one box model note
-	*and Lint's one box model estimation note  from March , 2019;
+*Generate country level variables for one box model estimatio
+*This section follows Matt's one box model note
+*and Lint's one box model estimation note  from March , 2019;
 	
 	gen area_country=area_rural + area_urban;
 	gen AOD_country=(	Terra_rural*area_rural	+	Terra_urban*area_urban)/area_country;
@@ -226,215 +236,7 @@ local years 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 201
 	label var X_c					"Area times rho times country AOD - coefficient, as in eq 5 of Lint's note";
 	
 	drop if country=="" | year==.;
+	sort country year;
 	save "../../../data/dtas/country_year/one_box_model_inputs.dta", replace;
-	*Sender and receiver regression, by country;
-	
-	local countries 
-	`"
-	"Bangladesh" "Brazil" "China" "Germany"  
-	"Indonesia" "Russian Federation" "United States of America"
-	"';
-	
-	local controls X_c cld vap wet
-	Fire IEA_Coal IEA_Oil;
 
-	capture log close regs;
-	log using ef_regs.log, replace name(regs);
-	
-	dis "Pooled country years";
-	reg net_flow_into_country `controls';
-	
-	foreach country of local countries{;
-		dis "Sample: `country'";
-		reg net_flow_into_country `controls'	if country=="`country'";	
-	};
-	
-	levelsof riceregion, local(riceregions);
-	foreach region of local riceregions{;
-		dis "Pooled and FE regressions: `region' countries";
-		dis "Pooled regression, `region' countries";
-			reg net_flow_into_country `controls' if riceregion=="`region'" & riceregion!="";	
-		dis "Fixed Effect regression, `region' countries";
-			reg net_flow_into_country `controls' i.gpw_v4_national_id if riceregion=="`region'" & riceregion!="";	
-	};
-	
-	log close regs;
-	*Receiver regression;
-	/*;
-	local cfile_pooled "../../../data/dtas/country_regions/emission_factors/pooled_reg_ef.dta";
-	regsave Xu using `cfile_pooled', replace ci pval
-			addvar(						
-					v_ud,	_b[Xu],			_se[Xu],
-					v_ad,	_b[Xa],			_se[Xa],
-					
-					psi_uc, -1*_b[Ecu],		_se[Ecu],
-					psi_up, -1*_b[Epu],		_se[Epu],
-					
-					psi_ac, -1*_b[Eca],		_se[Eca],
-					psi_ap, -1*_b[Epa],		_se[Epa],
-					psi_af, -1*_b[Fra],		_se[Fra],
-					
-					);
-					
-	
-	predict nu_ij, resid;
-	
-	reg net_flow_into Xu Xa c.Ecu#i.hic c.Eca#i.hic c.Epu#i.hic c.Epa#i.hic c.Fra#i.hic i.country_code#i.region_code ,  nocons ;
-	
-	local cfile_pooled_bi "../../../data/dtas/country_regions/emission_factors/pooled_reg_ef_by_income.dta";
-	regsave Xu using `cfile_pooled_bi', replace ci pval
-			addvar(						
-					v_ud,	_b[Xu],			_se[Xu],
-					v_ad,	_b[Xa],			_se[Xa],
-					
-					psi_uc_l, -1*_b[0b.hic#c.Ecu],		_se[0b.hic#c.Ecu],
-					psi_up_l, -1*_b[0b.hic#c.Epu],		_se[0b.hic#c.Epu],
-					
-					psi_ac_l, -1*_b[0b.hic#c.Eca],		_se[0b.hic#c.Eca],
-					psi_ap_l, -1*_b[0b.hic#c.Epa],		_se[0b.hic#c.Epa],
-					psi_af_l, -1*_b[0b.hic#c.Fra],		_se[0b.hic#c.Fra],
-
-					psi_uc_h, -1*_b[1.hic#c.Ecu],		_se[1.hic#c.Ecu],
-					psi_up_h, -1*_b[1.hic#c.Epu],		_se[1.hic#c.Epu],
-					
-					psi_ac_h, -1*_b[1.hic#c.Eca],		_se[1.hic#c.Eca],
-					psi_ap_h, -1*_b[1.hic#c.Epa],		_se[1.hic#c.Epa],
-					psi_af_h, -1*_b[1.hic#c.Fra],		_se[1.hic#c.Fra],
-					
-					);
-					
-	predict nu_ij_bi, resid;
-	save "../../../data/dtas/country_regions/emission_factors/residuals.dta", replace;
-	
-	*Prepare files to output coefficients;
-/*;
-	local cfile_sender "../../../data/dtas/country_regions/emission_factors/sender_emission_factors.dta";
-	local cfile_receiver "../../../data/dtas/country_regions/emission_factors/receiver_emission_factors.dta";
-	
-	capture rm `cfile_sender';
-	touch `cfile_sender', replace;
-
-	capture rm `cfile_receiver';
-	touch `cfile_receiver', replace;
-
-foreach country of local regcountries{;
-		
-		preserve;
-		
-		*******************;
-		*Sender regression*;
-		*******************;
-		
-		keep if region_sender==1 & country=="`country'";
-		
-		*Check region is constant within country and sender status;
-		sort region;
-		assert region[1]==region[_N];
-		
-		*If urban is sender for country, save constant, coal, and oil 
-		*coefficients in sender file;
-		if region[1]=="urban"{;
-		
-			capture reg net_flow_into Xk Ec Ep;
-			local rc=_rc;
-			capture regsave _cons Xk Ec_ Ep_ using `cfile_sender', append ci pval
-			addvar(	psi_s0,	-1*_b[_cons],	_se[_cons],
-					psi_sc, -1*_b[Ec_],		_se[Ec_],
-					psi_sp, -1*_b[Ep_],		_se[Ep_],
-					v_sd,	_b[Xk],			_se[Xk],
-					)
-			addlabel(	country,	"`country'",
-						rc, 		`rc',
-						region, 	"urban"
-					);
-					
-
-		};
-		*If rural is sender for country, save constant, coal, and oil 
-		*coefficients in sender file;
-		
-		else if region[1]=="rural"{;
-			capture reg net_flow_into Xk Ec Ep Fire;
-			local rc=_rc;
-			capture regsave _cons Xk Ec_ Ep_ using `cfile_sender', append ci pval
-			addvar(	psi_s0,	-1*_b[_cons], 	_se[_cons],
-					psi_sc, -1*_b[Ec_],		_se[Ec_],
-					psi_sp, -1*_b[Ep_],		_se[Ep_],
-					psi_sf, -1*_b[Fire],	_se[Fire],
-					v_sd,	_b[Xk],			_se[Xk],
-					)
-			addlabel(	country,	"`country'",
-						rc, 		`rc',
-						region, 	"rural"
-					);
-			
-		};
-			
-		
-		
-		restore, preserve;;
-		
-		*********************;
-		*Receiver regression*;
-		*********************;
-		
-		keep if region_sender==0 & country=="`country'";
-		
-		*Check region is constant within country and sender status;
-		sort region;
-		assert region[1]==region[_N];
-		
-		*If urban is receiver for country, save constant, coal, and oil 
-		*coefficients in sender file;
-		if region[1]=="urban"{;
-		
-			capture reg net_flow_into Xk Ec Ep;
-			local rc=_rc;
-			capture regsave _cons Xk Ec_ Ep_ using `cfile_receiver', append ci pval
-			addvar(	psi_r0,	-1*_b[_cons], 	_se[_cons],
-					psi_rc, -1*_b[Ec_], 	_se[Ec_],
-					psi_rp, -1*_b[Ep_],		_se[Ep_],
-					v_rd,	_b[Xk],			_se[Xk],
-					)
-			addlabel(	country,	"`country'",
-						rc, 		`rc',
-						region, 	"urban"
-					);
-;
-		};
-					
-
-		*If rural is receiver for country, save constant, coal, and oil 
-		*coefficients in sender file;
-		
-		else if region[1]=="rural"{;
-			capture reg net_flow_into Xk Ec Ep Fire;
-			local rc=_rc;
-			capture regsave _cons Xk Ec_ Ep_ using `cfile_receiver', append ci pval
-			addvar(	psi_r0,	-1*_b[_cons],	_se[_cons],
-					psi_rc, -1*_b[Ec_],		_se[Ec_],
-					psi_rp, -1*_b[Ep_],		_se[Ep_],
-					psi_rf, -1*_b[Fire],	_se[Fire],
-					v_rd,	_b[Xk],			_se[Xk],
-					)
-			addlabel(	country,	"`country'",
-						rc, 		`rc',
-						region, 	"rural"
-					);
-		};
-		restore;
-			
-		
-
-};
-
-local outfiles cfile_sender cfile_receiver;
-foreach file of local outfiles{;
-	use ``file'', clear;
-	drop if var=="Xk" | var=="Ec_" | var=="Ep_" | var=="_cons" | N<=11;
-	save ``file'', replace;
-	label var 
-};
-*/;
-*/;
 log close;

@@ -4,10 +4,11 @@
 This .do file:
 
 Created: Lorenzo, Oct 23 2018;
-Last modified: Lorenzo, Oct 28 2018;
+Last modified: Lorenzo, May 21, 2019;
 
-1. Writes a country level .csv that can be joined to world_countries_2011.shp, to map country level data;
-2. Writes an ubergrid .dta with country-region level data, to be used in dta2raster;
+1. 	Writes a country level .csv that can be joined to world_countries_2011.shp, to map country level data;
+	The join must be performed manually as of 31-May-2019
+	
 
 */;
 
@@ -15,7 +16,7 @@ Last modified: Lorenzo, Oct 28 2018;
 set more off; 
 pause on;
 clear;
-set trace on;
+set trace off;
 set tracedepth 1;
 capture program drop gen_wc_country;
 
@@ -44,6 +45,8 @@ program define gen_wc_country;
 	replace wc_country="Samoa" if country=="Western Samoa";
 	replace wc_country="Curacao" if country=="Curaçao";
 end;
+
+
 *1. Writes a country level .csv that can be joined to world_countries_2011.shp, to map country level data;
 
 	*Import country level data and generate WC country id;
@@ -110,71 +113,4 @@ end;
 	replace country="Non GPW Territory" if country=="";
 	drop _merge;
 	export delimited "../../../data/mapping/country_lvl_vars/country_lvl_vars_join.csv", replace;
-
-*2. Writes an ubergrid .dta with country-region level data, to be used in dta2raster;
-
-use "../../../data/dtas/country_regions/flux/net_flows_into.dta", clear ;
-
-gen urban_wb2010=1 if region=="urban";
-replace urban_wb2010=0 if region=="rural";
-gen_wc_country;
-gen ctry_reg=wc_country + string(urban_wb2010);
-save "../../../data/mapping/country_region_lvl_vars/country_reg_join.dta", replace;
-export delimited country	gpw_v4_national_identifier_gri	region net_flow_into* ctry_reg using
-"../../../data/mapping/country_region_lvl_vars/country_reg_join.csv", replace;
-
-use "../../../data/dtas/analyze_me_land.dta", clear;
-merge m:1 gpw_v4_national_identifier_gri urban_wb2010 using "../../../data/mapping/country_region_lvl_vars/country_reg_join.dta", keep(match);
-keep uber_code net_flow_into* ;
-tempfile uber_code_country_region;
-
-save `uber_code_country_region', replace;
-
-*Create dta to map urban region, high quality GPW countries, and model sample;
-use "../../../data/projections/generated/settings.dta", clear;
-
-*Define C,R as column and row totals in current ubergrid.;
-local C=COLUMNCOUNT[1];
-local R=ROWCOUNT[1];
-dis "Number of Columns: " `C';
-dis "Number of Rows: " `R';
-
-local Nobs=`C'*`R';
-clear;
-set obs `Nobs';
-gen uber_code=_n;
-merge 1:1 uber_code using `uber_code_country_region', nogen;
-recode net_flow_into* (.=-9999);
-save "../../../data/dta2raster/dtas/country_region_flows.dta", replace;
-
-***Moved from data_prep
-		*Create dta to map urban region, high quality GPW countries, and model sample;
-		use "..\\..\\..\\data\\projections\\generated\\settings.dta", clear;
-
-		*Define C,R as column and row totals in current ubergrid.;
-		local C=COLUMNCOUNT[1];
-		local R=ROWCOUNT[1];
-		dis "Number of Columns: " `C';
-		dis "Number of Rows: " `R';
-
-		use `analyze_me_land', clear;
-
-		gen modelsample=.;
-		replace modelsample=1 if `samplepixels';
-		keep uber_code urban_wb* highqualGPW modelsample;
-		
-		tempfile merge_me;
-		save `merge_me', replace;
-		
-		clear;
-
-		local Nobs=`C'*`R';
-
-		set obs `Nobs';
-		gen uber_code=_n;
-		merge 1:1 uber_code using `merge_me', nogen;
-		recode highqualGPW urban_wb* modelsample (.=-9999);
-		save "..\\..\\..\\data\\dta2raster\\dtas\\urban_dummy_maps.dta", replace;
-
-		*End map dta;
 		
