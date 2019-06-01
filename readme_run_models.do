@@ -14,7 +14,9 @@ set more off;
 
 local python "C:\Python27\ArcGIS10.2\python.exe";
 
-*Calculate variables to feed the models;
+********************************************************************************;
+** Step 2: Generate inputs for macro model, pollution model, and regressions  **;
+********************************************************************************;
 if 1==1{;
 	cd model_inputs;
 	do macro_inputs.do;
@@ -23,29 +25,19 @@ if 1==1{;
 	cd ..;
 };
 
-**********************************;
-** Step 1: Calibrate box model  **;
-**********************************;
+*****************************************************;
+** Step 2: Calibrate economic and pollution model  **;
+*****************************************************;
 
 if 1==2{;
-	cd box_model_calibration;
-	do box_model_calibration;
-	cd ..;
+	cd ../../../data_processing_calibration/dofiles;
+	do readme_run_calibration.do;
+	cd ../../data_processing/dofiles_la/dofiles;
 };
 
-***************************************;
-** Step 2: Calibrate economic model  **;
-***************************************;
-****Lint's code goes here;
-
-if 1==2{;
-	cd Lints_code_dir;
-	do Lints_code.do;
-};
-
-***************************************;
-** Step 3: Mapping  **;
-***************************************;
+***************************;
+** Step 3: Prepare maps  **;
+***************************;
 
 if 1==2{;
 	cd prepare_mapping;

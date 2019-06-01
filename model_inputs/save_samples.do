@@ -58,7 +58,7 @@ local samplepixels "Terra2000!=. & Terra2005!=. & Terra2010!=. & Terra2015!=.
 	replace fiveyearint=1 if year>=2000 & year<=2005;
 	replace fiveyearint=2 if year>2005 & year<=2010;
 	replace fiveyearint=3 if year>2010 & year<=2015;
-
+	drop if gpw_v4_nat==-9999;
 	compress;
 	save "..\\..\\..\\data\\dtas\analyze_me_land_allpooled.dta", replace;
 
