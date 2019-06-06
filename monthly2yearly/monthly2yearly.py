@@ -43,7 +43,7 @@ if __name__=='__main__':
     out_folder_cru="..\\..\\..\\data\\CRU\\generated\\yearly"
     in_folder_cru="..\\..\\..\\data\\CRU\\generated\\monthlies"
     
-    dtypes=["cld", "dtr","frs","pet","tmn","tmp", "tmx", "vap", "wet"]
+    dtypes=["cld", "dtr","frs","pet","pre","tmn","tmp", "tmx", "vap", "wet"]
     
     shutil.rmtree(out_folder_cru, ignore_errors=True)
     os.mkdir(out_folder_cru)
