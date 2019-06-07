@@ -10,6 +10,21 @@ Created: 		Jun 4, 2017, by Lorenzo
 Last modified: 	Jun 4, 2017, by Lorenzo
 */
 
+program define clean_country_names
+
+replace country="Afghanistan" 											if country== "Afghanistan (Islamic Republic of)"
+replace country="Brunei Darussalam" 									if country==  "Brunei"
+replace country="Democratic People's Republic of Korea" 				if country== "Korea (North)"
+replace country="Republic of Korea" 									if country== "Korea (South)"
+replace country="Lao People's Democratic Republic" 						if country== "Laos"
+replace country="The former Yugoslav Republic of Macedonia" 			if country== "Macedonia"
+replace country="South Africa" 											if country== "Republic of South Africa"
+replace country="Russian Federation" 									if country== "Russia"
+replace country="Slovakia" 												if country== "Slovak Republic"
+replace country="United Kingdom of Great Britain and Northern Ireland" 	if country== "United Kingdom"
+
+end
+
 local country_region_folder "S:/particulates/data_processing/data/IIASA/generated/country_region"
 local country_region_subfolders:	dir "`country_region_folder'"	dir "*", respectcase
 
@@ -80,6 +95,7 @@ reshape wide en* emiss* ag* *coeff , i(country) j(year)
 order *, alpha
 order country
 
+clean_country_names
 save "S:/particulates/data_processing/data/IIASA/generated/country/activity_emissions.dta", replace
 
 reshape long
