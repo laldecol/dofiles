@@ -144,7 +144,7 @@ if 1==2{;
 
 if 1==2{;
 	cd table2dta;
-
+	
 	do table2dta.do "..\..\..\data\MODIS_AOD\generated\yearly\ubergrid\table" "*avg.txt";
 	do table2dta.do "..\..\..\data\GPW4\generated\projected\table" "*.txt";
 	do table2dta.do "..\..\..\data\GPW4\generated\gpw-v4-national-identifier-grid\ubergrid\table" "*.txt";
@@ -154,7 +154,7 @@ if 1==2{;
 	do table2dta.do "..\..\..\data\CCMP\generated\yearly\ubergrid\table" "*.txt";
 	do table2dta.do "..\..\..\data\MODIS_LULC\generated\yearly\dummy\ubergrid\table" "*.txt";
 	do table2dta.do "..\..\..\data\boundaries\generated\ubergrid\table" "*.txt";
-	
+		
 	cd ..;
 	*Successfully ran table2dta.do;
 	};
@@ -164,7 +164,7 @@ if 1==2{;
 ***********************************;
 *Merges all ubergrid .dta files from the specified directories together and saves them.;
 
-if 1==1{;
+if 1==2{;
 	cd mergedtas;
 	do mergedtas.do 9
 	"MODIS_AOD\generated\yearly\ubergrid\dtas"
@@ -182,9 +182,24 @@ if 1==1{;
 	*Successfully ran mergedtas.do;
 	};
 
+**************************************************;
+** Step 9: Read and clean country level data  **;
+**************************************************;
+*Cleans and merges sources of country level data, preserving all pixels;
+*BPclean defines a EU country and must be run last;
+
+if 1==2{;
+
+	cd clean_IIASA;
+	do process_IIASA_data_allfiles.do
+	do IIASA_regions_to_country.do
+	cd ..;
+	*Successfully ran do files
+	in \mergecountrydata;
+	};
 	
 **************************************************;
-** Step 9: Import and merge country level data  **;
+** Step 10: Import and merge country level data  **;
 **************************************************;
 *Cleans and merges sources of country level data, preserving all pixels;
 *BPclean defines a EU country and must be run last;
@@ -192,7 +207,6 @@ if 1==1{;
 if 1==1{;
 
 	cd mergecountrydata;
-	
 	*Penn World Tables GDP data;
 	do PWTclean.do;
 	*World bank urban shares;
@@ -203,6 +217,8 @@ if 1==1{;
 	do sector_fuel.do;
 	*BP energy consumption data;
 	cd "../mergecountrydata";
+	do IIASA_merge.do;
+	do world_bank_merge.do;
 	do BPclean.do;
 	cd ..;
 	
@@ -211,7 +227,7 @@ if 1==1{;
 	};
 
 ********************************************************;
-** Step 10: Construct variables and standardize units  **;
+** Step 11: Construct variables and standardize units  **;
 ********************************************************;
 ************;
 
@@ -224,7 +240,7 @@ if 1==1{;
 };
 
 *Compute flux between regions using a pixel-level box model;
-if 1==1{;
+if 1==2{;
 	cd flux;
 	do flux.do;
 	cd ..;

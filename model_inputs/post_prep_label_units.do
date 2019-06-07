@@ -20,6 +20,11 @@ Last modified: October 27, 2017, by Lorenzo
 */;
 use "..\\..\\..\\data\dtas\analyze_me_land.dta", clear;
 
+*Climate variables;
+foreach pre_var of varlist pre*{;
+	label var `pre_var' "Mean monthly precipitation, mm";
+};
+
 *Wind variables: change units and label variables;
 foreach windvar in uwnd_ vwnd_{;
 forvalues year = 2000/2015{;
