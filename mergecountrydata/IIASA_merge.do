@@ -16,7 +16,7 @@ pause off;
 capture log close;
 log using IIASA_merge.log, replace;
 
-use "..\\..\\..\\data\dtas\analyze_me_pixel.dta", clear;
+use "..\\..\\..\\data\\dtas\\temp\\analyze_me.dta", clear;
 
 merge m:1 country  using "../../../data/IIASA/generated/country/activity_emissions.dta", keep(match master) nogen;
 assert missing(uber_code)==0;

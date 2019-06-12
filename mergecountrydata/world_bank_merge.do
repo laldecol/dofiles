@@ -50,7 +50,7 @@ reshape wide vAGREMPL vAGRTOTL vINDEMPL vINDMANF vINDTOTL vSRVEMPL vSRVTOTL,i(co
 tempfile wb_wide;
 save `wb_wide';
 
-use "..\\..\\..\\data\dtas\analyze_me_pixel.dta", clear;
+use "..\\..\\..\\data\\dtas\\temp\\analyze_me.dta", clear;
 
 merge m:1 country  using `wb_wide', keep(match master) nogen;
 assert missing(uber_code)==0;
