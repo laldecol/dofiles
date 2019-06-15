@@ -17,7 +17,7 @@ This .do:
 
 capture log close;
 log using estimate_emission_factors.log, replace;
-local rho 10;
+local rho 100;
 local h 3;
 local years 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2015;
 

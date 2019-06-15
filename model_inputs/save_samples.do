@@ -53,11 +53,10 @@ ennuc enoil enotheren enrenewables ensum gas_coeff oil_coeff
 vAGREMPL vAGRTOTL vINDEMPL vINDMANF vINDTOTL vSRVEMPL vSRVTOTL;
 
 local keep_vars 
-uber_code country countryXregion_const
+uber_code country countryXregion_const calibration_sample_05
 gpw_v4_national_identifier_gri gpw_v4_data_quality_indicators
 area;
 *Keep only analysis variables;
-
 
 	use "..\\..\\..\\data\\dtas\\analyze_me_land.dta", clear;
 
