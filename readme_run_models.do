@@ -22,6 +22,7 @@ if 1==1{;
 	do macro_inputs.do;
 	do box_inputs.do;
 	do reg_inputs.do;
+	do calculate_net_flows.do;
 	cd ..;
 };
 
@@ -39,7 +40,7 @@ if 1==2{;
 ** Step 3: Prepare maps  **;
 ***************************;
 
-if 1==2{;
+if 1==1{;
 	cd prepare_mapping;
 	do country_map_prep.do;
 	do country_region_map_prep.do;
