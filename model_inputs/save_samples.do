@@ -91,6 +91,14 @@ area;
 	drop if country=="" | gpw_v4_national_identifier_gri==.;
 	drop if gpw_v4_national_identifier_gri==-9999;
 	
+	*Save variable labels;
+	foreach v of var * {;
+		local l`v' : variable label `v';
+		if `"`l`v''"' == "" {;
+		local l`v' "`v'";
+		};
+	};
+	
 	collapse (mean) Terra* cld* vap* wet* pre*
 	(sum) Fire* gpwpop* area 
 	(firstnm) Oil* Coal* Gas* IEA* highqualGPW rgdpo2010
@@ -101,6 +109,10 @@ area;
 	ennuc* enoil* enotheren* enrenewables* ensum* gas_coeff* oil_coeff*
 	vAGREMPL* vAGRTOTL* vINDEMPL* vINDMANF* vINDTOTL* vSRVEMPL* vSRVTOTL*
 	rgdpe2010, by(gpw_v4_national_identifier_gri country);
+	
+	foreach v of var * {
+		label var `v' "`l`v''"
+	}
 	
 	sum rgdpe2010, detail;
 	gen hic=cond(rgdpe2010>=`r(p50)', 1, 0, .) if rgdpe2010!=.;
