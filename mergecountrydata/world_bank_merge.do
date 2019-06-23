@@ -11,7 +11,7 @@ This .do file merges IIASA emissions and activity data into analyze_me_land.dta
 clear all;
 cls;
 set more off;
-pause off;
+pause on;
 
 program clean_country_names;
 *in WB1 but not merging
@@ -46,8 +46,24 @@ capture log close;
 log using world_bank_merge.log, replace;
 
 use "../../../../data_processing_calibration/data/world_bank/generated/WB1clean.dta", clear;
-reshape wide vAGREMPL vAGRTOTL vINDEMPL vINDMANF vINDTOTL vSRVEMPL vSRVTOTL,i(country) j(year);
+local stubs vAGREMPL vAGRTOTL vINDEMPL vINDMANF vINDTOTL vSRVEMPL vSRVTOTL;
+// Looping over stems to capture variable labels;
+foreach s of local stubs {;
+	local `s'label = "`: variable label `s''";
+	dis "``s'label'";
+};
+
+reshape wide `stubs',i(country) j(year);
+
+// Looping over stems again to reinstate labels;
+foreach stub of local stubs{;
+	foreach var of varlist `stub'* {;
+		label variable `var' "``stub'label'";
+
+	};
+};
 tempfile wb_wide;
+pause;
 save `wb_wide';
 
 use "..\\..\\..\\data\\dtas\\temp\\analyze_me.dta", clear;
