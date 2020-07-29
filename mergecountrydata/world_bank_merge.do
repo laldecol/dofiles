@@ -63,7 +63,6 @@ foreach stub of local stubs{;
 	};
 };
 tempfile wb_wide;
-pause;
 save `wb_wide';
 
 use "..\\..\\..\\data\\dtas\\temp\\analyze_me.dta", clear;

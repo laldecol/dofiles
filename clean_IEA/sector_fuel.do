@@ -58,7 +58,7 @@ set tracedepth 1;
 *2. Converts IEA data to Mtoe and aggregates by fuel group;
 	
 	
-	keep if 	sector_=="Industry" |
+	*keep if 	sector_=="Industry" |
 				sector_=="Transport" |
 				sector_=="Residential" | 
 				sector_=="Commercial" |
@@ -97,7 +97,7 @@ set tracedepth 1;
 
 *3. Clean, label, and save at country-time-sector-fuel group level, for use in Lint's model;
 
-	*keep if 	sector_=="Industry" |
+	keep if 	sector_=="Industry" |
 				sector_=="Transport" |
 				sector_=="Residential" | 
 				sector_=="Commercial" |
@@ -193,7 +193,7 @@ set tracedepth 1;
 	
 	save "../../../data/IEA/generated/energy_use/country_level.dta", replace;
 		
-	use "..\\..\\..\\data\dtas\temp\analyze_me.dta", clear;
+	use "..\\..\\..\\data\\dtas\\analyze_me.dta", clear;
 
 	merge m:1 gpw_v4_national_identifier_gri using "../../../data/IEA/generated/energy_use/country_level.dta", nogen;
 	
@@ -201,7 +201,7 @@ set tracedepth 1;
 	
 	*New merged data replaces old data, but keeps name;
 	*This is bad practice, because user cannot know what the file is good for from name only;
-	save "..\\..\\..\\data\dtas\temp\analyze_me.dta", replace;
+	save "..\\..\\..\\data\\dtas\\analyze_me.dta", replace;
 
 	/*;
 The IEA reports fuel consumption by the following sectors:
