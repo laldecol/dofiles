@@ -177,20 +177,20 @@ foreach year of local years{;
 	label var windborder_to_world_rural "Length of rural-world border where wind blows into world, km";
 	label var windborder_to_world_urban "Length of urban-world border where wind blows into world, km";
 
-	gen wind_urban_world=flux_to_world_urban/(`h'*`rho'* Terra_avg_interior_urban * windborder_to_world_urban);
-	gen wind_rural_world=flux_to_world_rural/(`h'*`rho'* Terra_avg_interior_rural * windborder_to_world_rural);
+	gen wind_urban_world=flux_to_world_urban/(Terra_avg_interior_urban * windborder_to_world_urban);
+	gen wind_rural_world=flux_to_world_rural/(Terra_avg_interior_rural * windborder_to_world_rural);
 
 	label var wind_urban_world "Average wind speed from urban to world, computed from flows & Matt's model, km/yr";
 	label var wind_rural_world "Average wind speed from rural to world, computed from flows & Matt's model, km/yr";
 
-	gen wind_urban_rural=flux_to_interior_urban/(`h'*`rho'* Terra_avg_interior_urban * windborder_to_interior_urban );
-	gen wind_rural_urban=flux_to_interior_rural/(`h'*`rho'* Terra_avg_interior_rural * windborder_to_interior_rural );
+	gen wind_urban_rural=flux_to_interior_urban/(Terra_avg_interior_urban * windborder_to_interior_urban );
+	gen wind_rural_urban=flux_to_interior_rural/(Terra_avg_interior_rural * windborder_to_interior_rural );
 
 	label var wind_urban_rural "Average wind speed from urban to rural, computed from flows & Matt's model, km/yr";
 	label var wind_rural_urban "Average wind speed from rural to urban, computed from flows & Matt's model, km/yr";
 
-	gen wind_world_rural=flux_from_world_rural/(`h'*`rho'* Terra_avg_world_rural * windborder_from_world_rural);
-	gen wind_world_urban=flux_from_world_urban/(`h'*`rho'* Terra_avg_world_urban * windborder_from_world_urban);
+	gen wind_world_rural=flux_from_world_rural/(Terra_avg_world_rural * windborder_from_world_rural);
+	gen wind_world_urban=flux_from_world_urban/(Terra_avg_world_urban * windborder_from_world_urban);
 
 	label var wind_world_rural "Average wind speed from world to rural, computed from flows & Matt's model, km/yr";
 	label var wind_world_urban "Average wind speed from world to urban, computed from flows & Matt's model, km/yr";

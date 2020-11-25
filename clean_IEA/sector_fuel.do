@@ -194,7 +194,7 @@ set tracedepth 1;
 	save "../../../data/IEA/generated/energy_use/country_level.dta", replace;
 		
 	use "..\\..\\..\\data\\dtas\\analyze_me.dta", clear;
-
+	compress;
 	merge m:1 gpw_v4_national_identifier_gri using "../../../data/IEA/generated/energy_use/country_level.dta", nogen;
 	
 	drop if uber_code==.;
