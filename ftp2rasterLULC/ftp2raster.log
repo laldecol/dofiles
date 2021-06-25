@@ -1,2 +1,3 @@
-2017-06-26 16:40:01,237 Starting ftp2raster.py.
-2017-06-26 17:05:08,063 Done with ftp2rasterLULC.py
+2021-06-24 09:32:52,187 Starting ftp2raster.py.
+2021-06-24 09:32:52,203 Reclassifying raster into our six categories.
+2021-06-24 09:36:18,615 Creating dummy raster for value 0

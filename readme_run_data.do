@@ -14,12 +14,12 @@ set trace off;
 set tracedepth 2;
 set more off;
 pause on;
-local python "C:\Python27\ArcGIS10.5\python.exe";
+local python "C:\Python27\ArcGIS10.8\python.exe";
 
 **********************************************************;
 **   Step 1: Aggregate source GPW to use as ubergrid    **;
 **********************************************************;
-if 1==2{;
+if 1==1{;
 	cd aggregate_raster;
 	shell `python' aggregate_raster.py;
 	cd ..;
@@ -30,7 +30,7 @@ if 1==2{;
 **********************************************************;
 *2.1 Reprojects GPWv4 rasters, extracts extent and settings (as template for ubergrid);
 
-if 1==2{;
+if 1==1{;
 	cd make_xy_extent;
 	shell `python' make_xy_extent.py;
 	cd ..;
@@ -40,7 +40,7 @@ if 1==2{;
 *2.2 Saves ubergrid settings (boundary coordinates, cell sizes, row and col numbers)
 *in a dta (data\projections\generated\settings.dta) for future reference.;
 
-if 1==2{;
+if 1==1{;
 	cd settings2dta;
 	do settings2dta.do;
 	cd ..;
@@ -53,7 +53,7 @@ if 1==2{;
 *Averages all daily AOD files from the years set in daily2yearly.py into 
 *yearly ones, by satellite. ;
 
-if 1==2{;
+if 1==1{;
 	cd daily2yearlyAOD;
 	shell `python' daily2yearlyAOD.py;
 	cd ..;
@@ -82,7 +82,7 @@ if 1==2{;
 *Avoid running it if you don't want to use disk space for intermediate data
 *while it runs;
 
-if 1==2{;
+if 1==1{;
 	cd ftp2rasterLULC;
 	shell `python' ftp2rasterLULC.py;
 	cd ..;
@@ -96,7 +96,7 @@ if 1==2{;
 *and uses the settings from make_xy_extent.py to transform them into standard
 *ubergrids. (This program depends on the projection.);
 
-if 1==2{;
+if 1==1{;
 	cd raster2ubergrid;
 	shell `python' raster2ubergrid.py;
 	cd ..;
@@ -109,7 +109,7 @@ if 1==2{;
 *Takes all vector shapefiles from the directories set in polygon2ubergrid.py
 *and turns them into ubergrids.;
 
-if 1==2{;
+if 1==1{;
 	cd polygon2ubergrid;
 	shell `python' polygon2ubergrid.py;
 	cd ..;
@@ -122,7 +122,7 @@ if 1==2{;
 *6.1 Takes all ubergrid rasters specified in raster2list.py and exports their
 * data into .txt files. ;
 
-if 1==2{;
+if 1==1{;
 	cd raster2list;
 	shell `python' raster2list.py;
 	cd ..;
@@ -130,7 +130,7 @@ if 1==2{;
 	};
 
 *6.2 Cleans GPW and LULC .txt filenames so they can be processed by stata;
-if 1==2{;
+if 1==1{;
 	cd clean_txt_names;
 	shell `python' clean_txt_names.py;
 	cd ..;
@@ -142,7 +142,7 @@ if 1==2{;
 ********************************************;
 *Converts ubergrid .txt files to .dta;
 
-if 1==2{;
+if 1==1{;
 	cd table2dta;
 	
 	do table2dta.do "..\..\..\data\MODIS_AOD\generated\yearly\ubergrid\table" "*avg.txt";
@@ -164,7 +164,7 @@ if 1==2{;
 ***********************************;
 *Merges all ubergrid .dta files from the specified directories together and saves them.;
 
-if 1==2{;
+if 1==1{;
 	cd mergedtas;
 	do mergedtas.do 9
 	"MODIS_AOD\generated\yearly\ubergrid\dtas"
@@ -188,7 +188,7 @@ if 1==2{;
 *Cleans and merges sources of country level data, preserving all pixels;
 *BPclean defines a EU country and must be run last;
 
-if 1==2{;
+if 1==1{;
 
 	cd clean_IIASA;
 	do process_IIASA_data_allfiles.do;
@@ -204,7 +204,7 @@ if 1==2{;
 *Cleans and merges sources of country level data, preserving all pixels;
 *BPclean defines a EU country and must be run last;
 
-if 1==2{;
+if 1==1{;
 
 	cd mergecountrydata;
 	*Penn World Tables GDP data;
@@ -240,7 +240,7 @@ if 1==1{;
 };
 
 *Compute flux between regions using a pixel-level box model;
-if 1==2{;
+if 1==1{;
 	cd flux;
 	do flux.do;
 	cd ..;

@@ -1,5 +1,7 @@
-2019-01-25 13:04:43,638 Starting daily2yearlyAOD.py.
-2019-01-25 13:04:43,717 Cleaned and set up output folders
-2019-01-25 13:04:43,739 Processing satellites T A
-2019-01-25 13:04:43,739 Start year is 2000
-2019-01-25 13:04:43,739 End year is 2018
+2021-06-23 11:01:53,217 Starting daily2yearlyAOD.py.
+2021-06-23 11:01:53,217 Cleaned and set up output folders
+2021-06-23 11:01:53,233 Processing satellites T A
+2021-06-23 11:01:53,233 Start year is 2000
+2021-06-23 11:01:53,233 End year is 2018
+2021-06-23 11:49:35,717 Done with daily2yearlyAOD.py.
+2021-06-23 11:49:35,720 Program took 47.6566124917 minutes for 38 satelliteXyears.

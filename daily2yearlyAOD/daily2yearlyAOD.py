@@ -27,7 +27,7 @@ arcpy.env.overwriteOutput = True
 def aggregate(satyear, prod):
         
     #Local variables:
-    data_aod = "..\\..\\..\\data\\MODIS_AOD"
+    data_aod = "../../../data/MODIS_AOD"
     
     #Split satyear input into satellite name and year
     if satyear[0]=="A":
@@ -40,14 +40,14 @@ def aggregate(satyear, prod):
     print "sat is " + sat
     
     # Set directories:
-    in_folder = data_aod + "\\source\\daily"
-    out_folder = data_aod + "\\generated\\yearly"
-    output_raster=out_folder+"\\"+sat+year+"avg.tif"
-    temp_year=data_aod + "\\temp"+"_"+sat+"_"+year
+    in_folder = data_aod + "/source/daily"
+    out_folder = data_aod + "/generated/yearly"
+    output_raster=out_folder+"/"+sat+year+"avg.tif"
+    temp_year=data_aod + "/temp"+"_"+sat+"_"+year
     
     # Set environment settings:
     env.workspace = temp_year
-    env.scratchWorkspace=temp_year
+    env.scratchWorkspace=temp_year+"/" +year + ".gdb"
     
 
     try:
@@ -55,7 +55,8 @@ def aggregate(satyear, prod):
         ## Step 1: Aggregate AOD daily files ##
         #######################################
         #Create list with all existing .tifs for the input satellite and year:
-        rasters=glob.glob(in_folder+"\\"+prod+"_"+sat+"_"+year+"*tif")
+        rasters=glob.glob(in_folder+"/"+prod+"_"+sat+"_"+year+"*tif")
+        rasters=[os.path.abspath(raster_name).replace('\\','/') for raster_name in rasters]
         
         #Concatenate list into a single string to feed into arcpy.RasterToGeodatabase
         inputs=';'.join(rasters)
@@ -69,12 +70,13 @@ def aggregate(satyear, prod):
         
         #Create geodatabase and raster catalog, and move rasters in list to said catalog.
         arcpy.CreateFileGDB_management(temp_year, year, "CURRENT")
-        arcpy.CreateRasterCatalog_management(temp_year+"\\" +year + ".gdb" , "catalog", sr, sr, "", "0", "0", "0", "UNMANAGED", "")
-        arcpy.RasterToGeodatabase_conversion(inputs, temp_year+"\\" +year + ".gdb\\catalog")
-        arcpy.CalculateDefaultGridIndex_management(temp_year+"\\" +year + ".gdb\\catalog")
+        arcpy.CreateRasterCatalog_management(temp_year+"/" +year + ".gdb" , "catalog", sr, sr, "", "0", "0", "0", "UNMANAGED", "")
+        #arcpy.RasterToGeodatabase_conversion(Input_Rasters="S:/particulates/data_processing/data/MODIS_AOD/source/daily_small_temp/3K_Terra_2000_02_24.tif;S:/particulates/data_processing/data/MODIS_AOD/source/daily_small_temp/3K_Terra_2000_02_25.tif", Output_Geodatabase="S:/particulates/data_processing/data/MODIS_AOD/temp_Terra_2000/2000.gdb", Configuration_Keyword="")
+        arcpy.RasterToGeodatabase_conversion(Input_Rasters=inputs, Output_Geodatabase=os.path.abspath(temp_year+"/" +year + ".gdb/catalog").replace('\\','/'),Configuration_Keyword="")
+        arcpy.CalculateDefaultGridIndex_management(temp_year+"/" +year + ".gdb/catalog")
         
         #Aggregate rasters in catalog to mean raster
-        arcpy.RasterCatalogToRasterDataset_management(temp_year+"\\" +year + ".gdb\\catalog", output_raster, "", "MEAN", "FIRST", "", "NONE", "16_BIT_SIGNED", "NONE", "NONE", "", "") 
+        arcpy.RasterCatalogToRasterDataset_management(temp_year+"/" +year + ".gdb/catalog", output_raster, "", "MEAN", "FIRST", "", "NONE", "16_BIT_SIGNED", "NONE", "NONE", "", "") 
         arcpy.DefineProjection_management (output_raster, sr)
         #Remove temporary directories
         shutil.rmtree(temp_year,ignore_errors=True)
@@ -84,6 +86,7 @@ def aggregate(satyear, prod):
     except Exception as e:
         # If an error occurred, print line number and error message
         tb = sys.exc_info()[2]
+        #logging.error('')        
         print "An error occured on line %i" % tb.tb_lineno
         print str(e)
 #----------- end define aggregate--------
@@ -94,8 +97,8 @@ if __name__=='__main__':
     logging.basicConfig(format='%(asctime)s %(message)s', filename='daily2yearlyAOD.log', filemode='w', level=logging.DEBUG)
     logging.info('Starting daily2yearlyAOD.py.')
     #Set up directories for output:
-    shutil.rmtree("..\\..\\..\\data\\MODIS_AOD\\generated\\yearly", ignore_errors=True)
-    os.mkdir("..\\..\\..\\data\\MODIS_AOD\\generated\\yearly")
+    shutil.rmtree("../../../data/MODIS_AOD/generated/yearly", ignore_errors=True)
+    os.mkdir("../../../data/MODIS_AOD/generated/yearly")
     logging.info('Cleaned and set up output folders')
     
     #Declare start and end year:
@@ -120,6 +123,9 @@ if __name__=='__main__':
     logging.info('End year is %s', str(endyear))
     satyears=[sat+year for sat in sats for year in years]
     print satyears
+    
+    #Debug single call
+    #aggregate("T2000", prod="3K")
     
     #Set up pooling:
     partialaggregate=partial(aggregate,prod="3K")

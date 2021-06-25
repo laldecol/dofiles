@@ -7,13 +7,18 @@
 
 import os, shutil, time, glob, logging
 import arcpy
-from arcpy import env
+arcpy.CheckOutExtension ("spatial")
+
+#arcpy.env.workspace="C:/Users/laldecol/Documents/ArcGIS/Default.gdb"
+#arcpy.env.scratchWorkspace="C:/Users/laldecol/Documents/ArcGIS/Default.gdb"
 
 def makexyextent(inputraster,outputprojection,cellsize=""):
+    import arcpy
+    arcpy.CheckOutExtension ("spatial")
     
     # Local variables:
-    outputraster = "..\\..\\..\\data\\GPW4\\generated\\projected\\projected_" + os.path.basename(os.path.splitext(inputraster)[0]) + ".tif"
-    arcpy.env.snapRaster = outputraster
+    #outputraster  = "S:/particulates/data_processing/data/GPW4/generated/projected/aggregated_gpw_2000.tif"
+    outputraster = os.path.join("../../../data/GPW4/generated/projected/" ,os.path.basename(os.path.splitext(inputraster)[0])+".tif")
     
     if cellsize=="":
         arcpy.ProjectRaster_management(inputraster, outputraster, outputprojection)
@@ -22,7 +27,7 @@ def makexyextent(inputraster,outputprojection,cellsize=""):
 
     ##Set up extent creation
     
-    extent_shp = "..\\..\\..\\data\\GPW4\\generated\\extent\\extent.shp" # the ""extent"" is confusing the reader, due to the command rasterdesc.extent
+    extent_shp = "../../../data/GPW4/generated/extent/extent.shp" # the ""extent"" is confusing the reader, due to the command rasterdesc.extent
     
     #create Describe object with input raster characteristics
     rasterdesc=arcpy.Describe(outputraster)
@@ -40,12 +45,14 @@ def makexyextent(inputraster,outputprojection,cellsize=""):
     #List raster settings we want to save. 
     settings=["TOP", "LEFT", "RIGHT", "BOTTOM", "CELLSIZEX", "CELLSIZEY", "COLUMNCOUNT", "ROWCOUNT"]
     
-    shutil.rmtree("..\\..\\..\\data\\projections\settings.txt", ignore_errors=True)
+    shutil.rmtree("../../../data/projections/settings.txt", ignore_errors=True)
     
     #Read raster properties and print them to settings. txt
-    with open("..\\..\\..\\data\\projections\generated\settings.txt", 'w') as fileoutput:
+    with open("../../../data/projections\generated\settings.txt", 'w') as fileoutput:
         for setting in settings:
-            value=arcpy.GetRasterProperties_management(outputraster, setting)
+            
+            assert arcpy.Exists(outputraster)
+            value=arcpy.GetRasterProperties_management(outputraster, property_type=setting, band_index="")
             fileoutput.write(setting + "\n")
             fileoutput.write(str(value)+ "\n") 
 
@@ -60,27 +67,33 @@ if __name__=="__main__":
     arcpy.env.overwriteOutput = True
     
     #Set up directories
-    inputraster = "..\\..\\..\\data\\GPW4\\generated\\aggregated"
-    outputprojection = "..\\..\\..\\data\\projections\\WGS 1984.prj"
-    cellsize=""
+    inputraster = "../../../data/GPW4/generated/aggregated"
+    outputprojection = "../../../data/projections/WGS 1984.prj"
+    #cellsize=0.083333333
 
-    shutil.rmtree("..\\..\\..\\data\\GPW4\\generated\\extent",ignore_errors=True)
-    os.mkdir("..\\..\\..\\data\\GPW4\\generated\\extent")
+    shutil.rmtree("../../../data/GPW4/generated/extent",ignore_errors=True)
+    os.mkdir("../../../data/GPW4/generated/extent")
 
-    shutil.rmtree("..\\..\\..\\data\\GPW4\\generated\\projected",ignore_errors=True)
-    os.mkdir("..\\..\\..\\data\\GPW4\\generated\\projected")
+    shutil.rmtree("../../../data/GPW4/generated/projected",ignore_errors=True)
     
-    #..\\..\\data\\GPW4\\generated\\projected
+    try:
+        os.mkdir("../../../data/GPW4/generated/projected")
+    except Exception as e:
+        print "Did not create projected folder"
+        #logging.info('generated/projected folder already exists.')    
+        
+    #../../data/GPW4/generated/projected
     
     #Loop through all rasters to reproject and set cell size. Resulting extent and settings correspond to last
     #raster in the list. 
-    for raster in glob.glob(inputraster+"\\*.tif"):
+    for raster in glob.glob(inputraster+"/*.tif"):
         print "Creating extent for "+str(raster)
-        makexyextent(raster, outputprojection, cellsize)
+        makexyextent(raster, outputprojection)
+        
     t1=time.clock()
     print "Run took " +str(t1-t0) + "seconds."
     print "End of file"
     
-    logging.info('Processed %s rasters in %s seconds.',str(len(glob.glob(inputraster+"*\\*.tif"))),str(t1-t0))
+    logging.info('Processed %s rasters in %s seconds.',str(len(glob.glob(inputraster+"*/*.tif"))),str(t1-t0))
     logging.info('Done with make_xy_extent.py.')
     

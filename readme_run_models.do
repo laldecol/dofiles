@@ -40,7 +40,7 @@ if 1==2{;
 ** Step 3: Prepare maps  **;
 ***************************;
 
-if 1==1{;
+if 1==2{;
 	cd prepare_mapping;
 	do country_map_prep.do;
 	do country_region_map_prep.do;

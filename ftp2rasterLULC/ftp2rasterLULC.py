@@ -52,7 +52,7 @@ def yearlyconverter(year):
         #mylibrary.ftp2disk(ftpaddress, serverpath, localfolder, pattern)
         
     ##Extract tiles at the same location
-    #for infilename in glob.glob(localfolder+"\\*.gz"):
+    #for infilename in glob.glob(localfolder+"/*.gz"):
         
         #outfilename=os.path.splitext(infilename)[0]
         #inF = gzip.open(infilename, 'rb')
@@ -64,8 +64,8 @@ def yearlyconverter(year):
     
     ###Mosaic all tiles of a given year
     ##Inputs to our aggregate function. All rasters matching the path pattern will be aggregated (mean) and saved as output_raster
-    #expath="..\\..\\..\\data\\MODIS_LULC\\source\\tiles\\*"+year+"*.tif"
-    output_raster="..\\..\\..\\data\\MODIS_LULC\\generated\\yearly\\"+year+".tif"
+    #expath="../../../data/MODIS_LULC/source/tiles/*"+year+"*.tif"
+    output_raster="../../../data/MODIS_LULC/generated/yearly/"+year+".tif"
 
     #logging.info('Aggregating tiles from %s' , str(year))
     
@@ -76,9 +76,10 @@ def yearlyconverter(year):
     ##Reclass
 
     #First, reclass into our main categories, as detailed in S:\particulates\data_processing\dofiles\ftp2rasterLULC\LULC_classes.xlsx
-    temp_folder=os.path.dirname(output_raster)+"\\temp"+year
-    reclass_tif=temp_folder+"\\reclassed_"+year+".tif"
+    temp_folder=os.path.dirname(output_raster)+"/temp"+year
+    reclass_tif=temp_folder+"/reclassed_"+year+".tif"
     
+    shutil.rmtree(temp_folder, ignore_errors=True)
     os.mkdir(temp_folder)
     logging.info('Reclassifying raster into our six categories.')
     arcpy.gp.Reclassify_sa(output_raster, "Value", "0 0;1 6 1;7 2;8 1;8 11 2;12 4;13 5;14 4;15 6;16 3;16 255 6", reclass_tif, "DATA")
@@ -91,11 +92,14 @@ def yearlyconverter(year):
     for dummyval in range(0,7):
         logging.info('Creating dummy raster for value %s', str(dummyval))
         
-        valtxt=temp_folder+"\\val"+str(dummyval)+".txt"
-        dummytif=temp_folder+"\\dummy"+str(dummyval)+".tif"
+        valtxt=temp_folder+"/val"+str(dummyval)+".txt"
+        dummytif=temp_folder+"/dummy"+str(dummyval)+".tif"
         
         mylibrary.dummyascii(0, 6, dummyval, valtxt)
-        arcpy.gp.ReclassByASCIIFile_sa(reclass_tif, valtxt, dummytif, "DATA")
+        
+        
+        #arcpy.gp.ReclassByASCIIFile_sa(os.path.abspath(reclass_tif).replace("\\","/"), os.path.abspath(valtxt).replace("\\","/"), os.path.abspath(dummytif).replace("\\","/"), "DATA")
+        arcpy.gp.ReclassByASCIIFile_sa("S:/particulates/data_processing/data/MODIS_LULC/generated/yearly/temp2001/reclassed_2001.tif", "S:/particulates/data_processing/data/MODIS_LULC/generated/yearly/temp2001/val0.txt", "S:/particulates/data_processing/data/MODIS_LULC/generated/yearly/temp2001/dummy0.tif", "DATA")
         
         ##Convert to a coarser sum raster for each class        
         desc=arcpy.Describe(dummytif)
@@ -108,17 +112,17 @@ def yearlyconverter(year):
         print str(rowfactor), str(colfactor)
         
         #use aggregate_sa to get an output
-        #aggtif=temp_folder+"\\agg"+str(dummyval)+".tif"
-        aggtiff=os.path.dirname(output_raster)+"\\dummy\\"+year+"_dummy"+str(dummyval)+".tif"
+        #aggtif=temp_folder+"/agg"+str(dummyval)+".tif"
+        aggtiff=os.path.dirname(output_raster)+"/dummy/"+year+"_dummy"+str(dummyval)+".tif"
         logging.info('Aggregating dummy raster by a factor of %s', str(colfactor))            
         arcpy.gp.Aggregate_sa(dummytif, aggtiff, colfactor, "SUM", "EXPAND", "DATA")
         
         #Convert to ubergrid
-        #extent = "..\\..\\..\\data\\GPW4\\generated\\extent\\extent.shp"
-        #outprojection = "..\\..\\..\\data\\projections\\WGS 1984.prj"    
+        #extent = "../../../data/GPW4/generated/extent/extent.shp"
+        #outprojection = "../../../data/projections/WGS 1984.prj"    
         
         #logging.info('Converting aggregated dummy raster to ubergrid')            
-        #ubergridtif=os.path.dirname(output_raster)+"\\ubergrid\\"+year+"_dummy"+str(dummyval)+".tif"
+        #ubergridtif=os.path.dirname(output_raster)+"/ubergrid/"+year+"_dummy"+str(dummyval)+".tif"
         #mylibrary.raster2ubergrid(aggtif, ubergridtif, extent, outprojection) 
     
     logging.info('Cleaning up year %s', year)            
@@ -131,7 +135,7 @@ if __name__=='__main__':
     
     #Definitions:
     #Local folder to keep source tiles while they are processed
-    localfolder='..\\..\\..\\data\\MODIS_LULC\\source\\tiles'
+    localfolder='../../../data/MODIS_LULC/source/tiles'
     #Server address with source tiles
     ftpaddress='ftp.glcf.umd.edu'
     
@@ -140,7 +144,7 @@ if __name__=='__main__':
     years=[str(year) for year in range(2001,2013)]
     nw=len(years)
 
-    
+    yearlyconverter("2001")
     pool=Pool(processes=nw)
     
     #Process all satellite years through partialaggregate.py
