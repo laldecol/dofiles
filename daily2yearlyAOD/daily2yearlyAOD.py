@@ -1,145 +1,156 @@
 # ---------------------------------------------------------------------------
-# daily2monthlyAOD.py
-# -------- #
-# Run time: ~5 mins per year with 15 workers
+# daily2yearlyAOD.py  [ORCHESTRATOR -- does NOT import arcpy]
+# Description: Create a global AOD raster for each year from daily AOD files.
+# Run time: ~5 mins per year with 8 workers.
 #
-# 
-# Description: Create a global AOD raster for each year from daily AOD files
-# created: August 10 2016 by la
-# modified: January 25 2019 by la
-
+# Updated from daily2yearlyAOD.py to py3/ArcGIS Pro on 2026-07-06.
+# Main changes in this version:
+#   - Pool workers now launch propy.bat subprocesses instead of calling arcpy
+#     directly. All arcpy work is in daily2yearlyAOD_worker.py.
+#   - Pool capped at 8 workers to reduce arcpy license collisions.
+#   - Python 2 syntax updated to Python 3.
+# 2026-07-07: Reverted python.exe -> propy.bat and file redirect -> capture_output
+#   to match the proven pattern in run_month2dta_py3v3.py. File-redirect with
+#   concurrent pool workers causes handle-inheritance problems on Windows.
+# Previous version saved in _old/.
 # ---------------------------------------------------------------------------
 
-# Import system modules
-import arcpy, glob, logging, os, shutil, subprocess, sys, time, traceback
-from arcpy import env
-from arcpy.sa import *
-from functools import partial
+import logging, os, shutil, subprocess, sys, time
 from multiprocessing import Pool
 
+# Path to propy.bat and the worker script.
+PROPY_BAT = r"C:\Program Files\ArcGIS\Pro\bin\Python\scripts\propy.bat"
+WORKER_SCRIPT = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                             "daily2yearlyAOD_worker.py")
 
+WORKER_TIMEOUT = 7200  # seconds; worker killed and marked fatal if exceeded
+MAX_RUNS = 3          # 2026-07-07: cap retries so persistent failures don't loop forever
 
-# Check out the ArcGIS Spatial Analyst extension license and set overwrite environment:
-arcpy.CheckOutExtension("Spatial")
-arcpy.env.overwriteOutput = True
-
-#------------define aggregate-----------
-def aggregate(satyear, prod):
-        
-    #Local variables:
-    data_aod = "../../../data/MODIS_AOD"
-    
-    #Split satyear input into satellite name and year
-    if satyear[0]=="A":
-        sat="Aqua"
-    elif satyear[0]=="T":
-        sat="Terra"
-    
-    year = satyear[1:5]         ## !! Warning, code not general
-    print "year is " + year
-    print "sat is " + sat
-    
-    # Set directories:
-    in_folder = data_aod + "/source/daily"
-    out_folder = data_aod + "/generated/yearly"
-    output_raster=out_folder+"/"+sat+year+"avg.tif"
-    temp_year=data_aod + "/temp"+"_"+sat+"_"+year
-    
-    # Set environment settings:
-    env.workspace = temp_year
-    env.scratchWorkspace=temp_year+"/" +year + ".gdb"
-    
-
+def run_satyear_via_propy(prod, satyear):
+    # Runs inside a Pool worker. Must NOT import arcpy.
+    # Launches a licensed ArcGIS Pro Python process for one satellite-year.
+    # Uses capture_output=True (pipes) to match the pattern in
+    # run_month2dta_py3v3.py; file-redirect with concurrent workers causes
+    # handle-inheritance problems on Windows.
+    # Concurrent arcpy import serialization is handled by a file lock in the
+    # worker script itself, so no stagger is needed here.
+    cmd = [PROPY_BAT, WORKER_SCRIPT, str(prod), str(satyear)]
+    script_dir = os.path.dirname(os.path.abspath(__file__))
     try:
-        #######################################
-        ## Step 1: Aggregate AOD daily files ##
-        #######################################
-        #Create list with all existing .tifs for the input satellite and year:
-        rasters=glob.glob(in_folder+"/"+prod+"_"+sat+"_"+year+"*tif")
-        rasters=[os.path.abspath(raster_name).replace('\\','/') for raster_name in rasters]
-        
-        #Concatenate list into a single string to feed into arcpy.RasterToGeodatabase
-        inputs=';'.join(rasters)
-        
-        # Define spatial reference (World Sinusoidal)
-        sr = arcpy.SpatialReference(54008) 
-        
-        #Set up temporary directories
-        shutil.rmtree(temp_year,ignore_errors=True)
-        os.mkdir(temp_year)
-        
-        #Create geodatabase and raster catalog, and move rasters in list to said catalog.
-        arcpy.CreateFileGDB_management(temp_year, year, "CURRENT")
-        arcpy.CreateRasterCatalog_management(temp_year+"/" +year + ".gdb" , "catalog", sr, sr, "", "0", "0", "0", "UNMANAGED", "")
-        #arcpy.RasterToGeodatabase_conversion(Input_Rasters="S:/particulates/data_processing/data/MODIS_AOD/source/daily_small_temp/3K_Terra_2000_02_24.tif;S:/particulates/data_processing/data/MODIS_AOD/source/daily_small_temp/3K_Terra_2000_02_25.tif", Output_Geodatabase="S:/particulates/data_processing/data/MODIS_AOD/temp_Terra_2000/2000.gdb", Configuration_Keyword="")
-        arcpy.RasterToGeodatabase_conversion(Input_Rasters=inputs, Output_Geodatabase=os.path.abspath(temp_year+"/" +year + ".gdb/catalog").replace('\\','/'),Configuration_Keyword="")
-        arcpy.CalculateDefaultGridIndex_management(temp_year+"/" +year + ".gdb/catalog")
-        
-        #Aggregate rasters in catalog to mean raster
-        arcpy.RasterCatalogToRasterDataset_management(temp_year+"/" +year + ".gdb/catalog", output_raster, "", "MEAN", "FIRST", "", "NONE", "16_BIT_SIGNED", "NONE", "NONE", "", "") 
-        arcpy.DefineProjection_management (output_raster, sr)
-        #Remove temporary directories
-        shutil.rmtree(temp_year,ignore_errors=True)
-        
-        print inputs
-        
+        env = os.environ.copy()
+        env.pop("PYTHONHOME", None)
+        env["PYTHONNOUSERSITE"] = "1"
+        env["PYTHONUNBUFFERED"] = "1"
+        p = subprocess.run(
+            cmd,
+            capture_output=True,
+            text=True,
+            cwd=script_dir,
+            env=env,
+            creationflags=subprocess.CREATE_NEW_PROCESS_GROUP,
+            timeout=WORKER_TIMEOUT
+        )
+        return [p.returncode, satyear, p.stdout, p.stderr]
+    except subprocess.TimeoutExpired:
+        return [998, satyear, "", "TIMEOUT: worker exceeded %ds" % WORKER_TIMEOUT]
     except Exception as e:
-        # If an error occurred, print line number and error message
-        tb = sys.exc_info()[2]
-        #logging.error('')        
-        print "An error occured on line %i" % tb.tb_lineno
-        print str(e)
-#----------- end define aggregate--------
+        return [999, satyear, "", "Exception launching subprocess: %r" % e]
 
-if __name__=='__main__':
-    
-    #Set up logging
-    logging.basicConfig(format='%(asctime)s %(message)s', filename='daily2yearlyAOD.log', filemode='w', level=logging.DEBUG)
+if __name__ == '__main__':
+
+    logging.basicConfig(format='%(asctime)s %(message)s',
+                        filename='daily2yearlyAOD.log', filemode='w',
+                        level=logging.DEBUG)
     logging.info('Starting daily2yearlyAOD.py.')
-    #Set up directories for output:
+
+    # Clean temp/ to remove stale worker logs and scratch dirs from prior runs.
+    # Workers recreate temp/ themselves when they start.
+    _temp = os.path.join(os.path.dirname(os.path.abspath(__file__)), "temp")
+    shutil.rmtree(_temp, ignore_errors=True)
+    os.makedirs(_temp, exist_ok=True)
+    logging.info('Cleaned temp/ directory.')
+
+    # Set up output directory.
     shutil.rmtree("../../../data/MODIS_AOD/generated/yearly", ignore_errors=True)
     os.mkdir("../../../data/MODIS_AOD/generated/yearly")
-    logging.info('Cleaned and set up output folders')
-    
-    #Declare start and end year:
-    startyear=2000
-    endyear=2018
-    
-    #Define satellite prefix list and year list:
-    #sats=["A", "T"]
+    logging.info('Cleaned and set up output folders.')
 
-    sats=["T", "A"]
-    
-    years=[str(year) for year in range(startyear,endyear+1)]
-    
-    #Set number of workers:
-    nw=15
-    print years
-    
-    #Create list of satellite years to process:
-    
+    # Declare start and end year.
+    startyear = 2000
+    endyear = 2018
+
+    # Define satellite prefix list and year list.
+    # 2026-07-07: Aqua removed -- no Aqua source data exists.
+    sats = ["T"]
+    years = [str(year) for year in range(startyear, endyear + 1)]
+
+    # Number of Pool workers. 2026-07-07: restored to 8 now that ArcGIS Pro init issue is resolved.
+    nw = 8
+
     logging.info('Processing satellites %s', " ".join(sats))
     logging.info('Start year is %s', str(startyear))
     logging.info('End year is %s', str(endyear))
-    satyears=[sat+year for sat in sats for year in years]
-    print satyears
-    
-    #Debug single call
-    #aggregate("T2000", prod="3K")
-    
-    #Set up pooling:
-    partialaggregate=partial(aggregate,prod="3K")
-    pool=Pool(processes=nw)
-    
-    #Process all satellite years through partialaggregate.py
-    t0=time.clock()    
-    results=pool.map(partialaggregate, satyears)
-    t1=time.clock()    
-    
-    #Clean up pooling
-    pool.close
-    pool.join
-    
-    print "All year x satellite took " + str((t1-t0)/60) + " minutes." 
-    logging.info('Done with daily2yearlyAOD.py.')    
-    logging.info('Program took %s minutes for %s satelliteXyears.', str((t1-t0)/60) , str(len(satyears)))
+
+    prod = "3K"
+    satyears = [sat + year for sat in sats for year in years]
+    print(satyears)
+
+    # Pool workers launch propy.bat subprocesses for each satellite-year.
+    # Concurrent arcpy import serialization is handled by a file lock in the
+    # worker script; no stagger needed here.
+    # Non-zero return codes trigger retries (matching pipeline convention).
+    from functools import partial
+    partial_runner = partial(run_satyear_via_propy, prod)
+    t0 = time.process_time()
+    run = 1
+    pending = list(satyears)
+    fatal = []  # accumulated across all runs (moved outside loop 2026-07-07)
+
+    while pending:
+        # Stop retrying after MAX_RUNS attempts; mark survivors as fatal.
+        if run > MAX_RUNS:
+            logging.error('MAX_RUNS (%d) exceeded. Marking %d remaining as fatal: %s',
+                          MAX_RUNS, len(pending), ' '.join(pending))
+            fatal.extend(pending)
+            pending = []
+            break
+
+        logging.info('Run %d: submitting %d satellite-years to pool.',
+                     run, len(pending))
+        pool = Pool(processes=nw)
+        results = pool.map(partial_runner, pending)
+        pool.close()
+        pool.join()
+
+        pending = []
+        for rc, satyear, out, err in results:
+            logging.info('[%s] return code = %d', satyear, rc)
+            if out:
+                logging.info('[%s] stdout:\n%s', satyear, out)
+            if err:
+                logging.info('[%s] stderr:\n%s', satyear, err)
+            if rc == 0:
+                pass  # success
+            elif rc == 998:
+                logging.error('[%s] TIMEOUT -- marking as fatal, will not retry.', satyear)
+                fatal.append(satyear)
+            else:
+                logging.warning('[%s] FAILED -- will retry.', satyear)
+                pending.append(satyear)
+        run += 1
+
+    if fatal:
+        logging.error('FATAL: the following satellite-years did not complete: %s',
+                      ' '.join(fatal))
+
+    elapsed = time.process_time() - t0
+    logging.info('All satellite-years complete. Took %s minutes for %s items.',
+                 str(elapsed / 60), str(len(satyears)))
+    logging.info('Done with daily2yearlyAOD.py.')
+
+# Erase the failmarker created by run_python_particulates.ado.
+# Reaching this line means the script completed without an unhandled exception.
+try:
+    os.remove('failmarker.txt')
+except FileNotFoundError:
+    pass

@@ -1,157 +1,118 @@
 # ---------------------------------------------------------------------------
-# ftp2rasterLULC.py
-# -------- #
-# Run time: ~1 hour per year
+# ftp2rasterLULC.py  [ORCHESTRATOR -- does NOT import arcpy]
+# Description: Processes land use data. Reclassifies yearly LULC rasters
+# into dummy rasters for each land cover category.
+# Run time: ~1 hour per year.
 #
-# Description: Processes land use data for the particulates project. Steps:
-# 1. Download tiles from the UMD ftp server
-# 2. Mosaic tiles into yearly 500 m rasters
-# 3. Reclassify raster values into our categories (water, trees, pasture, barren, crop, urban, other)
-# 4. Convert to dummy rasters (one for each category)
-# 5. Add up cells (k-by-k) to approximate ubergrid
-
-# last modified: June 16, 2017 by Lorenzo
+# Updated from ftp2rasterLULC.py to py3/ArcGIS Pro on 2026-07-06.
+# Main changes in this version:
+#   - Pool workers now launch propy.bat subprocesses instead of calling arcpy
+#     directly. All arcpy work is in ftp2rasterLULC_worker.py.
+#   - Pool capped at 8 workers to reduce arcpy license collisions.
+#   - Download section remains commented out (data already on disk).
+#   - Python 2 syntax updated to Python 3.
+# Previous version saved in _old/.
 # ---------------------------------------------------------------------------
-#Append dofiles\mylibrary to sys.path, to use programs defined there.
-import sys, os
-sys.path.append(os.path.abspath('..'))
-#ftp2disk, aggregate defined in mylibrary
-import ftplib, gzip, glob, shutil, logging, time, arcpy, math, mylibrary
+
+import logging, os, subprocess, sys, time
 from multiprocessing import Pool
 
-# Check Spatial Analysis Tool
-arcpy.CheckOutExtension("spatial")
+# Path to the ArcGIS Pro Python launcher and the worker script.
+PROPY_BAT = r"C:\Program Files\ArcGIS\Pro\bin\Python\scripts\propy.bat"
+WORKER_SCRIPT = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                             "ftp2rasterLULC_worker.py")
 
-def yearlyconverter(year):
+WORKER_TIMEOUT = 7200  # seconds; worker killed and marked fatal if exceeded
+MAX_RUNS = 3           # 2026-07-07: cap retries so persistent failures don't loop forever
 
-###1. Download files
-    #logging.info('Downloading land cover tiles from %s' , str(year))        
-    
-    #shutil.rmtree(localfolder, ignore_errors=True)
-    #os.mkdir(localfolder)
-    
-    ##Declare path within server that we want to search in 
-    #yearpath='glcf/Global_LNDCVR/UMD_TILES/Version_5.1/'+year+'.01.01'
+def run_year_via_propy(year):
+    # Runs inside a Pool worker. Must NOT import arcpy.
+    # Launches a licensed ArcGIS Pro Python process for one year.
+    cmd = [PROPY_BAT, WORKER_SCRIPT, str(year)]
+    try:
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        env = os.environ.copy()
+        env.pop("PYTHONHOME", None)
+        env["PYTHONNOUSERSITE"] = "1"
+        env["PYTHONUNBUFFERED"] = "1"
+        p = subprocess.run(
+            cmd,
+            capture_output=True,
+            text=True,
+            cwd=script_dir,
+            env=env,
+            creationflags=subprocess.CREATE_NEW_PROCESS_GROUP,
+            timeout=WORKER_TIMEOUT
+        )
+        return [p.returncode, year, p.stdout, p.stderr]
+    except subprocess.TimeoutExpired:
+        return [998, year, "", "TIMEOUT: worker exceeded %ds" % WORKER_TIMEOUT]
+    except Exception as e:
+        return [999, year, "", f"Exception launching subprocess: {e!r}"]
 
-    ##Only files with this name pattern will be downloaded
-    #pattern='.tif.gz'
-    
-    ##Connect to ftp server once to get list of all files in the desired path
-    #ftp=ftplib.FTP(ftpaddress)
-    #ftp.login()
-    #ftp.cwd(yearpath)
-    #dirlist=ftp.nlst()
-    #ftp.quit()
-    
-    ##Final list of paths to feed into ftp2disk
-    #pathlist=[yearpath+"/"+dirname for dirname in dirlist if '.jpg' not in dirname]
-    #print pathlist
-    
-    ##Download compressed tiles into local folder
-    #for serverpath in pathlist:
-        #mylibrary.ftp2disk(ftpaddress, serverpath, localfolder, pattern)
-        
-    ##Extract tiles at the same location
-    #for infilename in glob.glob(localfolder+"/*.gz"):
-        
-        #outfilename=os.path.splitext(infilename)[0]
-        #inF = gzip.open(infilename, 'rb')
-        #outF = open(outfilename, 'wb')
-        #outF.write( inF.read() )
-        
-        #inF.close()
-        #outF.close()
-    
-    ###Mosaic all tiles of a given year
-    ##Inputs to our aggregate function. All rasters matching the path pattern will be aggregated (mean) and saved as output_raster
-    #expath="../../../data/MODIS_LULC/source/tiles/*"+year+"*.tif"
-    output_raster="../../../data/MODIS_LULC/generated/yearly/"+year+".tif"
+if __name__ == '__main__':
 
-    #logging.info('Aggregating tiles from %s' , str(year))
-    
-    ##Aggregate rasters and clean up
-    #mylibrary.aggregate(expath , output_raster)
-    #shutil.rmtree(localfolder)
+    logging.basicConfig(format='%(asctime)s %(message)s',
+                        filename='ftp2raster.log', filemode='w',
+                        level=logging.DEBUG)
+    logging.info('Starting ftp2rasterLULC.py.')
 
-    ##Reclass
+    # Set of years we want to process.
+    years = [str(year) for year in range(2001, 2013)]
 
-    #First, reclass into our main categories, as detailed in S:\particulates\data_processing\dofiles\ftp2rasterLULC\LULC_classes.xlsx
-    temp_folder=os.path.dirname(output_raster)+"/temp"+year
-    reclass_tif=temp_folder+"/reclassed_"+year+".tif"
-    
-    shutil.rmtree(temp_folder, ignore_errors=True)
-    os.mkdir(temp_folder)
-    logging.info('Reclassifying raster into our six categories.')
-    arcpy.gp.Reclassify_sa(output_raster, "Value", "0 0;1 6 1;7 2;8 1;8 11 2;12 4;13 5;14 4;15 6;16 3;16 255 6", reclass_tif, "DATA")
+    # Number of Pool workers (capped to reduce arcpy license collisions).
+    nw = 8
 
-    settingsdict=mylibrary.ubergridsettings()
-    ubercol=settingsdict["COLUMNCOUNT"]
-    uberrow=settingsdict["ROWCOUNT"]
-    
-    #Second, reclass into separate dummy rasters
-    for dummyval in range(0,7):
-        logging.info('Creating dummy raster for value %s', str(dummyval))
-        
-        valtxt=temp_folder+"/val"+str(dummyval)+".txt"
-        dummytif=temp_folder+"/dummy"+str(dummyval)+".tif"
-        
-        mylibrary.dummyascii(0, 6, dummyval, valtxt)
-        
-        
-        #arcpy.gp.ReclassByASCIIFile_sa(os.path.abspath(reclass_tif).replace("\\","/"), os.path.abspath(valtxt).replace("\\","/"), os.path.abspath(dummytif).replace("\\","/"), "DATA")
-        arcpy.gp.ReclassByASCIIFile_sa("S:/particulates/data_processing/data/MODIS_LULC/generated/yearly/temp2001/reclassed_2001.tif", "S:/particulates/data_processing/data/MODIS_LULC/generated/yearly/temp2001/val0.txt", "S:/particulates/data_processing/data/MODIS_LULC/generated/yearly/temp2001/dummy0.tif", "DATA")
-        
-        ##Convert to a coarser sum raster for each class        
-        desc=arcpy.Describe(dummytif)
-        inputrow=desc.height
-        inputcol=desc.width
-        
-        rowfactor=math.floor(int(inputrow)/int(uberrow))
-        colfactor=math.floor(int(inputcol)/int(ubercol))
-        
-        print str(rowfactor), str(colfactor)
-        
-        #use aggregate_sa to get an output
-        #aggtif=temp_folder+"/agg"+str(dummyval)+".tif"
-        aggtiff=os.path.dirname(output_raster)+"/dummy/"+year+"_dummy"+str(dummyval)+".tif"
-        logging.info('Aggregating dummy raster by a factor of %s', str(colfactor))            
-        arcpy.gp.Aggregate_sa(dummytif, aggtiff, colfactor, "SUM", "EXPAND", "DATA")
-        
-        #Convert to ubergrid
-        #extent = "../../../data/GPW4/generated/extent/extent.shp"
-        #outprojection = "../../../data/projections/WGS 1984.prj"    
-        
-        #logging.info('Converting aggregated dummy raster to ubergrid')            
-        #ubergridtif=os.path.dirname(output_raster)+"/ubergrid/"+year+"_dummy"+str(dummyval)+".tif"
-        #mylibrary.raster2ubergrid(aggtif, ubergridtif, extent, outprojection) 
-    
-    logging.info('Cleaning up year %s', year)            
-    shutil.rmtree(temp_folder, ignore_errors=True)
-    
-if __name__=='__main__':
-    #Set up logging
-    logging.basicConfig(format='%(asctime)s %(message)s', filename='ftp2raster.log', filemode='w', level=logging.DEBUG)
-    logging.info('Starting ftp2raster.py.')
-    
-    #Definitions:
-    #Local folder to keep source tiles while they are processed
-    localfolder='../../../data/MODIS_LULC/source/tiles'
-    #Server address with source tiles
-    ftpaddress='ftp.glcf.umd.edu'
-    
-    
-    #Set of years we want to process
-    years=[str(year) for year in range(2001,2013)]
-    nw=len(years)
+    t0 = time.process_time()
+    run = 1
+    pending = list(years)
+    fatal = []  # accumulated across all runs
 
-    yearlyconverter("2001")
-    pool=Pool(processes=nw)
-    
-    #Process all satellite years through partialaggregate.py
-    results=pool.map(yearlyconverter, years)
-    
-    #Clean up pooling
-    pool.close
-    pool.join
-    
-    logging.info('Done with ftp2rasterLULC.py')
+    # Pool workers call propy.bat to run the worker script for each year.
+    # Non-zero return codes trigger retries up to MAX_RUNS.
+    while pending:
+        # Stop retrying after MAX_RUNS attempts; mark survivors as fatal.
+        if run > MAX_RUNS:
+            logging.error('MAX_RUNS (%d) exceeded. Marking %d remaining as fatal: %s',
+                          MAX_RUNS, len(pending), ' '.join(str(y) for y in pending))
+            fatal.extend(pending)
+            pending = []
+            break
+
+        logging.info('Run %d: submitting %d years to pool.', run, len(pending))
+        pool = Pool(processes=nw)
+        results = pool.map(run_year_via_propy, pending)
+        pool.close()
+        pool.join()
+
+        pending = []
+        for rc, year, out, err in results:
+            logging.info('[%s] return code = %d', year, rc)
+            if out:
+                logging.info('[%s] stdout:\n%s', year, out)
+            if err:
+                logging.info('[%s] stderr:\n%s', year, err)
+            if rc == 0:
+                pass  # success
+            elif rc == 998:
+                logging.error('[%s] TIMEOUT -- marking as fatal, will not retry.', year)
+                fatal.append(year)
+            else:
+                logging.warning('[%s] FAILED -- will retry.', year)
+                pending.append(year)
+        run += 1
+
+    if fatal:
+        logging.error('FATAL: the following years did not complete: %s',
+                      ' '.join(str(y) for y in fatal))
+
+    elapsed = time.process_time() - t0
+    logging.info('All years complete. Took %s minutes.', str(elapsed / 60))
+    logging.info('Done with ftp2rasterLULC.py.')
+
+# Erase the failmarker created by run_python_particulates.ado.
+# Reaching this line means the script completed without an unhandled exception.
+try:
+    os.remove('failmarker.txt')
+except FileNotFoundError:
+    pass

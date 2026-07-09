@@ -3,81 +3,86 @@
 #2. Converts rasters into ascii
 #3. Converts ascii files into stata readable tables
 
+#Updated 2026-07-06: Python 2->3 syntax fixes (print, time.clock->time.process_time);
+#   removed absolute os.chdir call; uncommented 8 disabled input folder entries;
+#   added failmarker cleanup for run_python_particulates.
+
 import os, time, arcpy, glob, shutil, logging
 from arcpy import env
 
 def raster2list(outputraster):
-    
+
     arcpy.env.overwriteOutput = True
     #Extract input directory and basename
-    
-    in_dir=os.path.dirname(outputraster)    
+
+    in_dir=os.path.dirname(outputraster)
     base=os.path.basename(outputraster)
     basename=os.path.splitext(base)[0]
-    
+
     # Local variables:
-    outputascii = in_dir+"\\ascii" 
-    outputtable = in_dir+"\\table" 
-    
+    outputascii = in_dir+"\\ascii"
+    outputtable = in_dir+"\\table"
+
     #settingsdict={}
     #with open("..\\..\\data\\projections\generated\settings.txt", 'r') as settingfile:
         #templines=settingfile.readlines()
         #lines = [i.replace('\n','') for i in templines]
-        #for linecounter in range(len(lines)):        
+        #for linecounter in range(len(lines)):
             #if linecounter % 2 ==0:
                 #print linecounter
                 #settingsdict[str(lines[linecounter])]=str(lines[linecounter+1])
     #print settingsdict
-    
+
     #basename=os.path.basename(os.path.splitext(outputraster)[0])
     asciipath=outputascii + "\\" + basename + ".txt"
     arcpy.RasterToASCII_conversion(outputraster, asciipath )
-    
+
     tablepath=outputtable + "\\" + basename + ".txt"
-    
-    t0=time.clock()
+
+    t0=time.process_time()
     i=0
     ubercount=1
     with open(asciipath, 'r') as asciifile, open(tablepath, mode='w') as table:
-        twith1=time.clock()
+        twith1=time.process_time()
         for line in asciifile:
-            tlinefor1=time.clock()
+            tlinefor1=time.process_time()
             i+=1
             if i>=7:
-                
+
                 row=line.split()
                 j=0
-                #Problem: row has no columns. 
+                #Problem: row has no columns.
                 for column in row:
-                    #tcolumnfor1=time.clock()
+                    #tcolumnfor1=time.process_time()
                     #print "Writing column " + str(j) + " of line " + str(i) + " of file " + str(basename)
                     table.write(str(ubercount)+" "+str(column)+"\n")
                     j+=1
                     ubercount+=1
-                    #tcolumnfor2=time.clock()
+                    #tcolumnfor2=time.process_time()
                     #print "Column took " + str(tcolumnfor2-tcolumnfor1) + "seconds."
                 #print "column is " + str(j)
-            tlinefor2=time.clock()
+            tlinefor2=time.process_time()
             #print "Line took " + str(tlinefor2-tlinefor1) + " seconds."
             #wait=raw_input("Check line times.")
-        twith2=time.clock()
+        twith2=time.process_time()
         #print "with took " + str(twith2-twith1) + " seconds."
     #print (i==int(settingsdict["ROWCOUNT"])+6)
     #print (j==int(settingsdict["COLUMNCOUNT"]))
-    t1=time.clock()
-    
+    t1=time.process_time()
+
     #print str((t1-t0)/60)
     #wait=raw_input("Check times (in minutes)")
     #print settingsdict
 
-if __name__=="__main__":    
-    
-    os.chdir("S:\\particulates\\data_processing\\dofiles_la\\dofiles\\raster2list")
+if __name__=="__main__":
+
+    #os.chdir("S:\\particulates\\data_processing\\dofiles_la\\dofiles\\raster2list")
+    # 2026-07-06: removed absolute chdir; cwd is set by run_python_particulates.
 
     logging.basicConfig(format='%(asctime)s %(message)s', filename='raster2list.log', filemode='w', level=logging.DEBUG)
-    logging.info('Starting raster2list.py.')    
-    
-    #Set up directories    
+    logging.info('Starting raster2list.py.')
+
+    #Set up directories
     input_folderlist=[]
     pattern_list=[]
     rastercount=0
@@ -85,62 +90,68 @@ if __name__=="__main__":
     #Construct list of paths and name patterns to convert;
     #input_folderlist.append("..\\..\\..\\data\\GPW4\\source\\gpw-v4-population-count-2000")
     #pattern_list.append("\\*.tif")
-    
-    #input_folderlist.append("..\\..\\..\\data\\MODIS_AOD\\generated\\yearly\\ubergrid")
-    #pattern_list.append("\\*avg.tif")
-    
-    #input_folderlist.append("..\\..\\..\\data\\GPW4\\generated\\projected")
-    #pattern_list.append("\\*20??.tif")
-    
-    ###"..\\..\\data\\GPW4\\source\\gpw-v4-national-identifier-grid"
-    #input_folderlist.append("..\\..\\..\\data\\GPW4\\generated\\gpw-v4-national-identifier-grid\\ubergrid")
-    #pattern_list.append("\\*.tif")
-    
-    #input_folderlist.append("..\\..\\..\\data\\GPW4\\generated\\gpw-v4-data-quality-indicators-mean-administrative-unit-area\\ubergrid")
-    #pattern_list.append("\\*.tif")    
-    
-    #input_folderlist.append("..\\..\\..\\data\\MODIS_LULC\\generated\\yearly\\dummy\\ubergrid")
-    #pattern_list.append("\\*.tif")
-    
-    #input_folderlist.append("..\\..\\..\\data\\MODIS_FIRE\\generated\\yearly\\ubergrid")
-    #pattern_list.append("\\*.tif")    
-    
+
+    input_folderlist.append("..\\..\\..\\data\\MODIS_AOD\\generated\\yearly\\ubergrid")
+    pattern_list.append("\\*avg.tif")
+
+    input_folderlist.append("..\\..\\..\\data\\GPW4\\generated\\projected")
+    pattern_list.append("\\*20??.tif")
+
+    ####"..\\..\\data\\GPW4\\source\\gpw-v4-national-identifier-grid"
+    input_folderlist.append("..\\..\\..\\data\\GPW4\\generated\\gpw-v4-national-identifier-grid\\ubergrid")
+    pattern_list.append("\\*.tif")
+
+    input_folderlist.append("..\\..\\..\\data\\GPW4\\generated\\gpw-v4-data-quality-indicators-mean-administrative-unit-area\\ubergrid")
+    pattern_list.append("\\*.tif")
+
+    input_folderlist.append("..\\..\\..\\data\\MODIS_LULC\\generated\\yearly\\dummy\\ubergrid")
+    pattern_list.append("\\*.tif")
+
+    input_folderlist.append("..\\..\\..\\data\\MODIS_FIRE\\generated\\yearly\\ubergrid")
+    pattern_list.append("\\*.tif")
+
     input_folderlist.append("..\\..\\..\\data\\CRU\\generated\\yearly\\ubergrid")
-    pattern_list.append("\\*.tif")    
+    pattern_list.append("\\*.tif")
 
-    #input_folderlist.append("..\\..\\..\\data\\CCMP\\generated\\yearly\\ubergrid")
-    #pattern_list.append("\\*.tif")    
+    input_folderlist.append("..\\..\\..\\data\\CCMP\\generated\\yearly\\ubergrid")
+    pattern_list.append("\\*.tif")
 
-    #input_folderlist.append("..\\..\\..\\data\\boundaries\\generated\\ubergrid")
-    #pattern_list.append("\\*disk.tif")    
-    
-    print input_folderlist
-    print pattern_list
+    input_folderlist.append("..\\..\\..\\data\\boundaries\\generated\\ubergrid")
+    pattern_list.append("\\*disk.tif")
 
-    logging.info('Starting process...')    
-    time0=time.clock()
+    print(input_folderlist)
+    print(pattern_list)
+
+    logging.info('Starting process...')
+    time0=time.process_time()
     for index in range(len(input_folderlist)):
-        
+
         input_folder=input_folderlist[index]
         pathname=input_folderlist[index]+pattern_list[index]
-        
+
         ascii_folder=input_folder+"\\ascii"
         table_folder=input_folder+"\\table"
-        
+
         shutil.rmtree(ascii_folder, ignore_errors=True)
         shutil.rmtree(table_folder, ignore_errors=True)
         os.mkdir(ascii_folder)
         os.mkdir(table_folder)
-        
+
         for raster in glob.glob(pathname):
-            t0=time.clock()
+            t0=time.process_time()
             raster2list(raster)
             rastercount+=1
-            t1=time.clock()
-            print "Raster " + str(raster) + " took " + str(t1-t0) + "seconds."
+            t1=time.process_time()
+            print("Raster " + str(raster) + " took " + str(t1-t0) + "seconds.")
             #wait=raw_input("Press enter to continue.")
-    
-    time1=time.clock()
-    
+
+    time1=time.process_time()
+
     logging.info('Processed %s rasters in %s minutes',str(rastercount),str((time1-time0)/60))
     logging.info('Done with raster2list.py.')
+
+# Erase the failmarker created by run_python_particulates.ado.
+try:
+    os.remove('failmarker.txt')
+except FileNotFoundError:
+    pass

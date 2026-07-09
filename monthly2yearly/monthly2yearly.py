@@ -40,15 +40,15 @@ if __name__=='__main__':
     #sats=["A", "T"]
     sats=["T"]
     
-    out_folder_cru="..\\..\\..\\data\\CRU\\generated\\yearly"
-    in_folder_cru="..\\..\\..\\data\\CRU\\generated\\monthlies"
+    out_folder_cru="../../../data/CRU/generated/yearly"
+    in_folder_cru="../../../data/CRU/generated/monthlies"
     
     dtypes=["cld", "dtr","frs","pet","pre","tmn","tmp", "tmx", "vap", "wet"]
     
     shutil.rmtree(out_folder_cru, ignore_errors=True)
     os.mkdir(out_folder_cru)
     #Generate all expansion paths and output names to feed into aggregate. One per year and data type pair.
-    expaths_cru=[[in_folder_cru+"\\"+dtype+"*"+str(year)+"*.tif", out_folder_cru+"\\"+dtype+str(year)+".tif" ] for year in range(startyear,endyear+1) for dtype in dtypes]
+    expaths_cru=[[in_folder_cru+"/"+dtype+"*"+str(year)+"*.tif", out_folder_cru+"/"+dtype+str(year)+".tif" ] for year in range(startyear,endyear+1) for dtype in dtypes]
     
     t0=time.clock()    
     

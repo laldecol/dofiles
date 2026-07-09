@@ -3,5 +3,6 @@
 
 #We use the "from ... import" syntax to save some typing when calling the package
 
-from rasters import aggregate, dummyascii, ubergridsettings, raster2ubergrid, dta2raster
-from utilities import ftp2disk
+# 2026-07-07: changed to explicit relative imports (from .x) for Python 3 compatibility
+from .rasters import aggregate, dummyascii, ubergridsettings, raster2ubergrid, dta2raster
+from .utilities import ftp2disk

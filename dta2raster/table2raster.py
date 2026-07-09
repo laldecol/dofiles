@@ -1,11 +1,13 @@
 # ---------------------------------------------------------------------------
-# table2raster.py 
+# table2raster.py
 #
 # (1) Convert stata lists to ascii for UFD paper variables
 # (2) Convert the ascciis to rasters
 #
-# la  September 19, 2016 
+# la  September 19, 2016
 #   Based on Matt's program rasterize_UFD2.py
+# Updated 2026-07-06: Python 2->3 syntax fixes (print); replaced sys.exit with
+#   failmarker cleanup for run_python_particulates.
 # ---------------------------------------------------------------------------
 # Import system modules
 import logging, arcpy, os, sys
@@ -16,60 +18,60 @@ from multiprocessing import Pool
 arcpy.env.overwriteOutput = True
 arcpy.env.projectCompare = "Full"
 arcpy.CheckOutExtension("spatial")
-#env.workspace = wspace	   #Set workspace 
+#env.workspace = wspace	   #Set workspace
 #env.scratchworkspace = wspace  #Set scratch workspace
 
-print "...."
-print "....starting table2raster"
-print "...."
+print("....")
+print("....starting table2raster")
+print("....")
 
 vnames=sys.argv[1:]
-print str(sys.argv[1:])
+print(str(sys.argv[1:]))
 currdir=os.getcwd()
 
 #pause=raw_input("Press Enter to Continue")
 
 for vname in vnames:
-    print "...."
-    print "....starting table2raster " + vname
-    print "...."
+    print("....")
+    print("....starting table2raster " + vname)
+    print("....")
 
     #Set up output raster settings as a dictionary. These come from settings.txt, written in make_xy_extent.py
     settingsdict={}
-    with open("..\\..\\..\\data\\projections\generated\settings.txt", 'r') as settingfile:
+    with open("..\\..\\..\\data\\projections\\generated\\settings.txt", 'r') as settingfile:
         templines=settingfile.readlines()
         lines = [i.replace('\n','') for i in templines]
-        for linecounter in range(len(lines)):        
+        for linecounter in range(len(lines)):
             if linecounter % 2 ==0:
-                print linecounter
+                print(linecounter)
                 settingsdict[str(lines[linecounter])]=str(lines[linecounter+1])
-    print settingsdict
-    
+    print(settingsdict)
+
     os.chdir("..\\..\\..\\data\\dta2raster")
     #asc   = "maps/"+ vname + ".txt"  #Output text ASCII text file
     asc   = os.getcwd() + "\\maps\\"+ vname + ".txt"  #Output text ASCII text file
     rst   = os.getcwd() + "\\maps\\" + vname + ".tif" #Output raster file
-    
+
     in_txt  = open("temp/ready2map_"+vname+".txt", "r")     #Input list of STATA-made ubergrid
-    
+
     ugrid = "..\\..\\..\\data\\GPW4\\generated\\projected\\projected_aggregated_gpw_2010.tif"  #Copy of ubergrid
     wspace   = "workspaces\\" + vname
-    
+
     csize   = settingsdict['CELLSIZEX']  #raster cell width in metres
     width   = settingsdict['COLUMNCOUNT']   #width of ubergrid in cells (990m)
     height  = settingsdict['ROWCOUNT']   #height of ubergrid in cells (990m)
     nodata  = "-9999"  #value given to cells with no data
     l_ext   = settingsdict['LEFT'] #Extent of uberclip on left
-    b_ext   = settingsdict['BOTTOM']   #Extent of uberclip on bottom    
-    
+    b_ext   = settingsdict['BOTTOM']   #Extent of uberclip on bottom
+
     writeout = open(asc, "w")
-    
+
     #First 7 lines to write
-    first7 = "NCOLS " + str(width) + "\nNROWS " + str(height) + "\nXLLCORNER " + l_ext+ "\nYLLCORNER " + b_ext + "\nCELLSIZE " + csize + "\nNODATA_VALUE " + nodata + "\n" 
+    first7 = "NCOLS " + str(width) + "\nNROWS " + str(height) + "\nXLLCORNER " + l_ext+ "\nYLLCORNER " + b_ext + "\nCELLSIZE " + csize + "\nNODATA_VALUE " + nodata + "\n"
 
     try:
 
-        print "Started writing lines to text file for " + vname
+        print("Started writing lines to text file for " + vname)
 
         writeout.write(first7)	#Write the first 7 lines of the ASCII file that describes the data
 
@@ -87,34 +89,37 @@ for vname in vnames:
         writeout.close()
         in_txt.close()
 
-        print "Finished writing lines to text file for " + vname
+        print("Finished writing lines to text file for " + vname)
 
-        print "Started converting ASCII to Raster for " + vname + " dir = "+ os.getcwd()
-        print asc
-        print rst
+        print("Started converting ASCII to Raster for " + vname + " dir = "+ os.getcwd())
+        print(asc)
+        print(rst)
         #pause=raw_input("Check values of asc and rst")
-        arcpy.ASCIIToRaster_conversion(asc, rst, "FLOAT")	
-        print "Finished converting ASCII to Raster for " + vname
-        print "Started defining projection of Raster for " + vname
+        arcpy.ASCIIToRaster_conversion(asc, rst, "FLOAT")
+        print("Finished converting ASCII to Raster for " + vname)
+        print("Started defining projection of Raster for " + vname)
         spatialref = arcpy.Describe(ugrid).spatialReference    #Get spatial reference information of ubergrid
         arcpy.DefineProjection_management(rst, spatialref)
-        print "Finished defining projection of Raster for " + vname
-        
+        print("Finished defining projection of Raster for " + vname)
+
         #print "Started adding colour map for " + vname
         #arcpy.AddColormap_management(rst, "", clrmap)
         #print "Finished adding colour map for " + vname
 
-        print "....end rasterize "
-        print "...."    
-        
+        print("....end rasterize ")
+        print("....")
+
     except Exception as e:
         # If an error occurred, print line number and error message
         import traceback, sys
         tb = sys.exc_info()[2]
-        print "An error occured on line %i" % tb.tb_lineno
-        print str(e)
+        print("An error occured on line %i" % tb.tb_lineno)
+        print(str(e))
 
 #pause=raw_input("Press Enter to Continue")
 
-sys.exit("bye")
-
+# Erase the failmarker created by run_python_particulates.ado.
+try:
+    os.remove('failmarker.txt')
+except FileNotFoundError:
+    pass

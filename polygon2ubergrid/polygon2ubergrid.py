@@ -18,15 +18,17 @@ def polygon2ubergrid(input_polygon,out_path,field,extent,outprojection):
     print("Started processing " + input_polygon)
     # Set overwrite environment
     arcpy.env.overwriteOutput = True
-    
+    # 2026-07-07: set ArcGIS workspace to Python's CWD so relative paths resolve the same way in both.
+    arcpy.env.workspace = os.path.abspath(".")
+
     #Extract input directory and basename
     out_dir=os.path.dirname(out_path)
     base=os.path.basename(out_path)
     out_name=os.path.splitext(base)[0]
-    
+
     #Name auxiliary files
     temp_dir=out_dir+"\\temp"
-           
+
     input_polygon_prj=temp_dir + "\\temp_prj.shp"
     out_raster=temp_dir+"\\temptif.tif"
 
@@ -52,8 +54,8 @@ def polygon2ubergrid(input_polygon,out_path,field,extent,outprojection):
         lines = [i.replace('\n','') for i in templines]
         for linecounter in range(len(lines)):        
             if linecounter % 2 ==0:
-                print linecounter
-                settingsdict[str(lines[linecounter])]=str(lines[linecounter+1])    
+                print(linecounter)
+                settingsdict[str(lines[linecounter])]=str(lines[linecounter+1])
     
     # Process: Project
     
@@ -138,3 +140,9 @@ if __name__=='__main__':
         polygon2ubergrid(input_polygon, out_path, input_field, extent, outprojection)
         
     logging.info('Done with polygon2ubergrid.py.')
+
+# Erase the failmarker created by run_python_particulates.ado.
+try:
+    os.remove('failmarker.txt')
+except FileNotFoundError:
+    pass
