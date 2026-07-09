@@ -61,7 +61,7 @@ log using pixel_data_prep.log, text replace;
 
 	*0. Generate country-level total population before dropping any pixels;
 	foreach year in 2000 2005 2010 2015{;
-		bysort gpw_v4_national_identifier_gri: egen countrypop`year'=total(projected_aggregated_gpw_`year');
+		bysort gpw_v4_national_identifier_gri: egen countrypop`year'=total(aggregated_gpw_`year');
 	};
 	*0. END;
 	
@@ -84,14 +84,14 @@ log using pixel_data_prep.log, text replace;
 	
 	*1. Drop pixels missing population, country, or AOD data, and save result as analyze_me_land.dta;
 	*How is this different from sample in samplepixels;
-		keep if projected_aggregated_gpw_2000<. &
-		projected_aggregated_gpw_2005<. &
-		projected_aggregated_gpw_2010<. &
-		projected_aggregated_gpw_2015<. &
-		projected_aggregated_gpw_2000!=0 &
-		projected_aggregated_gpw_2005!=0 &
-		projected_aggregated_gpw_2010!=0 &
-		projected_aggregated_gpw_2015!=0 &
+		keep if aggregated_gpw_2000<. &
+		aggregated_gpw_2005<. &
+		aggregated_gpw_2010<. &
+		aggregated_gpw_2015<. &
+		aggregated_gpw_2000!=0 &
+		aggregated_gpw_2005!=0 &
+		aggregated_gpw_2010!=0 &
+		aggregated_gpw_2015!=0 &
 		Terra2000!=. & Terra2010!=. &
 		Terra2005!=. & Terra2015!=.;
 	*1. END;
@@ -99,8 +99,8 @@ log using pixel_data_prep.log, text replace;
 	*2. Generate population weighted GPW data quality, by country. 
 	*Tag high quality countries and calibration sample;
 		sort country;
-		egen CTprojected_aggregated_gpw=total(projected_aggregated_gpw_2000), by(country);
-		gen pwquality=projected_aggregated_gpw_2000*gpw_v4_data_quality_indicators/CTprojected_aggregated_gpw;
+		egen CTprojected_aggregated_gpw=total(aggregated_gpw_2000), by(country);
+		gen pwquality=aggregated_gpw_2000*gpw_v4_data_quality_indicators/CTprojected_aggregated_gpw;
 
 		preserve;
 		collapse (sum) pwquality (count) uber_code, by(country gpw_v4_national_identifier_gri) fast;
@@ -123,8 +123,8 @@ log using pixel_data_prep.log, text replace;
 	*Relabel 2104 vars as 2015, and 2001 as 2000;
 
 		*Rename variables to fit stata's constraints;
-		rename (projected_aggregated_gpw_2000 projected_aggregated_gpw_2005 
-		projected_aggregated_gpw_2010 projected_aggregated_gpw_2015)
+		rename (aggregated_gpw_2000 aggregated_gpw_2005 
+		aggregated_gpw_2010 aggregated_gpw_2015)
 		(gpwpop2000 gpwpop2005 gpwpop2010 gpwpop2015);
 
 		*Use climate & GDP from 2014 with population from 2015;

@@ -28,8 +28,8 @@ set more off;
 pause off;
 clear;
 
-*location for python;
-local python "C:\Python27\ArcGIS10.2\python";
+*location for python; updated 2026-07-06: replaced local python with settings_particulates;
+settings_particulates;
 *Location of data directory;
 local datadir "..\\..\\..\\data\\dta2raster";
 local dodir : pwd;
@@ -107,5 +107,5 @@ erase temp.dta;
 cd `dodir';
 pause;
 display "`python' table2raster.py `varlist'";
-shell `python' table2raster.py `varlist';
+run_python_particulates table2raster.py, args("`varlist'");
 log close;

@@ -1,3 +1,424 @@
-2021-06-24 09:32:52,187 Starting ftp2raster.py.
-2021-06-24 09:32:52,203 Reclassifying raster into our six categories.
-2021-06-24 09:36:18,615 Creating dummy raster for value 0
+2026-07-07 18:49:22,455 Starting ftp2rasterLULC.py.
+2026-07-07 18:49:22,455 Run 1: submitting 12 years to pool.
+2026-07-07 19:32:42,693 [2001] return code = 0
+2026-07-07 19:32:42,693 [2001] stdout:
+Reclassifying LULC raster for year 2001.
+0
+2
+4
+6
+8
+10
+12
+14
+Creating dummy raster for value 0
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 1
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 2
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 3
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 4
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 5
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 6
+20 20
+Aggregating dummy raster by a factor of 20
+Cleaning up year 2001.
+[2001] completed in 766.1s. success=True
+
+2026-07-07 19:32:42,693 [2002] return code = 0
+2026-07-07 19:32:42,693 [2002] stdout:
+Reclassifying LULC raster for year 2002.
+0
+2
+4
+6
+8
+10
+12
+14
+Creating dummy raster for value 0
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 1
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 2
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 3
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 4
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 5
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 6
+20 20
+Aggregating dummy raster by a factor of 20
+Cleaning up year 2002.
+[2002] completed in 760.7s. success=True
+
+2026-07-07 19:32:42,693 [2003] return code = 0
+2026-07-07 19:32:42,708 [2003] stdout:
+Reclassifying LULC raster for year 2003.
+0
+2
+4
+6
+8
+10
+12
+14
+Creating dummy raster for value 0
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 1
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 2
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 3
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 4
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 5
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 6
+20 20
+Aggregating dummy raster by a factor of 20
+Cleaning up year 2003.
+[2003] completed in 760.1s. success=True
+
+2026-07-07 19:32:42,708 [2004] return code = 0
+2026-07-07 19:32:42,708 [2004] stdout:
+Reclassifying LULC raster for year 2004.
+0
+2
+4
+6
+8
+10
+12
+14
+Creating dummy raster for value 0
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 1
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 2
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 3
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 4
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 5
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 6
+20 20
+Aggregating dummy raster by a factor of 20
+Cleaning up year 2004.
+[2004] completed in 752.1s. success=True
+
+2026-07-07 19:32:42,708 [2005] return code = 0
+2026-07-07 19:32:42,708 [2005] stdout:
+Reclassifying LULC raster for year 2005.
+0
+2
+4
+6
+8
+10
+12
+14
+Creating dummy raster for value 0
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 1
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 2
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 3
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 4
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 5
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 6
+20 20
+Aggregating dummy raster by a factor of 20
+Cleaning up year 2005.
+[2005] completed in 750.6s. success=True
+
+2026-07-07 19:32:42,708 [2006] return code = 0
+2026-07-07 19:32:42,708 [2006] stdout:
+Reclassifying LULC raster for year 2006.
+0
+2
+4
+6
+8
+10
+12
+14
+Creating dummy raster for value 0
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 1
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 2
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 3
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 4
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 5
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 6
+20 20
+Aggregating dummy raster by a factor of 20
+Cleaning up year 2006.
+[2006] completed in 749.9s. success=True
+
+2026-07-07 19:32:42,708 [2007] return code = 0
+2026-07-07 19:32:42,708 [2007] stdout:
+Reclassifying LULC raster for year 2007.
+0
+2
+4
+6
+8
+10
+12
+14
+Creating dummy raster for value 0
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 1
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 2
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 3
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 4
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 5
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 6
+20 20
+Aggregating dummy raster by a factor of 20
+Cleaning up year 2007.
+[2007] completed in 747.3s. success=True
+
+2026-07-07 19:32:42,708 [2008] return code = 0
+2026-07-07 19:32:42,708 [2008] stdout:
+Reclassifying LULC raster for year 2008.
+0
+2
+4
+6
+8
+10
+12
+14
+Creating dummy raster for value 0
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 1
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 2
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 3
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 4
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 5
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 6
+20 20
+Aggregating dummy raster by a factor of 20
+Cleaning up year 2008.
+[2008] completed in 750.8s. success=True
+
+2026-07-07 19:32:42,708 [2009] return code = 0
+2026-07-07 19:32:42,708 [2009] stdout:
+Reclassifying LULC raster for year 2009.
+0
+2
+4
+6
+8
+10
+12
+14
+Creating dummy raster for value 0
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 1
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 2
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 3
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 4
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 5
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 6
+20 20
+Aggregating dummy raster by a factor of 20
+Cleaning up year 2009.
+[2009] completed in 756.1s. success=True
+
+2026-07-07 19:32:42,708 [2010] return code = 0
+2026-07-07 19:32:42,708 [2010] stdout:
+Reclassifying LULC raster for year 2010.
+0
+2
+4
+6
+8
+10
+12
+14
+Creating dummy raster for value 0
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 1
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 2
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 3
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 4
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 5
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 6
+20 20
+Aggregating dummy raster by a factor of 20
+Cleaning up year 2010.
+[2010] completed in 731.5s. success=True
+
+2026-07-07 19:32:42,708 [2011] return code = 0
+2026-07-07 19:32:42,708 [2011] stdout:
+Reclassifying LULC raster for year 2011.
+0
+2
+4
+6
+8
+10
+12
+14
+Creating dummy raster for value 0
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 1
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 2
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 3
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 4
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 5
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 6
+20 20
+Aggregating dummy raster by a factor of 20
+Cleaning up year 2011.
+[2011] completed in 740.7s. success=True
+
+2026-07-07 19:32:42,708 [2012] return code = 0
+2026-07-07 19:32:42,708 [2012] stdout:
+Reclassifying LULC raster for year 2012.
+0
+2
+4
+6
+8
+10
+12
+14
+Creating dummy raster for value 0
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 1
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 2
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 3
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 4
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 5
+20 20
+Aggregating dummy raster by a factor of 20
+Creating dummy raster for value 6
+20 20
+Aggregating dummy raster by a factor of 20
+Cleaning up year 2012.
+[2012] completed in 728.1s. success=True
+
+2026-07-07 19:32:42,708 All years complete. Took 0.0033854166666666668 minutes.
+2026-07-07 19:32:42,708 Done with ftp2rasterLULC.py.

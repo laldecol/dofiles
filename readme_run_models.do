@@ -30,7 +30,7 @@ if 1==1{;
 ** Step 2: Calibrate economic and pollution model  **;
 *****************************************************;
 
-if 1==2{;
+if 1==1{;
 	cd ../../../data_processing_calibration/dofiles;
 	do readme_run_calibration.do;
 	cd ../../data_processing/dofiles_la/dofiles;
@@ -40,7 +40,7 @@ if 1==2{;
 ** Step 3: Prepare maps  **;
 ***************************;
 
-if 1==2{;
+if 1==1{;
 	cd prepare_mapping;
 	do country_map_prep.do;
 	do country_region_map_prep.do;

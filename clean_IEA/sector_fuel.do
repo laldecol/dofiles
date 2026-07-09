@@ -20,6 +20,7 @@ set tracedepth 1;
 *1. Imports standard conversion factor file, fuel group file, and IEA fuel use;
 
 	*Import standard conversion factor file;
+	#delimit;
 	import excel "../../../data/IEA/source/conversion_factors/standard/standard_cf.xls", sheet("conversion_factors")
 	firstrow clear;
 	rename IEA_NAME fuel_units;
@@ -69,7 +70,7 @@ set tracedepth 1;
 				sector_=="Transformation";
 	
 	*Merge conversion factors and convert consumption to ktoe;
-	merge m:1 fuel_units using `cf', keepusing(cf cf_units) nogen;
+	merge m:1 fuel_units using `cf', keepusing(cf cf_units) nogen; 
 	
 	*Standardize conversion rates to match fuel units;
 	replace cf=cf*`toe_per_TJ' 					if cf_units=="TJ/kt";
@@ -84,9 +85,10 @@ set tracedepth 1;
 	replace cf=`toe_per_TJ' 					if units=="TJ";
 	replace cf_units="toe/TJ"					if units=="TJ";
 	
+
 	*Convert to MTOE;
 	gen fuel_use_mtoe=source_*cf/1000000;
-		
+	
 	*Merge fuel group variable;
 	drop _merge;
 	merge m:1 fuel_units using `groups';
@@ -159,7 +161,6 @@ set tracedepth 1;
 	reshape wide IEA_*, i(country) j(time);
 	
 	*Label reshaped variables to keep track of units;
-	#delimit;
 	local fuel_types Coal Oil Other;
 	set trace on;
 	set tracedepth 2;
@@ -190,11 +191,13 @@ set tracedepth 1;
 	drop if gpw_v4_national_identifier_gri==.;
 	
 	
-	
+	compress;
+	sort gpw_v4_national_identifier_gri;
 	save "../../../data/IEA/generated/energy_use/country_level.dta", replace;
 		
 	use "..\\..\\..\\data\\dtas\\analyze_me.dta", clear;
 	compress;
+	sort gpw_v4_national_identifier_gri;
 	merge m:1 gpw_v4_national_identifier_gri using "../../../data/IEA/generated/energy_use/country_level.dta", nogen;
 	
 	drop if uber_code==.;

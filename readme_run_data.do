@@ -11,7 +11,6 @@ last modified: Jan 9, 2019, by la
 clear all;
 cls;
 set trace off;
-set tracedepth 2;
 set more off;
 pause on;
 local python "C:\Python27\ArcGIS10.8\python.exe";
@@ -19,7 +18,7 @@ local python "C:\Python27\ArcGIS10.8\python.exe";
 **********************************************************;
 **   Step 1: Aggregate source GPW to use as ubergrid    **;
 **********************************************************;
-if 1==1{;
+if 1==2{;
 	cd aggregate_raster;
 	shell `python' aggregate_raster.py;
 	cd ..;
@@ -30,7 +29,7 @@ if 1==1{;
 **********************************************************;
 *2.1 Reprojects GPWv4 rasters, extracts extent and settings (as template for ubergrid);
 
-if 1==1{;
+if 1==2{;
 	cd make_xy_extent;
 	shell `python' make_xy_extent.py;
 	cd ..;
@@ -40,7 +39,7 @@ if 1==1{;
 *2.2 Saves ubergrid settings (boundary coordinates, cell sizes, row and col numbers)
 *in a dta (data\projections\generated\settings.dta) for future reference.;
 
-if 1==1{;
+if 1==2{;
 	cd settings2dta;
 	do settings2dta.do;
 	cd ..;
@@ -53,13 +52,14 @@ if 1==1{;
 *Averages all daily AOD files from the years set in daily2yearly.py into 
 *yearly ones, by satellite. ;
 
-if 1==1{;
+if 1==2{;
 	cd daily2yearlyAOD;
 	shell `python' daily2yearlyAOD.py;
 	cd ..;
 	*Successfully ran daily2yearlyAOD.py;
 	};
-
+//NEW SERVER NOTE: PENDING FIX 
+	
 ***************************************************************;
 **    Step 4: Average monthly fire rasters into yearly ones     **;
 ***************************************************************;
@@ -72,7 +72,8 @@ if 1==2{;
 	cd ..;
 	*Successfully ran monthly2yearlyFIRE.py;
 	};
-
+//NEW SERVER NOTE: PENDING FIX 
+	
 ************************************************************************;
 **    Step 5: Download and aggregate LULC tiles into world raster     **;
 ************************************************************************;
@@ -82,7 +83,7 @@ if 1==2{;
 *Avoid running it if you don't want to use disk space for intermediate data
 *while it runs;
 
-if 1==1{;
+if 1==2{;
 	cd ftp2rasterLULC;
 	shell `python' ftp2rasterLULC.py;
 	cd ..;
@@ -96,20 +97,21 @@ if 1==1{;
 *and uses the settings from make_xy_extent.py to transform them into standard
 *ubergrids. (This program depends on the projection.);
 
-if 1==1{;
+if 1==2{;
 	cd raster2ubergrid;
 	shell `python' raster2ubergrid.py;
 	cd ..;
 	*Successfully ran raster2ubergrid.py;
 	};
-
+//NEW SERVER NOTE: PENDING FIX. NO YEARLY CRU GENERATED IN PROJECT
+	
 **********************************************************************;
 **    Step 5: Transform vector shapefiles into ubergrid rasters     **;
 **********************************************************************;
 *Takes all vector shapefiles from the directories set in polygon2ubergrid.py
 *and turns them into ubergrids.;
 
-if 1==1{;
+if 1==2{;
 	cd polygon2ubergrid;
 	shell `python' polygon2ubergrid.py;
 	cd ..;
@@ -122,7 +124,7 @@ if 1==1{;
 *6.1 Takes all ubergrid rasters specified in raster2list.py and exports their
 * data into .txt files. ;
 
-if 1==1{;
+if 1==2{;
 	cd raster2list;
 	shell `python' raster2list.py;
 	cd ..;
@@ -130,7 +132,7 @@ if 1==1{;
 	};
 
 *6.2 Cleans GPW and LULC .txt filenames so they can be processed by stata;
-if 1==1{;
+if 1==2{;
 	cd clean_txt_names;
 	shell `python' clean_txt_names.py;
 	cd ..;
@@ -142,7 +144,7 @@ if 1==1{;
 ********************************************;
 *Converts ubergrid .txt files to .dta;
 
-if 1==1{;
+if 1==2{;
 	cd table2dta;
 	
 	do table2dta.do "..\..\..\data\MODIS_AOD\generated\yearly\ubergrid\table" "*avg.txt";
@@ -164,20 +166,20 @@ if 1==1{;
 ***********************************;
 *Merges all ubergrid .dta files from the specified directories together and saves them.;
 
-if 1==1{;
+if 1==2{;
 	cd mergedtas;
 	do mergedtas.do 9
 	"MODIS_AOD\generated\yearly\ubergrid\dtas"
 	"GPW4\generated\projected\dtas"
 	"GPW4\generated\gpw-v4-national-identifier-grid\ubergrid\dtas"
 	"GPW4\generated\gpw-v4-data-quality-indicators-mean-administrative-unit-area\ubergrid\dtas"
-	"MODIS_FIRE\generated\yearly\ubergrid\dtas"
 	"CRU\generated\yearly\ubergrid\dtas"
+	"MODIS_FIRE\generated\yearly\ubergrid\dtas"
 	"MODIS_LULC\generated\yearly\dummy\ubergrid\dtas"
 	"CCMP\generated\yearly\ubergrid\dtas"
 	"boundaries\generated\ubergrid\dtas"
 	;
-	
+
 	cd ..;
 	*Successfully ran mergedtas.do;
 	};
@@ -188,7 +190,7 @@ if 1==1{;
 *Cleans and merges sources of country level data, preserving all pixels;
 *BPclean defines a EU country and must be run last;
 
-if 1==1{;
+if 1==2{;
 
 	cd clean_IIASA;
 	do process_IIASA_data_allfiles.do;
@@ -204,7 +206,7 @@ if 1==1{;
 *Cleans and merges sources of country level data, preserving all pixels;
 *BPclean defines a EU country and must be run last;
 
-if 1==1{;
+if 1==2{;
 
 	cd mergecountrydata;
 	*Penn World Tables GDP data;
@@ -231,7 +233,7 @@ if 1==1{;
 ********************************************************;
 ************;
 
-if 1==1{;
+if 1==2{;
 	cd model_inputs;
 	do pixel_data_prep.do;
 	do save_samples.do;

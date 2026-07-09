@@ -77,6 +77,7 @@ log using IEAclean.log, replace;
 		replace flow="Electr_Auto_CHP" if flow=="Electricity output (GWh)autoproducer CHP plants";
 		replace flow="Heat_Output" if flow=="Heat output (TJ)";
 		
+		replace flow=word(flow,1);
 		*Declare locals and tempfiles for merge;
 		
 		tempfile temp`filecount';

@@ -1,7 +1,294 @@
-2021-06-23 11:01:53,217 Starting daily2yearlyAOD.py.
-2021-06-23 11:01:53,217 Cleaned and set up output folders
-2021-06-23 11:01:53,233 Processing satellites T A
-2021-06-23 11:01:53,233 Start year is 2000
-2021-06-23 11:01:53,233 End year is 2018
-2021-06-23 11:49:35,717 Done with daily2yearlyAOD.py.
-2021-06-23 11:49:35,720 Program took 47.6566124917 minutes for 38 satelliteXyears.
+2026-07-07 17:01:17,465 Starting daily2yearlyAOD.py.
+2026-07-07 17:01:17,608 Cleaned temp/ directory.
+2026-07-07 17:01:18,515 Cleaned and set up output folders.
+2026-07-07 17:01:18,515 Processing satellites T
+2026-07-07 17:01:18,515 Start year is 2000
+2026-07-07 17:01:18,515 End year is 2018
+2026-07-07 17:01:18,515 Run 1: submitting 19 satellite-years to pool.
+2026-07-07 18:22:22,473 [T2000] return code = 0
+2026-07-07 18:22:22,520 [T2000] stdout:
+17:01:20 Worker started (PID 20284) -- about to import arcpy
+17:01:27 arcpy imported successfully
+17:01:27 Scratch workspace: S:\particulates\data_processing\dofiles_la\dofiles\daily2yearlyAOD\temp\scratch_20284
+17:01:27 Calling CheckOutExtension('Spatial')...
+17:01:27 CheckOutExtension returned: CheckedOut
+year is 2000
+sat is Terra
+17:01:27 T2000: found 298 rasters
+17:01:27 T2000: starting CellStatistics
+17:41:09 T2000: CellStatistics done, saving...
+17:46:14 T2000: done
+[T2000] completed in 295.7s. success=True
+
+2026-07-07 18:22:22,520 [T2001] return code = 0
+2026-07-07 18:22:22,520 [T2001] stdout:
+17:01:20 Worker started (PID 13940) -- about to import arcpy
+17:01:31 arcpy imported successfully
+17:01:32 Scratch workspace: S:\particulates\data_processing\dofiles_la\dofiles\daily2yearlyAOD\temp\scratch_13940
+17:01:32 Calling CheckOutExtension('Spatial')...
+17:01:32 CheckOutExtension returned: CheckedOut
+year is 2001
+sat is Terra
+17:01:32 T2001: found 348 rasters
+17:01:32 T2001: starting CellStatistics
+17:43:37 T2001: CellStatistics done, saving...
+17:50:40 T2001: done
+[T2001] completed in 378.5s. success=True
+
+2026-07-07 18:22:22,520 [T2002] return code = 0
+2026-07-07 18:22:22,520 [T2002] stdout:
+17:01:20 Worker started (PID 12484) -- about to import arcpy
+17:01:25 arcpy imported successfully
+17:01:25 Scratch workspace: S:\particulates\data_processing\dofiles_la\dofiles\daily2yearlyAOD\temp\scratch_12484
+17:01:25 Calling CheckOutExtension('Spatial')...
+17:01:25 CheckOutExtension returned: CheckedOut
+year is 2002
+sat is Terra
+17:01:25 T2002: found 356 rasters
+17:01:25 T2002: starting CellStatistics
+17:43:07 T2002: CellStatistics done, saving...
+17:49:49 T2002: done
+[T2002] completed in 355.3s. success=True
+
+2026-07-07 18:22:22,520 [T2003] return code = 0
+2026-07-07 18:22:22,520 [T2003] stdout:
+17:01:20 Worker started (PID 6060) -- about to import arcpy
+17:01:29 arcpy imported successfully
+17:01:29 Scratch workspace: S:\particulates\data_processing\dofiles_la\dofiles\daily2yearlyAOD\temp\scratch_6060
+17:01:29 Calling CheckOutExtension('Spatial')...
+17:01:30 CheckOutExtension returned: CheckedOut
+year is 2003
+sat is Terra
+17:01:30 T2003: found 357 rasters
+17:01:30 T2003: starting CellStatistics
+17:43:39 T2003: CellStatistics done, saving...
+17:51:53 T2003: done
+[T2003] completed in 420.2s. success=True
+
+2026-07-07 18:22:22,520 [T2004] return code = 0
+2026-07-07 18:22:22,520 [T2004] stdout:
+17:01:20 Worker started (PID 20852) -- about to import arcpy
+17:01:37 arcpy imported successfully
+17:01:38 Scratch workspace: S:\particulates\data_processing\dofiles_la\dofiles\daily2yearlyAOD\temp\scratch_20852
+17:01:38 Calling CheckOutExtension('Spatial')...
+17:01:38 CheckOutExtension returned: CheckedOut
+year is 2004
+sat is Terra
+17:01:38 T2004: found 366 rasters
+17:01:38 T2004: starting CellStatistics
+17:43:43 T2004: CellStatistics done, saving...
+17:51:45 T2004: done
+[T2004] completed in 432.2s. success=True
+
+2026-07-07 18:22:22,520 [T2005] return code = 0
+2026-07-07 18:22:22,520 [T2005] stdout:
+17:01:20 Worker started (PID 19664) -- about to import arcpy
+17:01:44 arcpy imported successfully
+17:01:44 Scratch workspace: S:\particulates\data_processing\dofiles_la\dofiles\daily2yearlyAOD\temp\scratch_19664
+17:01:44 Calling CheckOutExtension('Spatial')...
+17:01:44 CheckOutExtension returned: CheckedOut
+year is 2005
+sat is Terra
+17:01:45 T2005: found 365 rasters
+17:01:45 T2005: starting CellStatistics
+17:43:43 T2005: CellStatistics done, saving...
+17:55:00 T2005: done
+[T2005] completed in 537.8s. success=True
+
+2026-07-07 18:22:22,520 [T2006] return code = 0
+2026-07-07 18:22:22,520 [T2006] stdout:
+17:01:20 Worker started (PID 21096) -- about to import arcpy
+17:01:59 arcpy imported successfully
+17:01:59 Scratch workspace: S:\particulates\data_processing\dofiles_la\dofiles\daily2yearlyAOD\temp\scratch_21096
+17:01:59 Calling CheckOutExtension('Spatial')...
+17:01:59 CheckOutExtension returned: CheckedOut
+year is 2006
+sat is Terra
+17:01:59 T2006: found 365 rasters
+17:01:59 T2006: starting CellStatistics
+17:43:43 T2006: CellStatistics done, saving...
+17:53:52 T2006: done
+[T2006] completed in 475.9s. success=True
+
+2026-07-07 18:22:22,520 [T2007] return code = 0
+2026-07-07 18:22:22,520 [T2007] stdout:
+17:01:20 Worker started (PID 3188) -- about to import arcpy
+17:01:51 arcpy imported successfully
+17:01:52 Scratch workspace: S:\particulates\data_processing\dofiles_la\dofiles\daily2yearlyAOD\temp\scratch_3188
+17:01:52 Calling CheckOutExtension('Spatial')...
+17:01:52 CheckOutExtension returned: CheckedOut
+year is 2007
+sat is Terra
+17:01:52 T2007: found 365 rasters
+17:01:52 T2007: starting CellStatistics
+17:43:43 T2007: CellStatistics done, saving...
+17:54:23 T2007: done
+[T2007] completed in 614.1s. success=True
+
+2026-07-07 18:22:22,520 [T2008] return code = 0
+2026-07-07 18:22:22,520 [T2008] stdout:
+17:46:20 Worker started (PID 13932) -- about to import arcpy
+17:46:36 arcpy imported successfully
+17:46:41 Scratch workspace: S:\particulates\data_processing\dofiles_la\dofiles\daily2yearlyAOD\temp\scratch_13932
+17:46:41 Calling CheckOutExtension('Spatial')...
+17:46:41 CheckOutExtension returned: CheckedOut
+year is 2008
+sat is Terra
+17:46:41 T2008: found 364 rasters
+17:46:41 T2008: starting CellStatistics
+17:47:29 T2008: CellStatistics done, saving...
+17:57:42 T2008: done
+[T2008] completed in 427.7s. success=True
+
+2026-07-07 18:22:22,520 [T2009] return code = 0
+2026-07-07 18:22:22,520 [T2009] stdout:
+17:49:55 Worker started (PID 5016) -- about to import arcpy
+17:50:03 arcpy imported successfully
+17:50:05 Scratch workspace: S:\particulates\data_processing\dofiles_la\dofiles\daily2yearlyAOD\temp\scratch_5016
+17:50:05 Calling CheckOutExtension('Spatial')...
+17:50:05 CheckOutExtension returned: CheckedOut
+year is 2009
+sat is Terra
+17:50:05 T2009: found 365 rasters
+17:50:05 T2009: starting CellStatistics
+17:50:53 T2009: CellStatistics done, saving...
+18:04:37 T2009: done
+[T2009] completed in 570.5s. success=True
+
+2026-07-07 18:22:22,520 [T2010] return code = 0
+2026-07-07 18:22:22,520 [T2010] stdout:
+17:50:43 Worker started (PID 21944) -- about to import arcpy
+17:50:47 arcpy imported successfully
+17:50:47 Scratch workspace: S:\particulates\data_processing\dofiles_la\dofiles\daily2yearlyAOD\temp\scratch_21944
+17:50:47 Calling CheckOutExtension('Spatial')...
+17:50:47 CheckOutExtension returned: CheckedOut
+year is 2010
+sat is Terra
+17:50:47 T2010: found 365 rasters
+17:50:47 T2010: starting CellStatistics
+17:51:37 T2010: CellStatistics done, saving...
+18:06:02 T2010: done
+[T2010] completed in 597.8s. success=True
+
+2026-07-07 18:22:22,520 [T2011] return code = 0
+2026-07-07 18:22:22,520 [T2011] stdout:
+17:51:49 Worker started (PID 19804) -- about to import arcpy
+17:51:54 arcpy imported successfully
+17:51:54 Scratch workspace: S:\particulates\data_processing\dofiles_la\dofiles\daily2yearlyAOD\temp\scratch_19804
+17:51:54 Calling CheckOutExtension('Spatial')...
+17:51:54 CheckOutExtension returned: CheckedOut
+year is 2011
+sat is Terra
+17:51:54 T2011: found 339 rasters
+17:51:54 T2011: starting CellStatistics
+17:52:41 T2011: CellStatistics done, saving...
+18:06:14 T2011: done
+[T2011] completed in 569.8s. success=True
+
+2026-07-07 18:22:22,520 [T2012] return code = 0
+2026-07-07 18:22:22,520 [T2012] stdout:
+17:51:56 Worker started (PID 17692) -- about to import arcpy
+17:52:00 arcpy imported successfully
+17:52:01 Scratch workspace: S:\particulates\data_processing\dofiles_la\dofiles\daily2yearlyAOD\temp\scratch_17692
+17:52:01 Calling CheckOutExtension('Spatial')...
+17:52:01 CheckOutExtension returned: CheckedOut
+year is 2012
+sat is Terra
+17:52:01 T2012: found 304 rasters
+17:52:01 T2012: starting CellStatistics
+17:52:43 T2012: CellStatistics done, saving...
+18:04:46 T2012: done
+[T2012] completed in 499.9s. success=True
+
+2026-07-07 18:22:22,520 [T2013] return code = 0
+2026-07-07 18:22:22,520 [T2013] stdout:
+17:53:58 Worker started (PID 21644) -- about to import arcpy
+17:54:14 arcpy imported successfully
+17:54:20 Scratch workspace: S:\particulates\data_processing\dofiles_la\dofiles\daily2yearlyAOD\temp\scratch_21644
+17:54:20 Calling CheckOutExtension('Spatial')...
+17:54:20 CheckOutExtension returned: CheckedOut
+year is 2013
+sat is Terra
+17:54:20 T2013: found 352 rasters
+17:54:20 T2013: starting CellStatistics
+17:55:07 T2013: CellStatistics done, saving...
+18:08:24 T2013: done
+[T2013] completed in 574.2s. success=True
+
+2026-07-07 18:22:22,520 [T2014] return code = 0
+2026-07-07 18:22:22,520 [T2014] stdout:
+17:54:26 Worker started (PID 1668) -- about to import arcpy
+17:54:31 arcpy imported successfully
+17:54:31 Scratch workspace: S:\particulates\data_processing\dofiles_la\dofiles\daily2yearlyAOD\temp\scratch_1668
+17:54:31 Calling CheckOutExtension('Spatial')...
+17:54:31 CheckOutExtension returned: CheckedOut
+year is 2014
+sat is Terra
+17:54:31 T2014: found 361 rasters
+17:54:31 T2014: starting CellStatistics
+17:55:20 T2014: CellStatistics done, saving...
+18:08:39 T2014: done
+[T2014] completed in 580.2s. success=True
+
+2026-07-07 18:22:22,520 [T2015] return code = 0
+2026-07-07 18:22:22,520 [T2015] stdout:
+17:55:04 Worker started (PID 6380) -- about to import arcpy
+17:55:08 arcpy imported successfully
+17:55:08 Scratch workspace: S:\particulates\data_processing\dofiles_la\dofiles\daily2yearlyAOD\temp\scratch_6380
+17:55:08 Calling CheckOutExtension('Spatial')...
+17:55:08 CheckOutExtension returned: CheckedOut
+year is 2015
+sat is Terra
+17:55:08 T2015: found 365 rasters
+17:55:09 T2015: starting CellStatistics
+17:56:20 T2015: CellStatistics done, saving...
+18:13:42 T2015: done
+[T2015] completed in 708.5s. success=True
+
+2026-07-07 18:22:22,520 [T2016] return code = 0
+2026-07-07 18:22:22,520 [T2016] stdout:
+17:57:48 Worker started (PID 23228) -- about to import arcpy
+17:58:09 arcpy imported successfully
+17:58:10 Scratch workspace: S:\particulates\data_processing\dofiles_la\dofiles\daily2yearlyAOD\temp\scratch_23228
+17:58:10 Calling CheckOutExtension('Spatial')...
+17:58:10 CheckOutExtension returned: CheckedOut
+year is 2016
+sat is Terra
+17:58:11 T2016: found 357 rasters
+17:58:11 T2016: starting CellStatistics
+17:59:01 T2016: CellStatistics done, saving...
+18:10:10 T2016: done
+[T2016] completed in 491.5s. success=True
+
+2026-07-07 18:22:22,520 [T2017] return code = 0
+2026-07-07 18:22:22,520 [T2017] stdout:
+18:04:44 Worker started (PID 22412) -- about to import arcpy
+18:04:54 arcpy imported successfully
+18:04:56 Scratch workspace: S:\particulates\data_processing\dofiles_la\dofiles\daily2yearlyAOD\temp\scratch_22412
+18:04:56 Calling CheckOutExtension('Spatial')...
+18:04:56 CheckOutExtension returned: CheckedOut
+year is 2017
+sat is Terra
+18:04:56 T2017: found 365 rasters
+18:04:56 T2017: starting CellStatistics
+18:05:48 T2017: CellStatistics done, saving...
+18:22:20 T2017: done
+[T2017] completed in 628.0s. success=True
+
+2026-07-07 18:22:22,520 [T2018] return code = 0
+2026-07-07 18:22:22,520 [T2018] stdout:
+18:04:50 Worker started (PID 13752) -- about to import arcpy
+18:04:55 arcpy imported successfully
+18:04:56 Scratch workspace: S:\particulates\data_processing\dofiles_la\dofiles\daily2yearlyAOD\temp\scratch_13752
+18:04:56 Calling CheckOutExtension('Spatial')...
+18:04:56 CheckOutExtension returned: CheckedOut
+year is 2018
+sat is Terra
+18:04:56 T2018: found 243 rasters
+18:04:56 T2018: starting CellStatistics
+18:05:30 T2018: CellStatistics done, saving...
+18:17:21 T2018: done
+[T2018] completed in 454.2s. success=True
+
+2026-07-07 18:22:22,520 All satellite-years complete. Took 0.003125 minutes for 19 items.
+2026-07-07 18:22:22,520 Done with daily2yearlyAOD.py.

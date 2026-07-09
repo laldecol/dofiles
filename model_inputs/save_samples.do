@@ -110,9 +110,9 @@ area;
 	vAGREMPL* vAGRTOTL* vINDEMPL* vINDMANF* vINDTOTL* vSRVEMPL* vSRVTOTL*
 	rgdpe2010, by(gpw_v4_national_identifier_gri country);
 	
-	foreach v of var * {
-		label var `v' "`l`v''"
-	}
+	foreach v of var * {;
+		label var `v' "`l`v''";
+	};
 	
 	sum rgdpe2010, detail;
 	gen hic=cond(rgdpe2010>=`r(p50)', 1, 0, .) if rgdpe2010!=.;

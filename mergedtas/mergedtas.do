@@ -12,13 +12,16 @@ cls;
 set more off;
 pause off;
 set type double;
+set trace off;
+cap log close;
+log using "mergedtas.log"	, replace;
 
 **Store Current Directory/;
 local dofiledir : pwd;
 dis "`dofiledir'";
 
 ** Change Directory/;
-cd "..\\..\\..\\data";
+cd "../../../data";
 
 ***************;
 *Define locals*;
@@ -38,7 +41,7 @@ local dirlist `dirlist' ``i'';
 };
 
 **Settings: number of columns and rows, cellsizes, extent;
-use "projections\\generated\\settings.dta";
+use "projections/generated/settings.dta";
 
 *read settings from settings.dta, save values in locals.;
 foreach var of varlist _all{;
@@ -71,7 +74,14 @@ cd "`dir'";
 
 foreach element of local dtalist{;
 dis "`element'";
+
+*In order to diagnose the input files, the merge 1:1 line can be commented out;
+*and replaced by a use; 
+sleep 100;
 merge 1:1 v1 using "`element'", nogen;
+*use "`element'", clear;
+*describe ;
+
 };
 
 };
@@ -86,7 +96,7 @@ dis `var';
 replace `var'=. if `var'==-9999;
 };
 
-merge m:1 gpw_v4_national_identifier_gri using "GPW4\source\gpw-v4-national-identifier-grid\idnames.dta";
+merge m:1 gpw_v4_national_identifier_gri using "GPW4/source/gpw-v4-national-identifier-grid/idnames.dta";
 drop if _merge==2;
 drop _merge;
 
@@ -99,7 +109,7 @@ foreach var of varlist `r(varlist)' {;
 **Generate basic variables**;
 ****************************;
 *Rename and rescale AOD variables;
-foreach AODvar of varlist Terra* Aqua*{;
+foreach AODvar of varlist Terra* {;
 	local newname=subinstr("`AODvar'", "avg","",.);
 	dis `newname';
 	gen `newname'=`AODvar'/1000 ;
@@ -109,7 +119,7 @@ foreach AODvar of varlist Terra* Aqua*{;
 
 *Generate exposure for available years;
 forvalues year=2000(5)2015{;
-gen exposure`year' = Terra`year' * projected_aggregated_gpw_`year';
+gen exposure`year' = Terra`year' * aggregated_gpw_`year'; *2026-07-08: corrected variable name (projected_ prefix never exists in pipeline).
 label var exposure`year' "Terra AOD times population, `year'";
 };
 
@@ -131,7 +141,8 @@ gen lat=`TOP'-`CELLSIZEY'*(rowno-1);
 
 gen area=(cos(lat*c(pi)/180)+cos((lat+`CELLSIZEY')*c(pi)/180))*2*(c(pi)*`CELLSIZEX'*`earthradius'/360)^2;
 
-save "dtas\analyze_me_pixel.dta", replace;
+save "dtas/analyze_me_pixel.dta", replace;
 
 ** Back to original folder/;
 cd "`dofiledir'";
+log close;

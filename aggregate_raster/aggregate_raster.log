@@ -1,6 +1,6 @@
-2021-06-22 13:20:28,816 Starting aggregate_raster.py.
-2021-06-22 13:20:28,832 Rasters are going to be aggregated by a factor of 10
-2021-06-22 13:20:59,220 Aggregation for year 2000 was completed in 30.3903324 seconds.
-2021-06-22 13:21:18,756 Aggregation for year 2005 was completed in 19.5311144 seconds.
-2021-06-22 13:21:38,209 Aggregation for year 2010 was completed in 19.4518428 seconds.
-2021-06-22 13:21:57,687 Aggregation for year 2015 was completed in 19.4750279 seconds.
+2026-07-06 14:28:16,602 Starting aggregate_raster.py.
+2026-07-06 14:28:16,633 Rasters are going to be aggregated by a factor of 10
+2026-07-06 14:28:48,265 Aggregation for year 2000 was completed in 18.4375 seconds.
+2026-07-06 14:29:07,363 Aggregation for year 2005 was completed in 15.921875 seconds.
+2026-07-06 14:29:26,480 Aggregation for year 2010 was completed in 15.546875 seconds.
+2026-07-06 14:29:45,512 Aggregation for year 2015 was completed in 15.625 seconds.
