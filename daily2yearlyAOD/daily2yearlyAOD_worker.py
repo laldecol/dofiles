@@ -60,14 +60,16 @@ def aggregate(satyear, prod):
 
     # Set directories.
     data_aod = "../../../data/MODIS_AOD"
+    # in_folder="S:\particulates\data_processing\data\MODIS_AOD\\arcpro_unit_tests\daily_AOD"
     in_folder = data_aod + "/source/daily"
     out_folder = data_aod + "/generated/yearly"
+    # out_folder= "S:\particulates\data_processing\data\MODIS_AOD\\arcpro_unit_tests\yearly_aggregated"
     raster_name = sat + year + "avg.tif"
     output_raster = out_folder + "/" + raster_name
-
+     
     try:
         # Build list of daily .tif files for this satellite and year.
-        rasters = glob.glob(in_folder + "/" + prod + "_" + sat + "_" + year + "*tif")
+        rasters = glob.glob(in_folder + "/*" + prod + "_" + sat + "_" + year + "*tif")
         rasters = [os.path.abspath(r).replace('\\', '/') for r in rasters]
         _wlog("%s: found %d rasters" % (satyear, len(rasters)))
 
@@ -81,14 +83,21 @@ def aggregate(satyear, prod):
         # statistics across co-registered rasters of the same extent; "DATA" means
         # NoData cells are excluded from each cell's mean rather than forcing NoData.
         _wlog("%s: starting CellStatistics" % satyear)
-        mean_raster = CellStatistics(rasters, "MEAN", "DATA")
-        _wlog("%s: CellStatistics done, saving..." % satyear)
-        mean_raster.save(output_raster)
-        arcpy.DefineProjection_management(output_raster, sr)
-
-        _wlog("%s: done" % satyear)
+        
+    
+        with arcpy.EnvManager(outputCoordinateSystem='GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]]', extent='-180 -59.9999999999918 180.000000000002 85.0000000000092 GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]]', cellSize="S:\\particulates\\data_processing\\data\\GPW4\\generated\\aggregated\\aggregated_gpw_2010.tif", geographicTransformations=None):
+            out_raster = arcpy.ia.CellStatistics(
+            in_rasters_or_constants=rasters,
+            statistics_type="MEAN",
+            ignore_nodata="DATA",
+            process_as_multiband="SINGLE_BAND",
+            percentile_value=90,
+            percentile_interpolation_type="AUTO_DETECT"
+            )
+            out_raster.save(output_raster)
+            _wlog("%s: CellStatistics done, saving..." % satyear)
+            _wlog("%s: done" % satyear)
         return True
-
     except Exception as e:
         tb = sys.exc_info()[2]
         print("An error occured on line %i" % tb.tb_lineno)
@@ -99,6 +108,10 @@ if __name__ == "__main__":
     # Entry point when called by propy.bat from the orchestrator.
     prod    = sys.argv[1]
     satyear = sys.argv[2]
+
+    #Test for debug 
+    # prod="3K"
+    # satyear="T2000"
 
     t0 = time.process_time()
     success = aggregate(satyear, prod)
