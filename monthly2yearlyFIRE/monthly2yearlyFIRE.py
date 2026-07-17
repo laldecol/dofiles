@@ -40,9 +40,11 @@ def timeaggregate(expath, output_raster):
         # Per-cell mean across all monthly rasters, ignoring NoData.
         # 2026-07-07: Replaced MosaicToNewRaster with CellStatistics (same fix as
         # daily2yearlyAOD_worker.py -- MosaicToNewRaster is wrong for time-averaging).
-        mean_raster = CellStatistics(rasters, "MEAN", "DATA")
-        mean_raster.save(output_raster)
+        with arcpy.EnvManager(outputCoordinateSystem='GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]]', extent='-180 -59.9999999999918 180.000000000002 85.0000000000092 GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]]', cellSize="S:\\particulates\\data_processing\\data\\GPW4\\generated\\aggregated\\aggregated_gpw_2010.tif", geographicTransformations=None):
 
+            mean_raster = CellStatistics(rasters, "MEAN", "DATA")
+            mean_raster.save(output_raster)
+        return True
         print(inputs)
 
     except Exception as e:
