@@ -184,13 +184,33 @@ def convert_hdf(hdfpath, outfolder):
             single_band = ExtractBand(fireMask_path, [bandnum])
             single_band.save(band_sino)
 
+            arcpy.management.DefineProjection(
+                in_dataset=band_sino,
+                coor_system='PROJCS["World_Sinusoidal",GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]],PROJECTION["Sinusoidal"],PARAMETER["False_Easting",0.0],PARAMETER["False_Northing",0.0],PARAMETER["Central_Meridian",0.0],UNIT["Meter",1.0]]'
+            )
+
+
             # 4b. Reproject from sinusoidal (WKID 54008) to WGS84 GCS.
             # NEAREST resampling preserves integer fire-class codes (0-9).
             _wlog("%s: reprojecting band %d to WGS84" % (outname, bandnum))
+    #         arcpy.management.ProjectRaster(
+    # in_raster="D1_Y0001_H05_V_B1_sino.tif",
+    # out_raster=r"S:\particulates\data_processing\data\MODIS_FIRE\generated\unit_tests\inter_test",
+    # out_coor_system='GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]]',
+    # resampling_type="NEAREST",
+    # cell_size="9.0133729813833E-06 9.0133729813833E-06",
+    # geographic_transform=None,
+    # Registration_Point=None,
+    # in_coor_system='PROJCS["World_Sinusoidal",GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]],PROJECTION["Sinusoidal"],PARAMETER["False_Easting",0.0],PARAMETER["False_Northing",0.0],PARAMETER["Central_Meridian",0.0],UNIT["Meter",1.0]]',
+    # vertical="NO_VERTICAL"
+# )
             arcpy.management.ProjectRaster(
                 in_raster=band_sino,
-                out_raster=band_out,
-                out_coor_system=WGS84,
+                out_raster="S:\\particulates\\data_processing\\data\\MODIS_FIRE\\generated\\unit_tests\\inter_test.tif",
+                out_coor_system='GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]]',
+                geographic_transform=None,
+                Registration_Point=None,
+                in_coor_system='PROJCS["World_Sinusoidal",GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]],PROJECTION["Sinusoidal"],PARAMETER["False_Easting",0.0],PARAMETER["False_Northing",0.0],PARAMETER["Central_Meridian",0.0],UNIT["Meter",1.0]]',
                 resampling_type="NEAREST",
                 cell_size=OUT_CELL_SIZE
             )
@@ -213,12 +233,15 @@ def convert_hdf(hdfpath, outfolder):
 # ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    if len(sys.argv) < 3:
-        print("Usage: gridhdf2tif_worker.py <hdfpath> <outfolder>")
-        sys.exit(1)
+    # if len(sys.argv) < 3:
+    #     print("Usage: gridhdf2tif_worker.py <hdfpath> <outfolder>")
+    #     sys.exit(1)
 
-    hdfpath   = sys.argv[1]
-    outfolder = sys.argv[2]
+    # hdfpath   = sys.argv[1]
+    # outfolder = sys.argv[2]
+
+    hdfpath   = "S:\\particulates\\data_processing\\data\\MODIS_FIRE\\source\\monthly\\MOD14CMH.200011.005.01.hdf"
+    outfolder = "S:\\particulates\\data_processing\\data\\MODIS_FIRE\\generated\\unit_tests"
 
     t0 = time.process_time()
     success = convert_hdf(hdfpath, outfolder)
@@ -227,4 +250,4 @@ if __name__ == "__main__":
     print("[%s] %.1fs  success=%s"
           % (os.path.basename(hdfpath), elapsed, success))
 
-    sys.exit(0 if success else 1)
+    # sys.exit(0 if success else 1)
