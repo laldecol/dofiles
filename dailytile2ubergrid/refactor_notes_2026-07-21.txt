@@ -1,0 +1,109 @@
+dailytile2ubergrid.py -- Refactor Notes
+2026-07-21
+
+Original file backed up to _old/dailytile2ubergrid.py.
+New files: dailytile2ubergrid.py (orchestrator) + dailytile2ubergrid_worker.py (worker).
+
+==============================================================
+SUMMARY OF CHANGES
+==============================================================
+
+1. ORCHESTRATOR/WORKER SPLIT
+   The original script imported arcpy directly inside Pool workers.
+   ArcGIS Pro requires initialization via propy.bat; direct arcpy import
+   in a spawned subprocess fails. The script is now split into:
+     dailytile2ubergrid.py        -- orchestrator, no arcpy import,
+                                     manages Pool and retry logic
+     dailytile2ubergrid_worker.py -- worker, imports arcpy, launched
+                                     via propy.bat subprocess
+   This is the same pattern used by daily2yearlyAOD.py.
+
+2. REMOVED ARCPY TOOLS REPLACED
+   CreateRasterCatalog_management and RasterCatalogToRasterDataset_management
+   were removed in ArcGIS Pro. Two replacements:
+     Per-tile daily->yearly aggregation (SUM across days):
+       Old: CreateRasterCatalog + RasterCatalogToRasterDataset(SUM)
+       New: arcpy.sa.CellStatistics(raster_list, "SUM", "DATA")
+     Global tile mosaic (combine tiles spatially):
+       Old: CreateRasterCatalog + RasterCatalogToRasterDataset(SUM)
+       New: arcpy.management.MosaicToNewRaster(..., mosaic_method="SUM")
+
+3. ReclassByTable SYNTAX
+   Old: arcpy.gp.ReclassByTable_sa(day, remap, "FROM", "TO", "OUT", outfile, "NODATA")
+        (writes directly to outfile as a side effect)
+   New: raster = arcpy.sa.ReclassByTable(day, remap, "FROM", "TO", "OUT", "NODATA")
+        raster.save(outfile)
+        (returns a Raster object; caller saves it explicitly)
+
+4. REMAP TABLE PATHS CORRECTED
+   Old: remapfires = "\\remapfiresv2"   (single backslash = root of current drive,
+        remapdata  = "\\remapdatav2"     e.g. C:\remapfiresv2 -- almost certainly wrong)
+   New: remap_fires = os.path.join(SCRIPT_DIR, "REMAPFIRESV2")
+        remap_data  = os.path.join(SCRIPT_DIR, "REMAPDATAV2")
+   The remap tables are ArcInfo INFO tables stored in the info/ subdirectory
+   of the dailytile2ubergrid/ folder. In arcpy, an INFO table named REMAPFIRESV2
+   in <dir>/info/ is referenced as <dir>/REMAPFIRESV2 (arcpy discovers the
+   info/ subdirectory automatically from the parent folder path).
+
+5. INPUT FOLDER UPDATED
+   Old: data/MODIS_FIRE/source/daily/{year}/
+   New: data/MODIS_FIRE/generated/daily/{year}/
+   The refactored gridhdf2tif.py writes its output to generated/daily/, not
+   source/daily/. The source/ convention is read-only raw input; processed
+   GeoTIFFs belong in generated/.
+
+6. PATH-CONSTRUCTION BUGS FIXED
+   Original lines 121-122 were missing a backslash before "data":
+     "..\\..\\..data\\MODIS_FIRE\\..."  (produces path "..\..\..data\..." -- invalid)
+   should have been:
+     "..\\..\\..\\data\\MODIS_FIRE\\..."
+   Fixed by using os.path.abspath(os.path.join(SCRIPT_DIR, '..', '..', '..', 'data', ...))
+   which is unambiguous regardless of working directory.
+
+7. POOL CALL BUGS FIXED
+   Original code: pool.close   pool.join   (method references, not calls -- no-op)
+   Fixed to:      pool.close() pool.join()
+
+8. PYTHON 2 -> 3 SYNTAX
+   print "..."       ->  print("...")
+   time.clock()      ->  time.process_time()
+   set comprehension syntax already valid in Python 2.7+, kept as-is
+
+9. RETRY LOGIC ADDED
+   MAX_RUNS = 2 attempts before a failing tile is marked permanently failed.
+   Timed-out workers (> WORKER_TIMEOUT = 7200s) are marked fatal immediately
+   and not retried, consistent with daily2yearlyAOD.py.
+
+10. PER-WORKER SCRATCH WORKSPACE
+    Each worker gets its own scratch directory at temp/scratch_<pid>/ to
+    prevent file-lock contention when multiple workers run concurrently.
+
+==============================================================
+CAUTION -- RUNTIME UNCERTAINTY
+==============================================================
+
+The most significant untested assumption is whether ArcGIS Pro 3.1
+supports arcpy.sa.ReclassByTable with ArcInfo INFO tables.
+
+The remap tables (REMAPFIRESV2, REMAPDATAV2) are stored in the legacy
+ArcInfo INFO format (binary .dat/.nit files in the info/ subfolder).
+ArcGIS Pro can read INFO tables in most contexts, but support in
+ReclassByTable specifically has not been confirmed for Pro 3.1.
+
+If the script fails with an error like:
+  "ERROR 000732: Input Remap Table: Dataset <path>/REMAPFIRESV2 does not exist"
+  or similar table-not-found / unsupported-format error,
+
+the fix is to convert the INFO tables to a supported format before running:
+  Option A -- Export to CSV:
+    Open ArcGIS Pro, use Table To Table (arcpy.conversion.TableToTable)
+    or the Export Table tool to save each INFO table as a .csv file,
+    then update the remap_fires and remap_data paths in the worker to
+    point to the .csv files.
+  Option B -- Export to file geodatabase table:
+    Use Table To Table to export to a .gdb, then reference as
+    os.path.join(gdb_path, "REMAPFIRESV2").
+
+The field names "FROM", "TO", "OUT" are taken from the original code and
+assumed to be correct. Verify these against the actual table schema if
+ReclassByTable raises a field-not-found error.
