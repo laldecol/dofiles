@@ -167,13 +167,13 @@ if __name__ == '__main__':
         logging.error('FATAL: worker script not found at %s', WORKER_SCRIPT)
         sys.exit(1)
     # Verify the remap INFO tables exist in the info/ subdirectory.
-    for tbl in ("REMAPFIRESV2", "REMAPDATAV2"):
-        # ArcInfo INFO tables are referenced by the parent folder + table name;
-        # the actual data files are in info/ but we verify via the arc.dir file.
-        info_arc_dir = os.path.join(SCRIPT_DIR, "info", "arc.dir")
-        if not os.path.isfile(info_arc_dir):
-            logging.error('FATAL: INFO directory not found at %s/info/', SCRIPT_DIR)
-            sys.exit(1)
+    # for tbl in ("REMAPFIRESV2", "REMAPDATAV2"):
+    #     # ArcInfo INFO tables are referenced by the parent folder + table name;
+    #     # the actual data files are in info/ but we verify via the arc.dir file.
+    #     info_arc_dir = os.path.join(SCRIPT_DIR, "info", "arc.dir")
+    #     if not os.path.isfile(info_arc_dir):
+    #         logging.error('FATAL: INFO directory not found at %s/info/', SCRIPT_DIR)
+    #         sys.exit(1)
 
     # Clean temp/ to remove stale worker logs and scratch dirs from prior runs.
     # Workers recreate temp/ themselves when they start.
@@ -199,7 +199,7 @@ if __name__ == '__main__':
         # Build absolute paths so they survive being passed as argv to the worker.
         input_folder = os.path.abspath(os.path.join(
             SCRIPT_DIR, '..', '..', '..', 'data',
-            'MODIS_FIRE', 'generated', 'daily', year))
+            'MODIS_FIRE', 'source', 'daily', year))
         out_folder = os.path.abspath(os.path.join(
             SCRIPT_DIR, '..', '..', '..', 'data',
             'MODIS_FIRE', 'generated', 'yearly', year))

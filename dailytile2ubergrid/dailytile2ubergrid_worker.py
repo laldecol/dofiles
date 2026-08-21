@@ -70,7 +70,7 @@ _wlog("CheckOutExtension returned: " + str(_lic))
 # Tile-aggregation mode
 # ---------------------------------------------------------------------------
 
-def process_tile(HV, year, input_folder, out_folder, info_dir):
+def process_tile(HV, year, input_folder, out_folder, remap_fire_file, remap_data_file):
     """
     Reclassify all daily FireMask TIF files for one HV tile and year,
     then sum across days with CellStatistics to produce yearly rasters.
@@ -98,8 +98,6 @@ def process_tile(HV, year, input_folder, out_folder, info_dir):
 
     # INFO table paths: arcpy finds the info/ subdirectory automatically
     # when given the parent folder path + table name.
-    remap_fires = os.path.join(info_dir, "REMAPFIRESV2")
-    remap_data  = os.path.join(info_dir, "REMAPDATAV2")
 
     # Tile-specific temp folder for intermediate reclassified rasters.
     # Located inside the per-worker scratch workspace to avoid cross-worker
@@ -131,9 +129,9 @@ def process_tile(HV, year, input_folder, out_folder, info_dir):
             out_data    = os.path.join(tempfolder, "Data_" + basename)
 
             _wlog("Reclassifying: " + basename)
-            fire_r = ReclassByTable(day, remap_fires, "FROM", "TO", "OUT", "NODATA")
+            fire_r = arcpy.sa.ReclassByASCIIFile(day, remap_fire_file)
             fire_r.save(out_fire)
-            data_r = ReclassByTable(day, remap_data, "FROM", "TO", "OUT", "NODATA")
+            data_r = arcpy.sa.ReclassByASCIIFile(day, remap_data_file)
             data_r.save(out_data)
 
             fire_files.append(out_fire)
@@ -242,23 +240,32 @@ def run_mosaic(year, out_yearly, out_1k):
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Usage:")
-        print("  dailytile2ubergrid_worker.py tile HV YEAR INPUT_FOLDER OUT_FOLDER INFO_DIR")
+        print("  dailytile2ubergrid_worker.py tile HV YEAR INPUT_FOLDER OUT_FOLDER")
         print("  dailytile2ubergrid_worker.py mosaic YEAR OUT_YEARLY OUT_1K")
         sys.exit(1)
 
     mode = sys.argv[1]
+    # mode = "tile"
+    # mode = "mosaic"
     t0   = time.process_time()
 
     if mode == "tile":
-        if len(sys.argv) < 8:
-            print("tile mode requires: HV YEAR INPUT_FOLDER OUT_FOLDER INFO_DIR")
+        if len(sys.argv) < 7:
+            print("tile mode requires: HV YEAR INPUT_FOLDER OUT_FOLDER")
             sys.exit(1)
         HV           = sys.argv[2]
         year         = sys.argv[3]
         input_folder = sys.argv[4]
         out_folder   = sys.argv[5]
-        info_dir     = sys.argv[6]
-        success = process_tile(HV, year, input_folder, out_folder, info_dir)
+
+        # HV           = "3110"
+        # year         = "2001"
+        # input_folder = "S:\\particulates\\data_processing\\data\\MODIS_FIRE\\source\\unit_tests"
+        # out_folder   = "S:\\particulates\\data_processing\\data\\MODIS_FIRE\\generated\\unit_tests"
+        remap_fire_file="S:\\particulates\\data_processing\\data\\MODIS_FIRE\\source\\unit_tests\\fire_remap.txt"
+        remap_data_file="S:\\particulates\\data_processing\\data\\MODIS_FIRE\\source\\unit_tests\\data_remap.txt"
+
+        success = process_tile(HV, year, input_folder, out_folder, remap_fire_file, remap_data_file )
 
     elif mode == "mosaic":
         if len(sys.argv) < 5:
@@ -267,6 +274,10 @@ if __name__ == "__main__":
         year       = sys.argv[2]
         out_yearly = sys.argv[3]
         out_1k     = sys.argv[4]
+        year       = "2000"
+        out_yearly = "S:\\particulates\\data_processing\\data\\MODIS_FIRE\\generated\\yearly\\2000"
+        out_1k     = "S:\\particulates\\data_processing\\data\\MODIS_FIRE\\generated\\yearly\\1k"
+
         success = run_mosaic(year, out_yearly, out_1k)
 
     else:
