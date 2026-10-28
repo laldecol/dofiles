@@ -258,9 +258,9 @@ if __name__ == "__main__":
         input_folder = sys.argv[4]
         out_folder   = sys.argv[5]
 
-        # HV           = "3110"
-        # year         = "2001"
-        # input_folder = "S:\\particulates\\data_processing\\data\\MODIS_FIRE\\source\\unit_tests"
+        # HV           = "2006"
+        # year         = "2000"
+        # input_folder = "S:\\particulates\\data_processing\\data\\MODIS_FIRE\\source\\daily\\2000"
         # out_folder   = "S:\\particulates\\data_processing\\data\\MODIS_FIRE\\generated\\unit_tests"
         remap_fire_file="S:\\particulates\\data_processing\\data\\MODIS_FIRE\\source\\unit_tests\\fire_remap.txt"
         remap_data_file="S:\\particulates\\data_processing\\data\\MODIS_FIRE\\source\\unit_tests\\data_remap.txt"
@@ -271,12 +271,13 @@ if __name__ == "__main__":
         if len(sys.argv) < 5:
             print("mosaic mode requires: YEAR OUT_YEARLY OUT_1K")
             sys.exit(1)
+            
         year       = sys.argv[2]
         out_yearly = sys.argv[3]
         out_1k     = sys.argv[4]
-        year       = "2000"
-        out_yearly = "S:\\particulates\\data_processing\\data\\MODIS_FIRE\\generated\\yearly\\2000"
-        out_1k     = "S:\\particulates\\data_processing\\data\\MODIS_FIRE\\generated\\yearly\\1k"
+        # year       = "2015"
+        # out_yearly = "S:\\particulates\\data_processing\\data\\MODIS_FIRE\\generated\\yearly\\2015"
+        # out_1k     = "S:\\particulates\\data_processing\\data\\MODIS_FIRE\\generated\\yearly\\1k"
 
         success = run_mosaic(year, out_yearly, out_1k)
 

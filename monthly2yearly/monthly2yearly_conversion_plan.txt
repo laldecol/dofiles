@@ -1,0 +1,158 @@
+CONVERSION PLAN: monthly2yearly.py (Python 2 / ArcGIS 10.8 -> Python 3 / ArcGIS Pro 3.1)
+Date: 2026-08-28
+==========================================================================================
+
+BACKGROUND
+----------
+This script aggregates monthly climate rasters (CRU) and satellite rasters into yearly
+rasters. It must be updated to run under ArcGIS Pro 3.1 / Python 3.
+
+The plan below lists only the NON-TRIVIAL changes (i.e., not the minor Python 2->3 syntax
+fixes described in items 1-7 of conversion_notes_py2_to_py3_arcgispro.md). Those will be
+applied automatically along with the changes below.
+
+Items 1-7 that are applied automatically (no user review needed):
+  - print statements -> print() functions
+  - time.clock() -> time.process_time()
+  - map() used for side effects -> explicit for loop
+  - os.makedirs() -> os.makedirs(..., exist_ok=True)
+  - bare os.remove() calls -> wrapped in try/except OSError
+  - string formatting -> f-strings (optional, where cleaner)
+  - del row after SearchCursor loops -> removed
+
+
+NUMBERED LIST OF PROPOSED CHANGES (in order of appearance in the script)
+-------------------------------------------------------------------------
+
+1. REMOVE MODULE-LEVEL ARCPY IMPORTS AND ENVIRONMENT SETUP (lines 12-19)
+   -----------------------------------------------------------------------
+   Current:
+       import arcpy, glob, logging, os, shutil, subprocess, sys, time, traceback
+       from arcpy import env
+       from arcpy.sa import *
+       ...
+       arcpy.CheckOutExtension("Spatial")
+       arcpy.env.overwriteOutput = True
+
+   Proposed: Remove 'arcpy', 'from arcpy import env', and 'from arcpy.sa import *' from
+   the top-level imports, and also remove the arcpy.CheckOutExtension() and
+   arcpy.env.overwriteOutput lines at module level.
+
+   Also remove 'import rasters' from the top level, since rasters.py itself imports arcpy
+   at module level. Move 'import rasters' inside the if __name__ == '__main__': block,
+   where it runs under propy.bat (the licensed arcpy environment).
+
+   Why: ArcGIS Pro cannot safely fork processes that have imported arcpy. If arcpy is
+   imported in the parent before Pool() is created, worker processes will crash or hang
+   (conversion notes item 8). Keeping arcpy import inside __main__ ensures it runs only
+   in the propy.bat-launched subprocess.
+
+
+2. DEFINE 'years' AND 'satyears' (pre-existing undefined variables, lines 61-70)
+   -------------------------------------------------------------------------------
+   Current:
+       print years          # 'years' is never defined
+       ...
+       results=pool.map(partialaggregate, satyears)   # 'satyears' is never defined
+
+   Proposed: Define both variables before the pool section:
+       years = list(range(startyear, endyear + 1))
+       satyears = [(sat, yr) for sat in sats for yr in years]
+
+   Why: These variables are referenced but never assigned. The definitions above are the
+   most plausible values given sats=["T"] and the startyear/endyear variables already
+   defined above. (Note: 'print years' is also a Python 2 syntax fix, handled by item 1
+   of the conversion notes.)
+
+
+3. COMMENT OUT BROKEN SATELLITE POOL SECTION AND ADD LOUD RuntimeError (lines 66-75)
+   -----------------------------------------------------------------------------------
+   Current:
+       partialaggregate = partial(aggregate, prod="3K")  # 'aggregate' not in scope;
+                                                         # rasters.aggregate has no 'prod'
+       pool = Pool(processes=nw)
+       results = pool.map(partialaggregate, satyears)
+       t1 = time.clock()
+       pool.close    # missing () -- pool is never actually closed
+       pool.join     # missing () -- pool is never actually joined
+
+   Problem: 'aggregate' with prod="3K" is not defined in this script. rasters.aggregate()
+   takes (expath, output_raster) with no 'prod' parameter, so partial(aggregate, prod="3K")
+   cannot be targeting it. This section references a function that does not exist in the
+   current codebase, so it would crash at runtime.
+
+   Proposed: Comment out the satellite pool section and replace with a loud RuntimeError
+   so the script fails immediately and visibly if execution reaches this point:
+
+       # SATELLITE POOL SECTION -- commented out 2026-08-28.
+       # 'aggregate' with prod="3K" is undefined in this script.
+       # rasters.aggregate() has no 'prod' parameter.
+       # This section must be refactored before re-enabling:
+       #   - Define the satellite-specific aggregate function
+       #   - Apply the subprocess/propy.bat pool architecture (conversion notes item 8)
+       #   - Verify satyears construction is correct
+       raise RuntimeError(
+           "Satellite pool section is not implemented. "
+           "See comments in the code for what needs to be defined before re-enabling."
+       )
+
+   Why: Per the project's fail-loud policy, broken code should not fail silently.
+   The RuntimeError surfaces the problem immediately rather than producing a misleading
+   partial result or a mysterious crash mid-pool.
+
+
+4. FIX pool.close AND pool.join MISSING PARENTHESES (lines 74-75)
+   ----------------------------------------------------------------
+   Current:
+       pool.close   # this is just a reference to the method object; pool is never closed
+       pool.join    # same problem; pool is never joined
+
+   Proposed:
+       pool.close()
+       pool.join()
+
+   Why: This is a pre-existing bug (not a Python 2->3 syntax issue). Without the
+   parentheses, neither method is ever called and the pool stays open. This is kept in the
+   plan because it will need to be correct when the satellite pool section is re-enabled.
+   (These lines will be inside the commented-out block per item 3 above, but are fixed
+   there so the re-enable path starts from correct code.)
+
+
+5. ADD FAILMARKER CLEANUP BLOCK AT END OF FILE (conversion notes item 9)
+   -----------------------------------------------------------------------
+   Proposed addition at the very end of the file, OUTSIDE and AFTER
+   if __name__ == '__main__': block:
+
+       # Erase the failmarker created by run_python_particulates.ado.
+       # Reaching this line means the script completed without an unhandled exception.
+       # If the script crashed earlier, this line is never reached and the marker
+       # remains, which tells Stata to halt.
+       try:
+           os.remove('failmarker.txt')
+       except FileNotFoundError:
+           pass
+
+   Why: run_python_particulates.ado creates failmarker.txt before running Python, then
+   checks whether it still exists after Python exits. Python is responsible for deleting
+   it on a clean exit. Placing this block OUTSIDE __main__ ensures it runs only when
+   Python reaches the end of the file without an unhandled exception -- which is exactly
+   the signal Stata needs to continue the pipeline (conversion notes item 9).
+
+   IMPORTANT: This block must NOT be inside a try/finally, as that would delete the
+   failmarker even on failure and defeat the error-detection mechanism.
+
+
+SUMMARY OF FILES TO MODIFY
+---------------------------
+  - data_processing/dofiles_la/dofiles/monthly2yearly/monthly2yearly.py  (in-place edit)
+
+No new version file needed; these are targeted fixes, not a structural rewrite.
+A brief dated comment will be added in the code noting each change.
+
+
+VERIFICATION
+------------
+After the user runs the script via the Stata pipeline, check monthly2yearly.log for:
+  1. Successful CRU aggregation (serial loop over all dtype x year combinations)
+  2. RuntimeError logged and visible if execution reaches the satellite pool section
+  3. failmarker.txt absent after a clean run (Stata pipeline continues)

@@ -12,7 +12,7 @@
 
 
 import glob, shutil, logging, os
-
+os.chdir('S:\\particulates\\data_processing\\dofiles_la\\dofiles\\clean_txt_names')
 def gpwclean(pathname):
 
     # Logging settings

@@ -9,8 +9,11 @@
 # ---------------------------------------------------------------------------
 
 import arcpy, os, glob, logging, shutil, time, numpy, sys
-sys.path.append("..\\mylibrary")
-from rasters import aggregate
+os.chdir("S:\\particulates\\data_processing\\dofiles_la\\dofiles\\wind")
+
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                             '..', 'mylibrary'))
+import rasters
 
 # Check Spatial Analyst Tool 
 arcpy.env.overwriteOutput = True
@@ -39,5 +42,5 @@ for variable in variables:
         x = glob.glob(inputpattern)
         print(x)
         print(output_raster)
-        aggregate(inputpattern, output_raster)
+        rasters.aggregate(inputpattern, output_raster)
         

@@ -55,7 +55,7 @@ WORKER_SCRIPT = os.path.join(SCRIPT_DIR, "dailytile2ubergrid_worker.py")
 
 # Year range to process.
 START_YEAR = 2000
-END_YEAR   = 2015
+END_YEAR   = 2000
 
 # Number of concurrent pool workers (ArcGIS Pro license constraint).
 NW = 8
@@ -288,6 +288,7 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------
         # Stage 2: Mosaic all tiles into a single global raster (sequential)
         # ------------------------------------------------------------------
+
         logging.info('Year %s: mosaicking %d tile(s) into global raster.',
                      year, tile_fire_count)
         rc, out, err = run_mosaic_via_propy(year, out_folder, out_1k)

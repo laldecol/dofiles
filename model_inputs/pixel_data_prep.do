@@ -111,6 +111,9 @@ log using pixel_data_prep.log, text replace;
 		sum pwquality, detail;
 		gen highqualGPW=(pwquality<=`r(p50)');
 		
+		cap mkdir "..\\..\\..\\data\\dtas\\country";
+		cap mkdir "..\\..\\..\\data\\dtas\\country\\gpw_quality";
+		
 		save "..\\..\\..\\data\\dtas\\country\\gpw_quality\\country_data_quality.dta", replace;
 		
 		restore;

@@ -194,7 +194,6 @@ set tracedepth 1;
 	compress;
 	sort gpw_v4_national_identifier_gri;
 	save "../../../data/IEA/generated/energy_use/country_level.dta", replace;
-		
 	use "..\\..\\..\\data\\dtas\\analyze_me.dta", clear;
 	compress;
 	sort gpw_v4_national_identifier_gri;
@@ -204,6 +203,7 @@ set tracedepth 1;
 	
 	*New merged data replaces old data, but keeps name;
 	*This is bad practice, because user cannot know what the file is good for from name only;
+
 	save "..\\..\\..\\data\\dtas\\analyze_me.dta", replace;
 
 	/*;

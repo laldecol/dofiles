@@ -7,7 +7,8 @@
 
 # ---------------------------------------------------------------------------
 import sys, os
-sys.path.append(os.path.abspath('..'))
+sys.path.append("S:\\particulates\\data_processing\\dofiles_la\\dofiles")
+os.chdir("S:\\particulates\\data_processing\\dofiles_la\\dofiles\\polygon2ubergrid")
 
 import arcpy, shutil, glob, logging, mylibrary
 from arcpy import env

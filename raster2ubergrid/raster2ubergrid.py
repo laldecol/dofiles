@@ -8,11 +8,13 @@
 #   os.makedirs exist_ok=True); uncommented 4 disabled input folders (MODIS_AOD,
 #   GPW4 national-identifier, GPW4 data-quality, MODIS_FIRE); added failmarker cleanup.
 # ---------------------------------------------------------------------------
-
 # Import modules
 #Append dofiles\mylibrary to sys.path, to use programs defined there.
 import sys, os
-sys.path.append(os.path.abspath('..'))
+os.chdir("S:\\particulates\\data_processing\\dofiles_la\\dofiles\\raster2ubergrid")
+
+sys.path.append("S:\\particulates\\data_processing\\dofiles_la\\dofiles")
+
 
 import arcpy, shutil, glob, logging, time, mylibrary
 from arcpy import env
@@ -80,7 +82,7 @@ if __name__=='__main__':
     folders.append("..\\..\\..\\data\\MODIS_AOD\\generated\\yearly")
     folders.append("..\\..\\..\\data\\GPW4\\source\\gpw-v4-national-identifier-grid")
     folders.append("..\\..\\..\\data\\GPW4\\source\\gpw-v4-data-quality-indicators-mean-administrative-unit-area")
-    folders.append("..\\..\\..\\data\\MODIS_FIRE\\generated\\yearly")
+    folders.append("..\\..\\..\\data\\MODIS_FIRE\\generated\\yearly\\1k")
     folders.append("..\\..\\..\\data\\CRU\\generated\\yearly")
     folders.append("..\\..\\..\\data\\MODIS_LULC\\generated\\yearly\\dummy")
     folders.append("..\\..\\..\\data\\CCMP\\generated\\yearly")

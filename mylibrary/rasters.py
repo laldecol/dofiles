@@ -13,78 +13,47 @@ from arcpy import env
 
 arcpy.env.overwriteOutput = True
 
-def aggregate(expath,output_raster):
-# mosaics a set of .tifs, averaging if they overlap, and saves the result
-# This function is meant to aggregate rasters both in time and space, depending on the set of rasters we feed it
-
-#Inputs:
-    #expath: pathname that defines which .tifs are aggregated. This is fed to glob.glob, so can include wildcard characters.
-    #output_raster: file location to save output
-
-    #Temporary file locations
-    temp=os.path.dirname(expath)+"temp"
-    gdb=temp+"/geodatabase.gdb"
-    env.workspace = temp
-    env.scratchWorkspace=temp
+def aggregate(expath, output_raster):
+# Averages a set of co-registered .tifs cell-by-cell and saves the result.
+# Used to aggregate monthly rasters into a yearly mean.
+#
+# Inputs:
+#   expath: glob pattern defining which .tifs to aggregate (may include wildcards)
+#   output_raster: full file path for the output raster
+#
+# Updated 2026-08-31: replaced CreateRasterCatalog_management +
+#   RasterCatalogToRasterDataset_management (both removed in ArcGIS Pro) with
+#   arcpy.sa.CellStatistics(..., "MEAN", "DATA"). CellStatistics computes a
+#   per-cell mean across co-registered rasters; "DATA" means cells with NoData
+#   in some inputs are averaged over the valid inputs rather than forced to
+#   NoData. This is the same fix applied to daily2yearlyAOD_worker.py.
 
     try:
-        #Write list of rasters to aggregate
-        cwdir=os.getcwd()
-        print(cwdir)
-        rasters=glob.glob(expath)
-        print(str(expath))
-        print(rasters)
+        # Find all rasters matching the pattern.
+        rasters_list = glob.glob(expath)
+        print("Pattern: " + str(expath))
+        print("Rasters found: " + str(len(rasters_list)))
+        print(rasters_list)
 
-        #Concatenate list into a single string to feed into arcpy.RasterToGeodatabase
-        inputs=';'.join(rasters)
-        print(inputs)
+        if not rasters_list:
+            raise RuntimeError("No rasters matched pattern: " + expath)
 
-        # Define spatial reference (can become input to the function in the future)
-        sr = arcpy.SpatialReference("../../../data/projections/WGS 1984.prj")
+        # Ensure output directory exists.
+        out_dir = os.path.dirname(output_raster)
+        if out_dir:
+            os.makedirs(out_dir, exist_ok=True)
 
-        #Set up temporary directories
-        shutil.rmtree(temp,ignore_errors=True)
-
-        try:
-            os.mkdir(temp)
-        except:
-            pass
-
-        #Create geodatabase and raster catalog, and move rasters in list to said catalog.
-        arcpy.CreateFileGDB_management(temp, "geodatabase", "CURRENT")
-        # Replace a layer/table view name with a path to a dataset (which can be a layer file) or create the layer/table view within the script
-        # The following inputs are layers or table views: "test_temp"
-
-        ##Try Mosaic
-        #arcpy.CreateMosaicDataset_management(in_workspace="S:\\particulates\\data_processing\\data\\CRU\\generated\\monthliestemp\\geodatabase.gdb", in_mosaicdataset_name="test_temp", coordinate_system="GEOGCS['GCS_WGS_1984',DATUM['D_WGS_1984',SPHEROID['WGS_1984',6378137.0,298.257223563]],PRIMEM['Greenwich',0.0],UNIT['Degree',0.0174532925199433]];-400 -400 1000000000;-100000 10000;-100000 10000;8.98315284119522E-09;0.001;0.001;IsHighPrecision", num_bands="", pixel_type="", product_definition="NONE", product_band_definitions="")
-        #arcpy.AddRastersToMosaicDataset_management(in_mosaic_dataset="test_temp", raster_type="Raster Dataset", input_path="S:\\particulates\\data_processing\\data\\CRU\\generated\\monthlies\\cld_2000_01.tif;S:\\particulates\\data_processing\\data\\CRU\\generated\\monthlies\\cld_2000_02.tif;S:\\particulates\\data_processing\\data\\CRU\\generated\\monthlies\\cld_2000_03.tif;S:\\particulates\\data_processing\\data\\CRU\\generated\\monthlies\\cld_2000_04.tif;S:\\particulates\\data_processing\\data\\CRU\\generated\\monthlies\\cld_2000_05.tif;S:\\particulates\\data_processing\\data\\CRU\\generated\\monthlies\\cld_2000_06.tif;S:\\particulates\\data_processing\\data\\CRU\\generated\\monthlies\\cld_2000_07.tif;S:\\particulates\\data_processing\\data\\CRU\\generated\\monthlies\\cld_2000_08.tif;S:\\particulates\\data_processing\\data\\CRU\\generated\\monthlies\\cld_2000_09.tif;S:\\particulates\\data_processing\\data\\CRU\\generated\\monthlies\\cld_2000_10.tif;S:\\particulates\\data_processing\\data\\CRU\\generated\\monthlies\\cld_2000_11.tif;S:\\particulates\\data_processing\\data\\CRU\\generated\\monthlies\\cld_2000_12.tif", update_cellsize_ranges="UPDATE_CELL_SIZES", update_boundary="UPDATE_BOUNDARY", update_overviews="NO_OVERVIEWS", maximum_pyramid_levels="", maximum_cell_size="0", minimum_dimension="1500", spatial_reference="", filter="#", sub_folder="SUBFOLDERS", duplicate_items_action="ALLOW_DUPLICATES", build_pyramids="NO_PYRAMIDS", calculate_statistics="NO_STATISTICS", build_thumbnails="NO_THUMBNAILS", operation_description="#", force_spatial_reference="NO_FORCE_SPATIAL_REFERENCE", estimate_statistics="NO_STATISTICS", aux_inputs="")
-        #arcpy.MosaicToNewRaster_management(input_rasters="S:\\particulates\\data_processing\\data\\CRU\\generated\\monthliestemp\\geodatabase.gdb\\test_temp", output_location="S:\\particulates\\data_processing\\data\\CRU\\generated\\monthliestemp", raster_dataset_name_with_extension="mosaic_test.tif", coordinate_system_for_the_raster="", pixel_type="8_BIT_UNSIGNED", cellsize="", number_of_bands="1", mosaic_method="LAST", mosaic_colormap_mode="FIRST")
-
-        ##Try Raster Catalog
-        arcpy.CreateRasterCatalog_management(gdb , "catalog", sr, sr, "", "0", "0", "0", "UNMANAGED", "")
-        arcpy.RasterToGeodatabase_conversion(Input_Rasters=inputs.replace("\\", "/"), Output_Geodatabase=gdb+ "/catalog")
-        arcpy.CalculateDefaultGridIndex_management(os.path.abspath(gdb+ "/catalog").replace("\\","/"))
-
-        #Aggregate rasters in catalog to mean raster
-        #arcpy.RasterCatalogToRasterDataset_management(gdb+"/catalog", output_raster, "", "MEAN", "FIRST", "", "NONE", "16_BIT_SIGNED", "NONE", "NONE", "", "")
-        # Second option, which includes real numbers (not only integer-type output)
-        try:
-            os.mkdir("s:/particulates/data_processing/data/CRU/generated/yearly")
-        except:
-            pass
-
-        arcpy.management.RasterCatalogToRasterDataset(in_raster_catalog=gdb+"/catalog", out_raster_dataset=output_raster , where_clause="" , mosaic_type="MEAN", colormap="FIRST")
-
-        #Remove temporary directories
-        shutil.rmtree(temp,ignore_errors=True)
-
-        print(inputs)
+        # Per-cell mean across all matching rasters.
+        result = arcpy.sa.CellStatistics(rasters_list, "MEAN", "DATA")
+        result.save(output_raster)
+        print("Saved: " + output_raster)
 
     except Exception as e:
-        # If an error occurred, print line number and error message
+        # Print error details, then re-raise so callers see the failure.
         tb = sys.exc_info()[2]
-        print("An error occured on line %i" % tb.tb_lineno)
+        print("An error occurred on line %i" % tb.tb_lineno)
         print(str(e))
+        raise
 
 def dummyascii(lowerval, higherval, onvalue, outpath):
 #Writes an ASCII file usable by Arc's "Reclass by ASCII" tool.

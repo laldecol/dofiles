@@ -28,7 +28,7 @@ shutil.rmtree(outputfolder, ignore_errors=True)
 os.mkdir(outputfolder)
 
 ncs = glob.glob(inputfolder+"\\*.nc")
-print ncs
+print(ncs)
 
 for nc in ncs:
     # Extract file name
