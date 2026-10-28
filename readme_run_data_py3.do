@@ -16,7 +16,7 @@ last modified: Jan 9, 2019, by la
 #delimit;
 clear all;
 cls;
-set trace off;
+set trace on;
 set more off;
 pause on;
 settings_particulates;
@@ -67,7 +67,7 @@ if 1==2{;
 //NEW SERVER NOTE: PENDING FIX 
 	
 ***************************************************************;
-**    Step 4: Average monthly fire rasters into yearly ones     **;
+**    Step 4: Average monthly rasters into yearly ones     **;
 ***************************************************************;
 *Averages all monthly fire files from the years set in monthly2yearlyFIRE.py into 
 *yearly ones, by satellite. ;
@@ -78,7 +78,16 @@ if 1==2{;
 	cd ..;
 	*Successfully ran monthly2yearlyFIRE.py;
 	};
-//NEW SERVER NOTE: PENDING FIX 
+
+if 1==1{;
+	cd wind;
+	run_python_particulates aggregate_wind.py;
+	cd ..;
+	*Successfully ran monthly2yearlyFIRE.py;
+};
+
+	
+	//NEW SERVER NOTE: PENDING FIX 
 	
 ************************************************************************;
 **    Step 5: Download and aggregate LULC tiles into world raster     **;
@@ -130,7 +139,7 @@ if 1==2{;
 *6.1 Takes all ubergrid rasters specified in raster2list.py and exports their
 * data into .txt files. ;
 
-if 1==2{;
+if 1==1{;
 	cd raster2list;
 	run_python_particulates raster2list.py;
 	cd ..;
@@ -150,15 +159,15 @@ if 1==2{;
 ********************************************;
 *Converts ubergrid .txt files to .dta;
 
-if 1==2{;
+if 1==1{;
 	cd table2dta;
 
 	*do table2dta.do "..\..\..\data\MODIS_AOD\generated\yearly\ubergrid\table" "*avg.txt";
 	*do table2dta.do "..\..\..\data\GPW4\generated\projected\table" "*.txt";
 	*do table2dta.do "..\..\..\data\GPW4\generated\gpw-v4-national-identifier-grid\ubergrid\table" "*.txt";
 	*do table2dta.do "..\..\..\data\GPW4\generated\gpw-v4-data-quality-indicators-mean-administrative-unit-area\ubergrid\table" "*.txt";
-	do table2dta.do "..\..\..\data\MODIS_FIRE\generated\yearly\1k\ubergrid\table" "*.txt";
-	*do table2dta.do "..\..\..\data\CRU\generated\yearly\ubergrid\table" "*.txt";
+	*do table2dta.do "..\..\..\data\MODIS_FIRE\generated\yearly\1k\ubergrid\table" "*.txt";
+	do table2dta.do "..\..\..\data\CRU\generated\yearly\ubergrid\table" "*.txt";
 	*do table2dta.do "..\..\..\data\CCMP\generated\yearly\ubergrid\table" "*.txt";
 	*do table2dta.do "..\..\..\data\MODIS_LULC\generated\yearly\dummy\ubergrid\table" "*.txt";
 	*do table2dta.do "..\..\..\data\boundaries\generated\ubergrid\table" "*.txt";
@@ -172,7 +181,7 @@ if 1==2{;
 ***********************************;
 *Merges all ubergrid .dta files from the specified directories together and saves them.;
 
-if 1==2{;
+if 1==1{;
 	cd mergedtas;
 	do mergedtas.do 9
 	"MODIS_AOD\generated\yearly\ubergrid\dtas"
