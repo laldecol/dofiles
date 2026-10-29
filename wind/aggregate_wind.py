@@ -18,6 +18,8 @@
 #   - Years with fewer than 12 monthly rasters are averaged over the months
 #     available; years with none are skipped. Both are logged, and the loop
 #     never stops: partial, missing and failed rasters are listed at the end.
+#   - If a year fails, each monthly raster is checked; unreadable ones (e.g.
+#     empty or truncated .tifs) are dropped and the rest are averaged.
 # Previous version saved in _old/aggregate_wind.py.
 # ---------------------------------------------------------------------------
 
@@ -43,56 +45,115 @@ in_folder  = os.path.join(data_dir, 'CCMP', 'generated', 'monthly')
 out_folder = os.path.join(data_dir, 'CCMP', 'generated', 'yearly')
 
 
+def first_line(e):
+    # First non-empty line of an exception message (arcpy messages are long).
+    lines = [l for l in str(e).splitlines() if l.strip()]
+    return lines[0].strip() if lines else repr(e)
+
+
+def readable(path):
+    # Returns (True, '') if arcpy can compute on this raster, else (False, reason).
+    # Runs the same operation as the yearly average, on the one file.
+    if os.path.getsize(path) == 0:
+        return False, 'empty file'
+    try:
+        r = arcpy.sa.CellStatistics([path], "MEAN", "DATA")
+        del r
+        return True, ''
+    except Exception as e:
+        return False, first_line(e)
+
+
 if __name__ == '__main__':
 
-    logging.basicConfig(format='%(asctime)s %(message)s',
-                        filename=os.path.join(HERE, 'aggregate_wind.log'),
-                        filemode='w', level=logging.DEBUG)
+    # Log to aggregate_wind.log and echo the same lines to the console, so
+    # progress is visible in the cmd window while the script runs.
+    logging.basicConfig(format='%(asctime)s %(message)s', level=logging.DEBUG,
+                        handlers=[logging.FileHandler(os.path.join(HERE, 'aggregate_wind.log'),
+                                                      mode='w'),
+                                  logging.StreamHandler(sys.stdout)])
     logging.info('Starting aggregate_wind.py.')
 
     shutil.rmtree(out_folder, ignore_errors=True)
     os.makedirs(out_folder, exist_ok=True)
 
     t0 = time.perf_counter()
+    total = len(variables) * (endyear - startyear + 1)
+    k = 0
     written = 0
-    partial = []   # written from fewer than 12 months
+    partial = {}   # name -> months used, for rasters written from fewer than 12
     missing = []   # no monthly rasters at all: nothing to write
     failed  = []   # arcpy error while aggregating
 
     for variable in variables:
         for year in range(startyear, endyear + 1):
 
+            k += 1
             inputpattern  = os.path.join(in_folder, '%s_%d*.tif' % (variable, year))
             output_raster = os.path.join(out_folder, '%s_%d.tif' % (variable, year))
-            label = os.path.basename(output_raster)
+            name  = os.path.basename(output_raster)
+            label = '%d/%d %s' % (k, total, name)
 
             n = len(glob.glob(inputpattern))
             if n == 0:
                 logging.warning('[%s] MISSING: no monthly rasters match %s -- skipped.',
                                 label, inputpattern)
-                missing.append(label)
+                missing.append(name)
                 continue
             if n != 12:
                 logging.warning('[%s] PARTIAL: %d monthly rasters found (expected 12); '
                                 'averaging the available months.', label, n)
-                partial.append('%s(%d)' % (label, n))
+                partial[name] = n
 
             try:
                 rasters.aggregate(inputpattern, output_raster)
                 logging.info('[%s] done (%d months).', label, n)
                 written += 1
+                continue
             except Exception as e:
-                logging.error('[%s] FAILED: %s', label, e)
-                failed.append(label)
+                partial.pop(name, None)
+                logging.warning('[%s] aggregate failed (%s); checking each month.',
+                                label, first_line(e))
+
+            # Fallback: find the monthly rasters that cannot be read and average
+            # the rest. Same call as rasters.aggregate(), on the readable files.
+            good, bad = [], []
+            for f in sorted(glob.glob(inputpattern)):
+                ok, why = readable(f)
+                if ok:
+                    good.append(f)
+                else:
+                    bad.append(f)
+                    logging.warning('[%s] UNREADABLE: %s (%s)', label, os.path.basename(f), why)
+
+            if not bad:
+                logging.error('[%s] FAILED: every month is readable, so the error is not '
+                              'an input file. Rerun this year alone to see the full error.', label)
+                failed.append(name)
+                continue
+            if not good:
+                logging.error('[%s] FAILED: no readable monthly rasters.', label)
+                failed.append(name)
+                continue
+
+            try:
+                arcpy.sa.CellStatistics(good, "MEAN", "DATA").save(output_raster)
+                logging.warning('[%s] PARTIAL: averaged %d readable months (dropped %d).',
+                                label, len(good), len(bad))
+                partial[name] = len(good)
+                written += 1
+            except Exception as e:
+                logging.error('[%s] FAILED on readable months: %s', label, first_line(e))
+                failed.append(name)
 
     minutes = (time.perf_counter() - t0) / 60
     arcpy.CheckInExtension("Spatial")
 
     # Summary of what was and was not written.
-    total = len(variables) * (endyear - startyear + 1)
     logging.info('Wrote %d of %d rasters. Took %.1f minutes.', written, total, minutes)
     if partial:
-        logging.warning('Partial years (months used): %s', ' '.join(partial))
+        logging.warning('Partial years (months used): %s',
+                        ' '.join('%s(%d)' % (k_, v) for k_, v in partial.items()))
     if missing:
         logging.warning('Missing inputs, not written: %s', ' '.join(missing))
     if failed:

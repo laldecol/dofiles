@@ -26,7 +26,7 @@ settings_particulates;
 **********************************************************;
 if 1==2{;
 	cd aggregate_raster;
-	run_python_particulates aggregate_raster.py;
+	run_python_particulates aggregate_raster.py ;
 	cd ..;
 };
 
@@ -37,7 +37,7 @@ if 1==2{;
 
 if 1==2{;
 	cd make_xy_extent;
-	run_python_particulates make_xy_extent.py;
+	run_python_particulates make_xy_extent.py ;
 	cd ..;
 	*Successfully ran make_xy_extent;
 	};
@@ -60,7 +60,7 @@ if 1==2{;
 
 if 1==2{;
 	cd daily2yearlyAOD;
-	run_python_particulates daily2yearlyAOD.py;
+	run_python_particulates daily2yearlyAOD.py ;
 	cd ..;
 	*Successfully ran daily2yearlyAOD.py;
 	};
@@ -74,14 +74,14 @@ if 1==2{;
 
 if 1==2{;
 	cd monthly2yearlyFIRE;
-	run_python_particulates monthly2yearlyFIRE.py;
+	run_python_particulates monthly2yearlyFIRE.py ;
 	cd ..;
 	*Successfully ran monthly2yearlyFIRE.py;
 	};
 
-if 1==1{;
+if 1==2{;
 	cd wind;
-	run_python_particulates aggregate_wind.py;
+	run_python_particulates aggregate_wind.py ;
 	cd ..;
 	*Successfully ran monthly2yearlyFIRE.py;
 };
@@ -100,7 +100,7 @@ if 1==1{;
 
 if 1==2{;
 	cd ftp2rasterLULC;
-	run_python_particulates ftp2rasterLULC.py;
+	run_python_particulates ftp2rasterLULC.py ;
 	cd ..;
 	*Successfully ran monthly2yearlyFIRE.py;
 	};
@@ -114,7 +114,7 @@ if 1==2{;
 
 if 1==2{;
 	cd raster2ubergrid;
-	run_python_particulates raster2ubergrid.py;
+	run_python_particulates raster2ubergrid.py ;
 	cd ..;
 	*Successfully ran raster2ubergrid.py;
 	};
@@ -128,7 +128,7 @@ if 1==2{;
 
 if 1==2{;
 	cd polygon2ubergrid;
-	run_python_particulates polygon2ubergrid.py;
+	run_python_particulates polygon2ubergrid.py ;
 	cd ..;
 	*Successfully ran polygon2ubergrid.py;
 	};
@@ -139,9 +139,9 @@ if 1==2{;
 *6.1 Takes all ubergrid rasters specified in raster2list.py and exports their
 * data into .txt files. ;
 
-if 1==1{;
+if 1==2{;
 	cd raster2list;
-	run_python_particulates raster2list.py;
+	run_python_particulates raster2list.py ;
 	cd ..;
 	*Successfully ran raster2list.py;
 	};
@@ -149,7 +149,7 @@ if 1==1{;
 *6.2 Cleans GPW and LULC .txt filenames so they can be processed by stata;
 if 1==2{;
 	cd clean_txt_names;
-	run_python_particulates clean_txt_names.py;
+	run_python_particulates clean_txt_names.py ;
 	cd ..;
 	*Successfully ran gpwclean.py;
 	};
@@ -167,8 +167,8 @@ if 1==1{;
 	*do table2dta.do "..\..\..\data\GPW4\generated\gpw-v4-national-identifier-grid\ubergrid\table" "*.txt";
 	*do table2dta.do "..\..\..\data\GPW4\generated\gpw-v4-data-quality-indicators-mean-administrative-unit-area\ubergrid\table" "*.txt";
 	*do table2dta.do "..\..\..\data\MODIS_FIRE\generated\yearly\1k\ubergrid\table" "*.txt";
-	do table2dta.do "..\..\..\data\CRU\generated\yearly\ubergrid\table" "*.txt";
-	*do table2dta.do "..\..\..\data\CCMP\generated\yearly\ubergrid\table" "*.txt";
+	*do table2dta.do "..\..\..\data\CRU\generated\yearly\ubergrid\table" "*.txt";
+	do table2dta.do "..\..\..\data\CCMP\generated\yearly\ubergrid\table" "*.txt";
 	*do table2dta.do "..\..\..\data\MODIS_LULC\generated\yearly\dummy\ubergrid\table" "*.txt";
 	*do table2dta.do "..\..\..\data\boundaries\generated\ubergrid\table" "*.txt";
 		
@@ -181,7 +181,7 @@ if 1==1{;
 ***********************************;
 *Merges all ubergrid .dta files from the specified directories together and saves them.;
 
-if 1==1{;
+if 1==2{;
 	cd mergedtas;
 	do mergedtas.do 9
 	"MODIS_AOD\generated\yearly\ubergrid\dtas"
@@ -248,7 +248,7 @@ if 1==2{;
 ********************************************************;
 ************;
 
-if 1==1{;
+if 1==2{;
 	cd model_inputs;
 	do pixel_data_prep.do;
 	do save_samples.do;
@@ -257,7 +257,7 @@ if 1==1{;
 };
 
 *Compute flux between regions using a pixel-level box model;
-if 1==1{;
+if 1==2{;
 	cd flux;
 	do flux.do;
 	cd ..;
