@@ -1,0 +1,59 @@
+name: Run / test log
+description: Log a long job or a check when you launch it, so you can pick it up days later.
+title: "[run] "
+labels: ["run"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Fill this in when you launch. When the run comes back, add a comment with **Result vs expected** and **Next step**, then close the issue.
+  - type: input
+    id: task
+    attributes:
+      label: Part of
+      description: The code task or referee point this run serves.
+      placeholder: "Part of #7 (code task) or laldecol/ABT_main#12 (referee point)"
+  - type: input
+    id: script
+    attributes:
+      label: Script / command
+      placeholder: "readme_run_regressions.do, steps 1-6 switched on"
+    validations:
+      required: true
+  - type: input
+    id: commit
+    attributes:
+      label: Commit and branch
+      placeholder: "e5b5b1a on master (no uncommitted changes)"
+  - type: input
+    id: machine
+    attributes:
+      label: Where it runs
+      placeholder: "office desktop, S: drive"
+  - type: textarea
+    id: inputs
+    attributes:
+      label: Inputs
+      placeholder: "data/.../main.dta (new arcpy pipeline, built 2026-11-20)"
+  - type: input
+    id: outdir
+    attributes:
+      label: Output folder
+      placeholder: "particulates_analysis/output/tables/..."
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result
+      description: Be specific enough to check later, e.g. numbers to match.
+      placeholder: "Table 4 matches the 2019 version to 3 decimals; N = 1,312,450"
+    validations:
+      required: true
+  - type: input
+    id: runtime
+    attributes:
+      label: Expected run time
+      placeholder: "about 6 hours"
+  - type: textarea
+    id: result
+    attributes:
+      label: Result vs expected (fill in when it finishes, or comment instead)

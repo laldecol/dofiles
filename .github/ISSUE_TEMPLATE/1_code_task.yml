@@ -1,0 +1,21 @@
+name: Code task
+description: A change to the code or data that a revision point needs (or a bug to fix).
+labels: ["task"]
+body:
+  - type: input
+    id: point
+    attributes:
+      label: Part of
+      description: The referee point this serves (issue in ABT_main), if any.
+      placeholder: "Part of laldecol/ABT_main#12"
+  - type: textarea
+    id: what
+    attributes:
+      label: What to change
+    validations:
+      required: true
+  - type: textarea
+    id: done
+    attributes:
+      label: Done when
+      placeholder: "e.g. van_donkelar.py produces 3 tifs on the ubergrid; merged into data/..."
