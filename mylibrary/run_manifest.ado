@@ -19,9 +19,7 @@ Usage (works with #delimit ; as well):
 
     ... the work ...
 
-    run_manifest finish, outputs("table4.tex" "table4.csv")
-        stats(aod pop) signature
-        estimates keep(aod fire area);
+    run_manifest finish, outputs("table4.tex" "table4.csv");
 
   start options
     outdir()    required. Folder where the manifest is written.
@@ -34,11 +32,6 @@ Usage (works with #delimit ; as well):
 
   finish options
     outputs()   files written (paths relative to the current folder are fine).
-    stats()     numeric variables of the data in memory: N, mean, sd, min, max.
-    signature   records -datasignature- of the data in memory; two runs with
-                the same signature have identical data.
-    estimates   records e(cmd), e(N), e(r2) of the last estimation, plus
-                _b and _se for the variables in keep().
     status()    defaults to ok. Use e.g. status(failed) yourself if needed.
     note()      appended to the note.
 
@@ -142,8 +135,7 @@ end
 
 program define rm_finish
 	version 14
-	syntax , [OUTputs(string asis) STATS(varlist numeric) SIGnature ESTimates ///
-		KEEP(string) NOTE(string) STATUS(string)]
+	syntax , [OUTputs(string asis) NOTE(string) STATUS(string)]
 
 	if `"$RM_outdir"' == "" {
 		di as err "run_manifest finish: no open manifest; call -run_manifest start- first"
@@ -162,48 +154,6 @@ program define rm_finish
 		global RM_output`i' `"`desc'"'
 	}
 	global RM_noutputs `i'
-
-	* Stats lines
-	local nstats 0
-	local ++nstats
-	local stat`nstats' "data in memory: `c(N)' obs, `c(k)' vars, last file used: `c(filename)'"
-	if "`signature'" != "" {
-		quietly datasignature
-		local ++nstats
-		local stat`nstats' "datasignature: `r(datasignature)'"
-	}
-	foreach v of local stats {
-		quietly summarize `v'
-		local ++nstats
-		local stat`nstats' : di "`v': N=" r(N) " mean=" %12.6g r(mean) " sd=" %12.6g r(sd) " min=" %12.6g r(min) " max=" %12.6g r(max)
-	}
-	if "`estimates'" != "" {
-		if "`e(cmd)'" == "" {
-			local ++nstats
-			local stat`nstats' "estimates: none in memory"
-		}
-		else {
-			local ++nstats
-			local stat`nstats' : di "estimates: `e(cmd)' N=" e(N) " r2=" %9.6f e(r2) " r2_a=" %9.6f e(r2_a)
-			local ++nstats
-			local stat`nstats' `"cmdline: `e(cmdline)'"'
-			foreach v of local keep {
-				capture local b = _b[`v']
-				if _rc {
-					local ++nstats
-					local stat`nstats' "_b[`v']: not in model"
-					continue
-				}
-				local se = _se[`v']
-				local ++nstats
-				local stat`nstats' : di "_b[`v']=" %12.6g `b' " se=" %12.6g `se'
-			}
-		}
-	}
-	global RM_nstats `nstats'
-	forvalues j = 1/`nstats' {
-		global RM_stat`j' `"`stat`j''"'
-	}
 
 	rm_write, status(`status') final
 	di as txt "run_manifest: finished (`status'), see " as res `"$RM_outdir/run_manifest.txt"'
@@ -248,12 +198,6 @@ program define rm_write
 	if $RM_noutputs == 0 file write `fh' "  -" _n
 	forvalues i = 1/$RM_noutputs {
 		file write `fh' `"  ${RM_output`i'}"' _n
-	}
-	if "`final'" != "" {
-		file write `fh' "stats:" _n
-		forvalues i = 1/$RM_nstats {
-			file write `fh' `"  ${RM_stat`i'}"' _n
-		}
 	}
 	file write `fh' "" _n
 	file close `fh'

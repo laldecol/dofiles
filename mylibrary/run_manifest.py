@@ -17,13 +17,13 @@
 #         expected="3 tifs, values 0-200 ug/m3",
 #         issue="laldecol/dofiles#40")         # optional: the GitHub issue
 #     ...  do the work  ...
-#     m.finish(outputs=out_tifs, stats={"n_files": 3, "max_pm25": 187.2})
+#     m.finish(outputs=out_tifs)
 #
 # Or as a context manager, which records a crash as status: failed:
 #
 #     with run_manifest.start(outdir, inputs=..., expected=...) as m:
 #         ...
-#         m.stats["n_files"] = 3
+#         m.outputs += out_tifs
 #
 # Files written in outdir:
 #   run_manifest.txt          latest run (overwritten each run; written at
@@ -137,7 +137,6 @@ class Manifest(object):
         self._t0 = datetime.datetime.now()
         self.git = git_info(os.path.dirname(self.script) if os.path.isfile(self.script) else self.script)
         self.outputs = []
-        self.stats = {}
         self.status = "running"
         self.finished = ""
         self.error = ""
@@ -173,12 +172,6 @@ class Manifest(object):
             L.extend("  " + describe_file(p, self.hash_files) for p in self.outputs)
         else:
             L.append("  -")
-        L.append("stats:")
-        if self.stats:
-            for k in self.stats:
-                L.append("  %s = %s" % (k, self.stats[k]))
-        else:
-            L.append("  -")
         if self.error:
             L.append("error:")
             L.extend("  " + l for l in self.error.rstrip().splitlines())
@@ -193,11 +186,9 @@ class Manifest(object):
             with open(os.path.join(self.outdir, "run_manifest_history.txt"), "a") as f:
                 f.write(text + "\n")
 
-    def finish(self, outputs=None, stats=None, status="ok", note=None):
+    def finish(self, outputs=None, status="ok", note=None):
         if outputs:
             self.outputs.extend(outputs)
-        if stats:
-            self.stats.update(stats)
         if note:
             self.note = (self.note + " | " if self.note else "") + note
         self.status = status
