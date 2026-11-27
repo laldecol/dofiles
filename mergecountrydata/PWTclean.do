@@ -40,14 +40,4 @@ replace country="United States of America" if country=="United States";
 
 save "..\\..\\..\\data\PWT\generated\pwt90.dta", replace;
 
-clear;
-
-use "..\\..\\..\\data\dtas\analyze_me_pixel.dta", clear;
-
-merge m:1 country  using "..\\..\\..\\data\PWT\generated\pwt90.dta", keep(match master) nogen;
-assert missing(uber_code)==0;
-
-*New merged data replaces old data, but keeps name;
-capture mkdir "..\\..\\..\\data\dtas\temp";
-save "..\\..\\..\\data\dtas\temp\analyze_me.dta", replace;
 log close;

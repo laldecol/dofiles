@@ -45,32 +45,10 @@ end;
 capture log close;
 log using world_bank_merge.log, replace;
 
-use "../../../../data_processing_calibration/data/world_bank/generated/WB1clean.dta", clear;
-local stubs vAGREMPL vAGRTOTL vINDEMPL vINDMANF vINDTOTL vSRVEMPL vSRVTOTL;
-// Looping over stems to capture variable labels;
-foreach s of local stubs {;
-	local `s'label = "`: variable label `s''";
-	dis "``s'label'";
-};
-
-reshape wide `stubs',i(country) j(year);
-
-// Looping over stems again to reinstate labels;
-foreach stub of local stubs{;
-	foreach var of varlist `stub'* {;
-		label variable `var' "``stub'label'";
-
-	};
-};
-tempfile wb_wide;
-save `wb_wide';
 
 use "..\\..\\..\\data\\dtas\\temp\\analyze_me.dta", clear;
 
-merge m:1 country  using `wb_wide', keep(match master) nogen;
-assert missing(uber_code)==0;
 
 *New merged data replaces old data, but keeps name;
-capture mkdir "..\\..\\..\\data\dtas\temp";
 save "..\\..\\..\\data\dtas\temp\analyze_me.dta", replace;
 log close;

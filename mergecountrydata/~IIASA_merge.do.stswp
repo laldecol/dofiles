@@ -18,8 +18,6 @@ log using IIASA_merge.log, replace;
 
 use "..\\..\\..\\data\\dtas\\temp\\analyze_me.dta", clear;
 
-merge m:1 country  using "../../../data/IIASA/generated/country/activity_emissions.dta", keep(match master) nogen;
-assert missing(uber_code)==0;
 
 *New merged data replaces old data, but keeps name;
 capture mkdir "..\\..\\..\\data\dtas\temp";

@@ -99,17 +99,6 @@ replace country="Viet Nam" if country=="Vietnam";
 sort country;
 save "..\\..\\..\\data\\BP\\generated/`product'Consumption.dta", replace;
 
-use "..\\..\\..\\data\\dtas\\temp\\analyze_me.dta", clear;
-
-sort country;
-
-merge m:1 country using "..\\..\\..\\data\\BP\\generated/`product'Consumption.dta", keep(match master);
-rename _merge merge`product';
-pause;
-assert missing(uber_code)==0;
-
-*Saves version of dta with all country level variables and all pixels;
-save "..\\..\\..\\data\\dtas\\temp\\analyze_me.dta",replace;
 
 };
 /*;
@@ -118,43 +107,5 @@ keep if country!="";
 keep if mergeCoal==3 | mergeOil==3 | mergeGas==3;
 */;
 *Groups all EU countries as country=EU;
-gen EU=.;
 
-replace EU=1 if country=="Austria" |
-country=="Belgium" |
-country=="Bulgaria" |
-country=="Croatia" |
-country=="Cyprus" |
-country=="Czech Republic" |
-country=="Denmark" |
-country=="Estonia" |
-country=="Finland" |
-country=="France" |
-country=="Germany" |
-country=="Greece" |
-country=="Hungary" |
-country=="Ireland" |
-country=="Italy" |
-country=="Latvia" |
-country=="Lithuania" |
-country=="Luxembourg" |
-country=="Malta" |
-country=="Netherlands" |
-country=="Poland" |
-country=="Portugal" |
-country=="Romania" |
-country=="Slovakia" |
-country=="Slovenia" |
-country=="Spain" |
-country=="Sweden" |
-country=="United Kingdom of Great Britain and Northern Ireland"
-;
-
-*replace country="EU" if EU==1;
-
-format %30s country;
-
-save "..\\..\\..\\data\\dtas\\analyze_me.dta",replace;
-rm "..\\..\\..\\data\\dtas\\temp\\analyze_me.dta";
-rmdir "..\\..\\..\\data\\dtas\\temp";
 log close;

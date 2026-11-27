@@ -89,8 +89,8 @@ if __name__=="__main__":
     rastercount=0
 
     #Construct list of paths and name patterns to convert;
-    #input_folderlist.append("..\\..\\..\\data\\GPW4\\source\\gpw-v4-population-count-2000")
-    #pattern_list.append("\\*.tif")
+    # input_folderlist.append("..\\..\\..\\data\\GPW4\\source\\gpw-v4-population-count-2000")
+    # pattern_list.append("\\*.tif")
 
     # input_folderlist.append("..\\..\\..\\data\\MODIS_AOD\\generated\\yearly\\ubergrid")
     # pattern_list.append("\\*avg.tif")
@@ -98,7 +98,6 @@ if __name__=="__main__":
     # input_folderlist.append("..\\..\\..\\data\\GPW4\\generated\\projected")
     # pattern_list.append("\\*20??.tif")
 
-    ####"..\\..\\data\\GPW4\\source\\gpw-v4-national-identifier-grid"
     # input_folderlist.append("..\\..\\..\\data\\GPW4\\generated\\gpw-v4-national-identifier-grid\\ubergrid")
     # pattern_list.append("\\*.tif")
 
@@ -111,11 +110,11 @@ if __name__=="__main__":
     # input_folderlist.append("..\\..\\..\\data\\MODIS_FIRE\\generated\\yearly\\1k\\ubergrid")
     # pattern_list.append("\\*.tif")
 
-    # input_folderlist.append("..\\..\\..\\data\\CRU\\generated\\yearly\\ubergrid")
-    # pattern_list.append("\\*.tif")
-
-    input_folderlist.append("..\\..\\..\\data\\CCMP\\generated\\yearly\\ubergrid")
+    input_folderlist.append("..\\..\\..\\data\\CRU\\generated\\yearly\\ubergrid")
     pattern_list.append("\\*.tif")
+
+    # input_folderlist.append("..\\..\\..\\data\\CCMP\\generated\\yearly\\ubergrid")
+    # pattern_list.append("\\*.tif")
 
     # input_folderlist.append("..\\..\\..\\data\\boundaries\\generated\\ubergrid")
     # pattern_list.append("\\*disk.tif")
@@ -144,6 +143,8 @@ if __name__=="__main__":
             rastercount+=1
             t1=time.process_time()
             print("Raster " + str(raster) + " took " + str(t1-t0) + "seconds.")
+            logging.info('Raster %s done, took %s minutes',str(raster),str((t1-t0)/60))
+
             #wait=raw_input("Press enter to continue.")
 
     time1=time.process_time()

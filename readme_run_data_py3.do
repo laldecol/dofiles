@@ -16,7 +16,7 @@ last modified: Jan 9, 2019, by la
 #delimit;
 clear all;
 cls;
-set trace on;
+set trace off;
 set more off;
 pause on;
 settings_particulates;
@@ -159,7 +159,7 @@ if 1==2{;
 ********************************************;
 *Converts ubergrid .txt files to .dta;
 
-if 1==1{;
+if 1==2{;
 	cd table2dta;
 
 	*do table2dta.do "..\..\..\data\MODIS_AOD\generated\yearly\ubergrid\table" "*avg.txt";
@@ -167,8 +167,8 @@ if 1==1{;
 	*do table2dta.do "..\..\..\data\GPW4\generated\gpw-v4-national-identifier-grid\ubergrid\table" "*.txt";
 	*do table2dta.do "..\..\..\data\GPW4\generated\gpw-v4-data-quality-indicators-mean-administrative-unit-area\ubergrid\table" "*.txt";
 	*do table2dta.do "..\..\..\data\MODIS_FIRE\generated\yearly\1k\ubergrid\table" "*.txt";
-	*do table2dta.do "..\..\..\data\CRU\generated\yearly\ubergrid\table" "*.txt";
-	do table2dta.do "..\..\..\data\CCMP\generated\yearly\ubergrid\table" "*.txt";
+	do table2dta.do "..\..\..\data\CRU\generated\yearly\ubergrid\table" "*.txt";
+	*do table2dta.do "..\..\..\data\CCMP\generated\yearly\ubergrid\table" "*.txt";
 	*do table2dta.do "..\..\..\data\MODIS_LULC\generated\yearly\dummy\ubergrid\table" "*.txt";
 	*do table2dta.do "..\..\..\data\boundaries\generated\ubergrid\table" "*.txt";
 		
@@ -212,7 +212,7 @@ if 1==2{;
 	do IIASA_regions_to_country.do;
 	cd ..;
 	*Successfully ran do files
-	in \mergecountrydata;
+	in \clean_IIASA;
 	};
 	
 **************************************************;
@@ -234,21 +234,23 @@ if 1==2{;
 	do sector_fuel.do;
 	*BP energy consumption data;
 	cd "../mergecountrydata";
-	do IIASA_merge.do;
-	do world_bank_merge.do;
+*do IIASA_merge.do;
+*do world_bank_merge.do;
 	do BPclean.do;
+	do merge_country_data.do;
 	cd ..;
 	
 	*Successfully ran do files
 	in \mergecountrydata;
 	};
 
-********************************************************;
+******************************************
+**************;
 ** Step 11: Construct variables and standardize units  **;
 ********************************************************;
 ************;
 
-if 1==2{;
+if 1==1{;
 	cd model_inputs;
 	do pixel_data_prep.do;
 	do save_samples.do;
@@ -257,7 +259,7 @@ if 1==2{;
 };
 
 *Compute flux between regions using a pixel-level box model;
-if 1==2{;
+if 1==1{;
 	cd flux;
 	do flux.do;
 	cd ..;
