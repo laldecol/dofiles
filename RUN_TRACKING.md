@@ -5,14 +5,13 @@ and `data_processing_calibration`. Set up 2026-11-27.
 
 ## The pieces
 
-1. **Revision task issue** (template "Revision task"): one per referee point that
-   needs code or data work, titled with the comment number, e.g.
-   `[R1 1(a)] Triangulate exposure with Van Donkelaar and AQS`. Open it in the
-   repo whose code will do most of the work.
-2. **Run / test log issue** (template "Run / test log"): one per job you launch.
-   Write `Part of #12` (or `Part of laldecol/particulates_analysis#12` across
-   repos) so it shows up under the task. Fill it in at launch; when the job comes
-   back, comment **Result vs expected** and **Next step**, then close it.
+1. **Referee point** (in `laldecol/ABT_main` only): one issue per point, titled
+   with the comment number, e.g. `[R1 1(a)] ...`.
+2. **Code task** (in the code repo): a change a referee point needs, filed as a
+   sub-issue of the ABT_main point.
+3. **Run / test log** (in the code repo): one per job you launch, with
+   `Part of #N`. Fill it in at launch; when the job comes back, comment
+   **Result vs expected** and **Next step**, then close it.
 4. **Run manifest**: the script itself writes `run_manifest.txt` into its output
    folder with the git commit, uncommitted changes, inputs (size, date), and key
    numbers. `run_manifest_history.txt` keeps every finished run. If a manifest
