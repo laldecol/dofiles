@@ -212,6 +212,7 @@ label var sender_Terra`year'_mean "Average AOD in sender region, AOD units";
 label var receiver_Terra`year'_mean "Average AOD in receiver region, AOD units";
 label data "AOD transfer between sender and receiver country-regions, year `year'";
 
+cap mkdir "..\\..\\..\\data\\dtas\\country_regions\\flux";
 save "..\\..\\..\\data\\dtas\\country_regions\\flux\\flux`year'.dta", replace;
 
 };
