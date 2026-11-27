@@ -7,13 +7,12 @@ body:
     attributes:
       value: |
         Fill this in when you launch. When the run comes back, add a comment with **Result vs expected** and **Next step**, then close the issue.
-        The script's `run_manifest.txt` (in the output folder) has the exact commit, inputs and key numbers; paste its stats into the closing comment.
   - type: input
     id: task
     attributes:
       label: Part of
-      description: The revision task issue this run serves.
-      placeholder: "Part of #12"
+      description: The code task or referee point this run serves.
+      placeholder: "Part of #7 (code task) or laldecol/ABT_main#12 (referee point)"
   - type: input
     id: script
     attributes:
